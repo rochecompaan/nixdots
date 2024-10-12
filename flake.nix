@@ -64,8 +64,6 @@
     # My personal nixvim config
     nixvim.url = "github:elythh/nixvim/dev";
 
-    # Minecraft Servers
-    nix-minecraft.url = "github:Infinidoge/nix-minecraft";
 
     # DELETEME: Zen
     zen-browser.url = "github:MarceColl/zen-browser-flake";

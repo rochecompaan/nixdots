@@ -10,10 +10,6 @@
     # Nixpkgs Stable
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # grub2 theme
-    grub2-themes.url = "github:vinceliuice/grub2-themes";
-    grub2-themes.inputs.nixpkgs.follows = "nixpkgs";
-
     # Home-manager
     hm.url = "github:nix-community/home-manager";
     hm.inputs.nixpkgs.follows = "nixpkgs";

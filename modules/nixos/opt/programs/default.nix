@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   programs = {
     thunar = {
       enable = true;
@@ -10,8 +11,7 @@
     };
     zsh.enable = true;
     dconf.enable = true;
+    wshowkeys.enable = true;
   };
-  imports = [
-    ./steam.nix
-  ];
+  imports = [ ./steam.nix ];
 }

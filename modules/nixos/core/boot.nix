@@ -4,14 +4,13 @@
     loader = {
       grub2-theme = {
         enable = true;
-        theme = "stylish";
+        theme = "vimix";
         footer = true;
       };
       grub = {
         enable = true;
         useOSProber = true;
         efiSupport = true;
-        version = 2;
         device = "nodev";
       };
       #systemd-boot.enable = true;

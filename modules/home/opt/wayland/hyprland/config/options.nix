@@ -3,24 +3,30 @@
     exec-once = [
       "ags"
       "clipse -listen"
-      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
-      "systemctl --user import-environment PATH"
-      "systemctl --user restart xdg-desktop-portal.service"
+      "wl-paste --type text --watch cliphist store"
       "wl-paste --type text --watch cliphist store"
       "wl-paste --type image --watch cliphist store"
       "xprop -root -f _XWAYLAND_GLOBAL_OUTPUT_SCALE 32c -set _XWAYLAND_GLOBAL_OUTPUT_SCALE 1"
-      #"xwaylandvideobridge &"
+      "dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP"
+      "systemctl --user import-environment PATH"
+      "systemctl --user restart xdg-desktop-portal.service"
+      "systemctl --user restart xdg-desktop-portal-wlr.service"
     ];
     animations = {
       enabled = true;
 
-      bezier = [ "md3_decel, 0.05, 0.7, 0.1, 1" ];
+      bezier = [
+        "easeOutBack,0.34,1.56,0.64,1"
+        "easeInBack,0.36,0,0.66,-0.56"
+        "easeInCubic,0.32,0,0.67,0"
+        "easeInOutCubic,0.65,0,0.35,1"
+      ];
 
       animation = [
-        "border, 1, 2, default"
-        "fade, 1, 2, md3_decel"
-        "windows, 1, 4, md3_decel, popin 60%"
-        "workspaces, 1, 4, md3_decel, slidevert"
+        "windowsIn,1,5,easeOutBack,popin"
+        "windowsOut,1,5,easeInBack,popin"
+        "fadeIn,0"
+        "workspaces,1,4,easeInOutCubic,slide"
       ];
     };
 
@@ -47,7 +53,10 @@
       preserve_split = true;
     };
 
-    env = [ "GDK_SCALE,2" "WLR_DRM_NO_ATOMIC,1" ];
+    env = [
+      "GDK_SCALE,2"
+      "WLR_DRM_NO_ATOMIC,1"
+    ];
 
     general = {
       gaps_in = "8";
@@ -97,7 +106,6 @@
       force_default_wallpaper = 0;
       key_press_enables_dpms = true;
       mouse_move_enables_dpms = true;
-      no_direct_scanout = false;
       vfr = true;
       vrr = 1;
     };

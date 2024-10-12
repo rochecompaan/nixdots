@@ -1,13 +1,22 @@
-{ config
-, lib
-, pkgs
-, ...
-}: {
-  config = lib.mkIf config.modules.rofi.enable {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  inherit (lib) mkIf mkEnableOption;
+
+  cfg = config.opt.utils.rofi;
+in
+{
+  options.opt.utils.rofi.enable = mkEnableOption "rofi";
+
+  config = mkIf cfg.enable {
     programs.rofi = {
       enable = true;
       package = pkgs.rofi-wayland;
-      font = "Product Sans 12";
+      # font = "Iosevka Nerd Font";
       extraConfig = {
         modi = "drun";
         display-drun = "";
@@ -41,7 +50,6 @@
 
         /*****----- Global Properties -----*****/
         @import                          "./colors.rasi"
-        @import                          "./fonts.rasi"
 
         * {
             border-colour:               var(selected);
@@ -338,12 +346,6 @@
             selected:       #${config.lib.stylix.colors.base08};
             active:         #${config.lib.stylix.colors.base04};
             urgent:         #${config.lib.stylix.colors.base03};
-        }
-      '';
-
-      configFile."rofi/fonts.rasi".text = ''
-          * {
-           font: "ZedMono NF 11.6";
         }
       '';
     };

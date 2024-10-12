@@ -1,43 +1,71 @@
-{ inputs
-, pkgs
-, ...
-}: {
+{ inputs, pkgs, ... }:
+{
   theme = "paradise";
 
   imports = [
+    inputs.stylix.homeManagerModules.stylix
     inputs.anyrun.homeManagerModules.default
     ../../modules/home
   ];
 
+  opt = {
+    browser = {
+      firefox.enable = true;
+    };
+    misc = {
+      obsidian.enable = true;
+      yamlfmt.enable = true;
+      rbw.enable = true;
+    };
+    music = {
+      spicetify.enable = true;
+    };
+    launcher = {
+      anyrun.enable = true;
+    };
+    lock = {
+      hyprlock.enable = true;
+    };
+    services = {
+      ags.enable = true;
+      cliphist.enable = true;
+      hypridle.enable = true;
+      hyprpaper.enable = true;
+      kanshi.enable = true;
+      #swaync.enable = true;
+      #waybar.enable = true;
+
+      glance.enable = true;
+    };
+    utils = {
+      rofi.enable = true;
+      lazygit.enable = true;
+      k9s.enable = true;
+    };
+    shell = {
+      zellij.enable = true;
+    };
+  };
+
   modules = {
-    anyrun.enable = true;
-    hyprland.enable = true;
-    k9s.enable = true;
-    lazygit.enable = true;
-    rofi.enable = true;
-    rbw.enable = true;
-    spicetify.enable = true;
-    sss.enable = false;
-    zellij.enable = true;
     zsh.enable = true;
-    hyprpaper.enable = false;
     gpg-agent.enable = true;
   };
 
   default = {
     de = "hyprland";
-    bar = "ags";
-    lock = "hyprlock";
     terminal = "foot";
   };
 
   home = {
     packages = with pkgs; [
+      android-tools
       vesktop
       scrcpy
       stremio
       yazi
-      showmethekey
+      lunar-client
+      wdisplays
     ];
   };
 }

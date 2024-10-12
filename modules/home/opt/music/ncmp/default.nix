@@ -1,9 +1,22 @@
-{ config
-, lib
-, pkgs
-, ...
-}: {
-  config = lib.mkIf config.modules.ncmpcpp.enable {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+let
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    ;
+
+  cfg = config.opt.music.ncmp;
+in
+{
+  options.opt.music.ncmp = {
+    enable = mkEnableOption "Wether to enable Yamlfmt";
+  };
+  config = mkIf cfg.enable {
     programs.ncmpcpp = {
       enable = true;
       package = pkgs.ncmpcpp.override {

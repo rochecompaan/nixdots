@@ -1,19 +1,40 @@
-{ config
-, pkgs
-, ...
+{
+  config,
+  lib,
+  pkgs,
+  ...
 }:
 let
+  inherit (lib) getExe;
   # Binds $mod + [shift +] {1..10} to [move to] workspace {1..10}
-  workspaces = builtins.concatLists (builtins.genList
-    (x:
+  workspaces = builtins.concatLists (
+    builtins.genList (
+      x:
       let
-        ws = let c = (x + 1) / 10; in builtins.toString (x + 1 - (c * 10));
+        ws =
+          let
+            c = (x + 1) / 10;
+          in
+          builtins.toString (x + 1 - (c * 10));
       in
       [
         "SUPER, ${ws}, workspace, ${toString (x + 1)}"
         "SUPERSHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
-      ])
-    10);
+      ]
+    ) 10
+  );
+
+  zellij-attach = pkgs.writeShellScriptBin "zellij-attach" ''
+    #! /bin/sh
+
+    session=$(zellij ls -sn | rofi -dmenu -theme ~/.config/rofi/config.rasi -p "zellij session:" )
+
+    if [[ -z $session ]]; then
+      exit
+    fi
+
+    ${terminal} -e zellij attach --create $session
+  '';
 
   # Get default application
   terminal = config.home.sessionVariables.TERMINAL;
@@ -71,38 +92,43 @@ in
 
           # Utilities
           "SUPER, Return, exec, run-as-service ${terminal}"
+          "SUPERSHIFT, Z, exec, ${getExe zellij-attach}"
           "SUPER, B, exec, firefox"
           "SUPER, L, exec, hyprlock"
           "SUPER, O, exec, run-as-service wl-ocr"
 
           # Screenshot
-          "SUPERSHIFT, S, exec, grimblast copy area"
+          "SUPERSHIFT, S, exec, grimblast copy area --notify"
           "CTRLSHIFT, S, exec, grimblast --notify --cursor copysave output"
+          "SUPERSHIFT, T, exec, kitty -e twt"
         ]
         ++ workspaces;
 
       bindr = [
         # Launchers
-        "SUPER, D, exec, pkill anyrun || run-as-service anyrun"
-        "SUPERSHIFT, p, exec, rofi-rbw --no-help --clipboarder wl-copy --keybindings Alt+x:type:password"
-        "SUPERSHIFT, e, exec, bemoji -t"
-        "SUPERSHIFT, o, exec, wezterm start --class clipse clipse"
+        " SUPER, D, exec, pkill anyrun || run-as-service anyrun "
+        " SUPERSHIFT, p, exec, rofi-rbw --no-help --clipboarder wl-copy --keybindings Alt+x:type:password "
+        " SUPERSHIFT, e, exec, bemoji -t "
+        " SUPERSHIFT, o, exec, wezterm start --class clipse clipse "
       ];
 
       binde = [
         # Audio
-        ",XF86AudioRaiseVolume, exec, volumectl up 5"
-        ",XF86AudioLowerVolume, exec, volumectl down 5"
-        ",XF86AudioMute, exec, volumectl toggle-mute"
-        ",XF86AudioMicMute, exec, ${pkgs.pamixer}/bin/pamixer --default-source --toggle-mute"
+        ",XF86AudioRaiseVolume, exec, volumectl up 5 "
+        ",XF86AudioLowerVolume, exec, volumectl down 5 "
+        ",XF86AudioMute, exec, volumectl toggle-mute "
+        ",XF86AudioMicMute, exec, ${pkgs.pamixer}/bin/pamixer --default-source --toggle-mute "
 
         # Brightness
-        ",XF86MonBrightnessUp, exec, lightctl up 5"
-        ",XF86MonBrightnessDown, exec, lightctl down 5"
+        ",XF86MonBrightnessUp, exec, lightctl up 5 "
+        ",XF86MonBrightnessDown, exec, lightctl down 5 "
       ];
 
       # Mouse bindings
-      bindm = [ "SUPER, mouse:272, movewindow" "SUPER, mouse:273, resizewindow" ];
+      bindm = [
+        " SUPER, mouse:272, movewindow "
+        " SUPER, mouse:273, resizewindow "
+      ];
     };
 
     # Configure submaps

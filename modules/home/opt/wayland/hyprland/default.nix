@@ -1,21 +1,28 @@
-{ config
-, inputs
-, lib
-, pkgs
-, ...
+{
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
 }:
 let
+  inherit (lib) mkIf;
+
   _ = lib.getExe;
 
   # OCR (Optical Character Recognition) utility
   ocrScript =
     let
-      inherit (pkgs) grim libnotify slurp tesseract5 wl-clipboard;
+      inherit (pkgs)
+        grim
+        libnotify
+        slurp
+        tesseract5
+        wl-clipboard
+        ;
     in
     pkgs.writeShellScriptBin "wl-ocr" ''
-      ${_ grim} -g "$(${_ slurp})" -t ppm - | ${
-        _ tesseract5
-      } - - | ${wl-clipboard}/bin/wl-copy
+      ${_ grim} -g "$(${_ slurp})" -t ppm - | ${_ tesseract5} - - | ${wl-clipboard}/bin/wl-copy
       ${_ libnotify} "$(${wl-clipboard}/bin/wl-paste)"
     '';
 
@@ -76,9 +83,7 @@ let
         ;;
       esac
 
-      brightness_percentage=$((($(${_ brightnessctl} g) * 100) / $(${
-        _ brightnessctl
-      } m)))
+      brightness_percentage=$((($(${_ brightnessctl} g) * 100) / $(${_ brightnessctl} m)))
       ${libnotify}/bin/notify-send --transient \
         -u normal \
         -a "LIGHTCTL" \
@@ -90,13 +95,10 @@ let
 in
 {
   imports = [
-    ../programs
-    ../services
-
     ./config
   ];
 
-  config = lib.mkIf config.modules.hyprland.enable {
+  config = mkIf (config.default.de == "hyprland") {
     home = {
       packages = with pkgs; [
         inputs.anyrun.packages.${pkgs.system}.anyrun
@@ -132,19 +134,18 @@ in
       ];
 
       sessionVariables = {
-        QT_QPA_PLATFORM = "wayland;xcb";
+        QT_QPA_PLATFORM = "wayland";
         QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
         SDL_VIDEODRIVER = "wayland";
         CLUTTER_BACKEND = "wayland";
         GDK_BACKEND = "wayland,x11";
         XDG_SESSION_TYPE = "wayland";
         MOZ_ENABLE_WAYLAND = "1";
-        QT_STYLE_OVERRIDE = "kvantum";
+        QT_STYLE_OVERRIDE = lib.mkForce "kvantum";
       };
     };
 
     wayland.windowManager.hyprland = {
-      package = inputs.hyprland.packages.${pkgs.system}.hyprland;
       plugins = [
         #inputs.hyprspace.packages.${pkgs.system}.Hyprspace
         #inputs.hyprsplit.packages.${pkgs.system}.hyprsplit
@@ -165,16 +166,6 @@ in
       Unit = {
         Description = "Home Manager System Tray";
         Requires = [ "graphical-session-pre.target" ];
-      };
-    };
-
-    xdg = {
-      enable = true;
-      mimeApps.enable = true;
-      cacheHome = config.home.homeDirectory + "/.cache";
-      userDirs = {
-        enable = true;
-        createDirectories = true;
       };
     };
   };

@@ -1,8 +1,8 @@
-{ pkgs
-, config
-, ...
-}: {
+{ pkgs, config, ... }:
+{
   environment.systemPackages = with pkgs; [
+    sops
+
     age
     bat
     blueman
@@ -10,7 +10,7 @@
     brightnessctl
     dig
     dosis
-    ffmpeg_5-full
+    ffmpeg_7-full
     git
     git-extras
     gnu-config
@@ -32,6 +32,8 @@
     python3
     ripgrep
     sd
+    slack
+    slack-term
     slop
     spotify
     srt

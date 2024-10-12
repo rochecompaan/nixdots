@@ -1,4 +1,5 @@
-{ pkgs, ... }: {
+{ pkgs, ... }:
+{
   users = {
     users.gwen = {
       isNormalUser = true;
@@ -10,6 +11,7 @@
         "libvirtd"
         "docker"
         "uinput"
+        "adbusers"
       ];
     };
     defaultUserShell = pkgs.zsh;

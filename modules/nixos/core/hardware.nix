@@ -1,10 +1,12 @@
 {
   hardware = {
     bluetooth.enable = true;
-    bluetooth.input.General = { ClassicBondedOnly = false; };
-    opengl = {
+    bluetooth.input.General = {
+      ClassicBondedOnly = false;
+    };
+    graphics = {
       enable = true;
-      driSupport32Bit = true;
+      enable32Bit = true;
     };
   };
 }

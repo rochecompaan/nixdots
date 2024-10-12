@@ -1,8 +1,18 @@
-{ config
-, lib
-, ...
-}: {
-  config = lib.mkIf config.modules.mpd.enable {
+{ config, lib, ... }:
+let
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    ;
+
+  cfg = config.opt.music.mpd;
+in
+{
+  imports = [ ./misc.nix ];
+  options.opt.music.mpd = {
+    enable = mkEnableOption "Wether to enable MPD";
+  };
+  config = mkIf cfg.enable {
     services.mpd = {
       enable = true;
       musicDirectory = "${config.home.homeDirectory}/Music";
@@ -35,5 +45,4 @@
       network.startWhenNeeded = true;
     };
   };
-  imports = [ ./misc.nix ];
 }

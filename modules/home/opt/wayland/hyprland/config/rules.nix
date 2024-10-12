@@ -1,9 +1,11 @@
-{ lib, ... }: {
+{ lib, ... }:
+{
   wayland.windowManager.hyprland.settings = {
     # layer rules
     layerrule =
       let
-        toRegex = list:
+        toRegex =
+          list:
           let
             elements = lib.concatStringsSep "|" list;
           in
@@ -17,9 +19,16 @@
           "waybar"
         ];
       in
-      [ "blur, ${toRegex layers}" "ignorealpha 0.5, ${toRegex layers}" ];
+      [
+        "blur, ${toRegex layers}"
+        "ignorealpha 0.5, ${toRegex layers}"
+      ];
 
-    plugin = { split-monitor-workspaces = { count = 5; }; };
+    plugin = {
+      split-monitor-workspaces = {
+        count = 5;
+      };
+    };
 
     # window rules
     windowrulev2 = [
@@ -45,6 +54,11 @@
       "workspace special silent, title:^(.*is sharing (your screen|a window).)$"
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special, class:^(obsidian)$"
+      "workspace 1,class:^(foot)$"
+      "workspace 2,class:^(firefox)$"
+      "workspace 2,class:^(zen-alpha)$"
+      "workspace 4,class:^(Spotify)$"
+      "workspace 5,class:^(Slack)$"
     ];
   };
 }

@@ -1,8 +1,6 @@
-{ inputs
-, config
-, ...
-}: {
-  wallpaper = /etc/nixos/home/shared/walls/magma.png;
+{ config, ... }:
+{
+  wallpaper = /etc/nixos/home/shared/walls/${config.theme}.jpg;
   home.sessionVariables.EDITOR = "nvim";
   imports = [
     ./gtk.nix
@@ -12,7 +10,6 @@
     ./programs.nix
     ./style/stylix.nix
     ./home.nix
-    inputs.nix-colors.homeManagerModules.default
   ];
 
   programs.home-manager.enable = true;

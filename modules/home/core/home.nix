@@ -1,10 +1,10 @@
-{ config
-, inputs
-, lib
-, pkgs
-, pkgsStable
-, ...
-}: {
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
+{
   home = {
     username = "gwen";
     homeDirectory = "/home/gwen";
@@ -19,17 +19,16 @@
     };
 
     packages = with pkgs; [
+      inputs.zen-browser.packages.${system}.specific
       inputs.zjstatus.packages.${system}.default
       (pkgs.callPackage ../../../home/shared/icons/whitesur.nix { })
       (pkgs.callPackage ../../../home/shared/icons/reversal.nix { })
-      (lib.mkIf config.modules.rbw.enable rbw)
-      (lib.mkIf config.modules.rbw.enable rofi-rbw)
-      auth0-cli
       awscli
       bemoji
       betterdiscordctl
       bitwarden
       bitwarden-cli
+      bore-cli
       bruno
       charm
       charm-freeze
@@ -40,24 +39,27 @@
       colordiff
       copyq
       deadnix
+      delta
       docker-compose
-      easyeffects
       eza
       feh
-      floorp
       fx
       fzf
       gcc
       gh
+      git-absorb
       git-lfs
       gitmoji-cli
       glab
       glow
       gnumake
+      go
       google-cloud-sdk
       grimblast
       gum
       helmfile
+      hclfmt
+      hypnotix
       imagemagick
       inotify-tools
       jaq
@@ -71,14 +73,19 @@
       kubectx
       kubernetes-helm
       kubie
+      lapce
       light
-      lunar-client
+      magic-wormhole
       marksman
+      mods
       neovide
       networkmanagerapplet
       nh
+      nix-fast-build
       nix-inspect
-      nixpkgs-fmt
+      nix-output-monitor
+      nix-update
+      nixfmt-rfc-style
       obsidian
       onefetch
       openssl
@@ -88,8 +95,8 @@
       pfetch
       picom
       pinentry
-      pkgsStable.go
       playerctl
+      pre-commit
       presenterm
       python311Packages.gst-python
       python311Packages.pip
@@ -103,19 +110,23 @@
       sherlock
       skim
       skopeo
-      slack
       slides
+      sops
       starship
       stern
       syncthing
       t-rec
       tailspin
-      teams-for-linux
+      (pkgs.callPackage ../../../packages/teams-for-linux { })
       telegram-desktop
       teleport
       tldr
+      tuba
+      update-nix-fetchgit
       ventoy
+      vhs
       viddy
+      watershot
       wireplumber
       xdotool
       xwayland

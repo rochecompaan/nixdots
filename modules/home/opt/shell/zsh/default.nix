@@ -1,10 +1,11 @@
-{ config
-, lib
-, ...
-}: {
+{ config, lib, ... }:
+{
   imports = [ ./run-as-service.nix ];
 
   config = lib.mkIf config.modules.zsh.enable {
+    sops.secrets."env.zsh" = {
+      path = "${config.home.homeDirectory}/.config/zsh/env.zsh";
+    };
     programs.zsh = {
       enable = true;
       dotDir = ".config/zsh";
@@ -20,6 +21,16 @@
         source ~/.config/zsh/keybinds.zsh
       '';
     };
+    programs.atuin = {
+      enable = true;
+      enableZshIntegration = true;
+      settings = {
+        style = "compact";
+        show_tabs = false;
+        show_help = false;
+        enter_accept = true;
+      };
+    };
     home.file.kubie = {
       target = ".kube/kubie.yaml";
       text = ''
@@ -31,7 +42,7 @@
     programs.starship = with config.lib.stylix.colors; {
       enable = true;
       settings = {
-        format = "$directory$nix_shell$fill$git_branch$gcloud$kubernetes$git_status$cmd_duration$line_break$character";
+        format = "$directory$nix_shell$fill$git_branch$azure$gcloud$kubernetes$git_status$cmd_duration$line_break$character";
         add_newline = false;
         c.disabled = true;
         cmake.disabled = true;
@@ -46,8 +57,12 @@
         java.disabled = true;
         golang.disabled = true;
 
-        fill = { symbol = " "; };
-        conda = { format = " [ $symbol$environment ] (dimmed green) "; };
+        fill = {
+          symbol = " ";
+        };
+        conda = {
+          format = " [ $symbol$environment ] (dimmed green) ";
+        };
         character = {
           success_symbol = "[ ](#${base05} bold)";
           error_symbol = "[ ](#${base08} bold)";
@@ -100,8 +115,6 @@
           style = "fg:#${base05} bg:#${base01} bold";
           context_aliases = {
             "dev.local.cluster.k8s" = "dev";
-            ".*/openshift-cluster/.*" = "openshift";
-            "gke_.*_(?P<var_cluster>[\\w-]+)" = "gke-$var_cluster";
           };
           user_aliases = {
             "dev.local.cluster.k8s" = "dev";
@@ -110,6 +123,11 @@
         };
         gcloud = {
           format = "[](fg:#${base01} bg:none)[  ](fg:#${base08} bg:#${base01})[$project]($style)[](fg:#${base01} bg:none) ";
+          style = "fg:#${base05} bg:#${base01} bold";
+          disabled = false;
+        };
+        azure = {
+          format = "[](fg:#${base01} bg:none)[󰠅  ](fg:#${base0E} bg:#${base01})[$subscription]($style)[](fg:#${base01} bg:none) ";
           style = "fg:#${base05} bg:#${base01} bold";
           disabled = false;
         };

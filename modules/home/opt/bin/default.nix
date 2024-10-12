@@ -1,7 +1,5 @@
-{ config
-, lib
-, ...
-}: {
+{ config, ... }:
+{
   home = {
     file = {
       ".local/bin/thisisfine" = {
@@ -11,27 +9,6 @@
       ".local/bin/fetch" = {
         executable = true;
         text = import ./eyecandy/nixfetch.nix { };
-      };
-      ".local/bin/waylock" = lib.mkIf (config.default.de == "hyprland") {
-        executable = true;
-        text = ''
-          #!/bin/sh
-          playerctl pause
-          sleep 0.2
-          swaylock -i ${config.wallpaper} --effect-blur 10x10
-        '';
-      };
-      ".local/bin/material" = {
-        executable = true;
-        text = import ./theme/material.nix { };
-      };
-      ".local/bin/materialpy" = {
-        executable = true;
-        text = import ./theme/materialpy.nix { };
-      };
-      ".local/bin/panes" = {
-        executable = true;
-        text = import ./eyecandy/panes.nix { };
       };
       ".local/bin/powermenu" = {
         executable = true;
@@ -60,14 +37,6 @@
       ".local/bin/screenshot" = {
         executable = true;
         text = import ./rofiscripts/screenshot.nix { };
-      };
-      ".local/bin/zs" = {
-        executable = true;
-        text = import ./zellij/zellij-start.nix { };
-      };
-      ".local/bin/swayscratch" = {
-        executable = true;
-        text = import ./zellij/zellij-start.nix { };
       };
     };
   };

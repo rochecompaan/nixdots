@@ -65,8 +65,6 @@
     nixvim.url = "github:elythh/nixvim/dev";
 
 
-    # DELETEME: Zen
-    zen-browser.url = "github:MarceColl/zen-browser-flake";
   };
 
   outputs =

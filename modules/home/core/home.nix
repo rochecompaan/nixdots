@@ -19,7 +19,6 @@
     };
 
     packages = with pkgs; [
-      inputs.zen-browser.packages.${system}.specific
       inputs.zjstatus.packages.${system}.default
       (pkgs.callPackage ../../../home/shared/icons/whitesur.nix { })
       (pkgs.callPackage ../../../home/shared/icons/reversal.nix { })

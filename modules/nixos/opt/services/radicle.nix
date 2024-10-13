@@ -29,7 +29,7 @@ in
     services.radicle = {
       enable = true;
       privateKeyFile = config.sops.secrets.privateSSH.path;
-      publicKey = ~/.ssh/yubikey.pub;
+      publicKey = "${config.home.homeDirectory}/.ssh/yubikey.pub";
       node.openFirewall = true;
       node.listenAddress = cfg.nodeHost;
       node.listenPort = cfg.nodePort;

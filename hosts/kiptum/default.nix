@@ -2,7 +2,7 @@
 {
   imports = [
     inputs.hm.nixosModule
-    # inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen2
+    inputs.nixos-hardware.nixosModules.asus-zephyrus-ga402x-nvidia
     ./hardware-configuration.nix
   ];
   networking.hostName = "kiptum";

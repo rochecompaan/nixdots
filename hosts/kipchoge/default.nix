@@ -7,12 +7,6 @@
   ];
   networking.hostName = "kipchoge";
 
-  opt = {
-    services = {
-      xserver.enable = true;
-    };
-  };
-
   tailscale.enable = true;
   fonts.enable = true;
   wayland.enable = true;

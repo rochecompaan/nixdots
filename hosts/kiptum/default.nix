@@ -8,13 +8,11 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   networking.hostName = "kiptum";
   networking.hosts = {
-    "192.168.1.4" = [ "sidecar" "sidecar.local" "kipchoge" ];
-  };
-
-  opt = {
-    services = {
-      xserver.enable = true;
-    };
+    "192.168.1.4" = [
+      "sidecar"
+      "sidecar.local"
+      "kipchoge"
+    ];
   };
 
   tailscale.enable = true;

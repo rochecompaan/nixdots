@@ -1,8 +1,7 @@
-{
-  lib,
-  pkgs,
-  config,
-  ...
+{ lib
+, pkgs
+, config
+, ...
 }:
 {
   imports = [
@@ -19,9 +18,17 @@
   ];
   config = {
     services = {
+      asusd = {
+        enable = true;
+        enableUserService = true;
+      };
       blueman.enable = true;
       dbus.enable = true;
       upower.enable = true;
+      # automount disks with devmon, gvfs and udisks2
+      devmon.enable = true;
+      gvfs.enable = true;
+      udisks2.enable = true;
       logind = {
         powerKey = "suspend";
         lidSwitch = "suspend";
@@ -69,6 +76,13 @@
       };
       onedrive.enable = true;
 
+      udev.packages = [
+        pkgs.libu2f-host
+        pkgs.yubikey-personalization
+      ];
+      pcscd.enable = true;
+      supergfxd.enable = true;
+      power-profiles-daemon.enable = true;
     };
   };
 }

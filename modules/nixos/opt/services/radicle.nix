@@ -29,7 +29,7 @@ in
     services.radicle = {
       enable = true;
       privateKeyFile = config.sops.secrets.privateSSH.path;
-      publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICsZ/9N72VrtwfZVklSPgaDTLSSRYVlP1l+7cDZwIj6v gwenchlan.lekerneau@radiofrance.com - default key";
+      publicKey = ~/.ssh/yubikey.pub;
       node.openFirewall = true;
       node.listenAddress = cfg.nodeHost;
       node.listenPort = cfg.nodePort;
@@ -47,7 +47,7 @@ in
       httpd.nginx.enableACME = true;
       httpd.nginx.forceSSL = true;
     };
-    security.acme.defaults.email = "gwen@omg.lol";
+    security.acme.defaults.email = "roche@upfrontsoftware.co.za";
     security.acme.acceptTerms = true;
   };
 }

@@ -3,8 +3,8 @@
   programs = {
     git = {
       enable = true;
-      userEmail = "gwen@omg.lol";
-      userName = "elyth";
+      userEmail = "roche@upfrontsoftware.co.za";
+      userName = "rochecompaan";
 
       signing = {
         signByDefault = true;

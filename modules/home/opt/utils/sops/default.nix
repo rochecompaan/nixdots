@@ -4,7 +4,7 @@
 
   config = {
     sops = {
-      defaultSopsFile = ../../../../../secrets/gwen/secrets.yaml;
+      defaultSopsFile = ../../../../../secrets/roche/secrets.yaml;
       defaultSopsFormat = "yaml";
 
       age = {

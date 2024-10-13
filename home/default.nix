@@ -13,11 +13,11 @@
         hostname:
         homeManagerConfiguration {
           inherit extraSpecialArgs pkgs;
-          modules = [ ./gwen/${hostname}.nix ];
+          modules = [ ./roche/${hostname}.nix ];
         };
     in
     {
-      "gwen@grovetender" = mkHome "grovetender";
-      "gwen@aurelionite" = mkHome "aurelionite";
+      "roche@kiptum" = mkHome "kiptum";
+      "roche@kipchoge" = mkHome "kipchoge";
     };
 }

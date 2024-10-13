@@ -1,13 +1,12 @@
-{
-  config,
-  inputs,
-  pkgs,
-  ...
+{ config
+, inputs
+, pkgs
+, ...
 }:
 {
   home = {
-    username = "gwen";
-    homeDirectory = "/home/gwen";
+    username = "roche";
+    homeDirectory = "/home/roche";
     stateVersion = "24.05";
     file.".local/share/fonts".source = ./fonts;
     activation = {

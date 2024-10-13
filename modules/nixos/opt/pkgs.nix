@@ -6,10 +6,11 @@
     age
     bat
     blueman
-    btop
     brightnessctl
+    btop
     dig
     dosis
+    eza
     ffmpeg_7-full
     git
     git-extras
@@ -19,14 +20,19 @@
     gtk3
     home-manager
     kanata
-    lua-language-server
+    killall
+    (lib.mkIf config.tailscale.enable tailscale)
+    (lib.mkIf config.wayland.enable wayland)
     lua54Packages.lua
     mpv
     ncdu
     nix-prefetch-git
     nodejs
     obs-studio
+    openvpn3
     pamixer
+    pass
+    pciutils
     procps
     pulseaudio
     python3
@@ -37,15 +43,18 @@
     slop
     spotify
     srt
-    (lib.mkIf config.tailscale.enable tailscale)
     terraform-ls
     unzip
-    (lib.mkIf config.wayland.enable wayland)
+    usbutils
     wget
     wirelesstools
     xdg-utils
     yaml-language-server
     yq
+    yubico-piv-tool
+    yubikey-manager
+    yubikey-personalization
+
   ];
   nixpkgs.config = {
     allowUnfree = true;

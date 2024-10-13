@@ -47,6 +47,7 @@
         gnome-keyring.enable = true;
         glib-networking.enable = true;
       };
+      printing.enable = true;
 
       greetd = lib.mkIf config.wayland.enable {
         enable = true;
@@ -66,6 +67,8 @@
           };
         };
       };
+      onedrive.enable = true;
+
     };
   };
 }

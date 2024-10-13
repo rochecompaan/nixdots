@@ -17,7 +17,7 @@ in
       };
       xserver = {
         enable = true;
-        videoDrivers = [ "amdgpu" ];
+        videoDrivers = [ "nvidia" ];
         desktopManager.gnome.enable = false;
       };
       displayManager = {

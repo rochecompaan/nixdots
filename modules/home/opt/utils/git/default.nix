@@ -1,4 +1,4 @@
-{ config, ... }:
+# { config, ... }:
 {
   programs = {
     git = {
@@ -88,22 +88,22 @@
       };
     };
 
-    zsh.initExtra = # bash
-      ''
-        export GITHUB_TOKEN="$(cat ${config.sops.secrets."github/access-token".path})"
-        export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets."ANTHROPIC_API_KEY".path})"
-      '';
+    # zsh.initExtra = # bash
+    #   ''
+    #     export GITHUB_TOKEN="$(cat ${config.sops.secrets."github/access-token".path})"
+    #     export ANTHROPIC_API_KEY="$(cat ${config.sops.secrets."ANTHROPIC_API_KEY".path})"
+    #   '';
   };
 
-  sops.secrets = {
-    "github/access-token" = {
-      path = "${config.home.homeDirectory}/.config/gh/access-token";
-    };
-    "GITPRIVATETOKEN" = {
-      path = "${config.home.homeDirectory}/.gitcreds";
-    };
-    "ANTHROPIC_API_KEY" = {
-      path = "${config.home.homeDirectory}/.config/ANTHROPIC_API_KEY";
-    };
-  };
+  # sops.secrets = {
+  #   "github/access-token" = {
+  #     path = "${config.home.homeDirectory}/.config/gh/access-token";
+  #   };
+  #   "GITPRIVATETOKEN" = {
+  #     path = "${config.home.homeDirectory}/.gitcreds";
+  #   };
+  #   "ANTHROPIC_API_KEY" = {
+  #     path = "${config.home.homeDirectory}/.config/ANTHROPIC_API_KEY";
+  #   };
+  # };
 }

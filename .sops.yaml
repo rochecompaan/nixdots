@@ -1,20 +1,15 @@
 keys:
-- &gwen age1cm57y6etxqqdlzeyyp73l8agdftc53ec3a2vg393fe40tszgqsgq8nlmhv
-- &mithrix age1sklfnht5lgc9psmrzrujapfhyclzc72argvk4hya67u3cdtag58smg0vhq
+  - &roche CB28EBC0DBFF630B85BE20E0807ACF787AC92BEE
 creation_rules:
-- path_regex: secrets/gwen/[^/]+\.(yaml|json|env|ini)$
-  key_groups:
-  - age:
-    - *gwen
-- path_regex: secrets/aurelionite/[^/]+\.(yaml|json|env|ini)$
-  key_groups:
-  - age:
-    - *gwen
-- path_regex: secrets/grovetender/[^/]+\.(yaml|json|env|ini)$
-  key_groups:
-  - age:
-    - *gwen
-- path_regex: secrets/mithrix/[^/]+\.(yaml|json|env|ini)$
-  key_groups:
-  - age:
-    - *mithrix
+  - path_regex: secrets/roche/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - pgp:
+          - *roche
+  - path_regex: secrets/kiptum/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - pgp:
+          - *roche
+  - path_regex: secrets/kipchoge/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - pgp:
+          - *roche

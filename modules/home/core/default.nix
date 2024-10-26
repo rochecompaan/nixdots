@@ -1,6 +1,6 @@
 { config, ... }:
 {
-  wallpaper = /etc/nixos/home/shared/walls/${config.theme}.jpg;
+  wallpaper = "${config.home.homeDirectory}/Pictures/wallpapers/${config.theme}.jpg";
   home.sessionVariables.EDITOR = "nvim";
   imports = [
     ./gtk.nix

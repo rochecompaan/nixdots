@@ -37,20 +37,12 @@ let
         settings = {
           workspaces = lib.mkForce [
             {
-              name = "work";
-              path = "~/obsidian/work";
-            }
-            {
-              name = "home";
-              path = "~/obsidian/home";
+              name = "notes";
+              path = "~/notes";
             }
           ];
-          daily_notes = {
-            template = "~/obsidian/templates/daily_note_template.md";
-            folder = "~/obsidian/work/daily_notes";
-          };
           templates = {
-            subdir = "~/obsidian/templates";
+            subdir = "templates";
             substitutions = {
               monday.__raw = ''
                 function()

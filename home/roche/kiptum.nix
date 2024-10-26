@@ -15,7 +15,6 @@
     misc = {
       obsidian.enable = true;
       yamlfmt.enable = true;
-      rbw.enable = true;
     };
     music = {
       spicetify.enable = true;

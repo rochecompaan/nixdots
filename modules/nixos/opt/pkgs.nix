@@ -19,6 +19,7 @@
     grim
     gtk3
     home-manager
+    hyprland
     kanata
     killall
     (lib.mkIf config.tailscale.enable tailscale)

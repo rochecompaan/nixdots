@@ -19,7 +19,7 @@ let
       in
       [
         "SUPER, ${ws}, workspace, ${toString (x + 1)}"
-        "SUPERSHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
+        "SUPER SHIFT, ${ws}, movetoworkspace, ${toString (x + 1)}"
       ]
     ) 10
   );
@@ -48,12 +48,11 @@ in
         in
         [
           # Compositor commands
-          "CTRLSHIFT, Q, exit"
+          "CTRL SHIFT, Q, exit"
           "SUPER, Q, killactive"
           "SUPER, S, togglesplit"
           "SUPER, F, fullscreen"
-          "SUPER, P, pseudo"
-          "SUPERSHIFT, P, pin"
+          "SUPER SHIFT, P, pin"
           "SUPER, Space, togglefloating"
 
           # Toggle "monocle" (no_gaps_when_only)
@@ -62,54 +61,55 @@ in
           # Grouped (tabbed) windows
           "SUPER, G, togglegroup"
           "SUPER, TAB, changegroupactive, f"
-          "SUPERSHIFT, TAB, changegroupactive, b"
+          "SUPER SHIFT, TAB, changegroupactive, b"
 
           # Cycle through windows
           "ALT, Tab, cyclenext"
           "ALT, Tab, bringactivetotop"
-          "ALTSHIFT, Tab, cyclenext, prev"
-          "ALTSHIFT, Tab, bringactivetotop"
+          "ALT SHIFT, Tab, cyclenext, prev"
+          "ALT SHIFT, Tab, bringactivetotop"
 
           # Move focus
-          "SUPER, left, movefocus, l"
-          "SUPER, right, movefocus, r"
-          "SUPER, up, movefocus, u"
-          "SUPER, down, movefocus, d"
+          "SUPER, h, movefocus, l"
+          "SUPER, l, movefocus, r"
+          "SUPER, j, movefocus, u"
+          "SUPER, k, movefocus, d"
 
           # Move windows
-          "SUPERSHIFT, left, movewindow, l"
-          "SUPERSHIFT, right, movewindow, r"
-          "SUPERSHIFT, up, movewindow, u"
-          "SUPERSHIFT, down, movewindow, d"
+          "SUPER SHIFT, h, movewindow, l"
+          "SUPER SHIFT, l, movewindow, r"
+          "SUPER SHIFT, j, movewindow, u"
+          "SUPER SHIFT, k, movewindow, d"
 
           # Special workspaces
-          "SUPERSHIFT, grave, movetoworkspace, special"
+          "SUPER SHIFT, grave, movetoworkspace, special"
           "SUPER, grave, togglespecialworkspace"
 
           # Cycle through workspaces
-          "SUPERALT, up, workspace, m-1"
-          "SUPERALT, down, workspace, m+1"
+          "SUPER ALT, up, workspace, m-1"
+          "SUPER ALT, down, workspace, m+1"
 
           # Utilities
           "SUPER, Return, exec, run-as-service ${terminal}"
-          "SUPERSHIFT, Z, exec, ${getExe zellij-attach}"
-          "SUPER, B, exec, firefox"
-          "SUPER, L, exec, hyprlock"
+          "SUPER SHIFT, Z, exec, ${getExe zellij-attach}"
+          "SUPER SHIFT, B, exec, firefox"
+          "SUPER SHIFT, L, exec, hyprlock"
+          "SUPER, P, exec, 1password"
           "SUPER, O, exec, run-as-service wl-ocr"
 
           # Screenshot
-          "SUPERSHIFT, S, exec, grimblast copy area --notify"
-          "CTRLSHIFT, S, exec, grimblast --notify --cursor copysave output"
-          "SUPERSHIFT, T, exec, kitty -e twt"
+          "SUPER SHIFT, S, exec, grimblast copy area --notify"
+          "CTRL SHIFT, S, exec, grimblast --notify --cursor copysave output"
+          "SUPER SHIFT, T, exec, kitty -e twt"
         ]
         ++ workspaces;
 
       bindr = [
         # Launchers
-        " SUPER, D, exec, pkill anyrun || run-as-service anyrun "
-        " SUPERSHIFT, p, exec, rofi-rbw --no-help --clipboarder wl-copy --keybindings Alt+x:type:password "
-        " SUPERSHIFT, e, exec, bemoji -t "
-        " SUPERSHIFT, o, exec, wezterm start --class clipse clipse "
+        " SUPER, R, exec, pkill anyrun || run-as-service anyrun "
+        " SUPER SHIFT, p, exec, rofi-rbw --no-help --clipboarder wl-copy --keybindings Alt+x:type:password "
+        " SUPER SHIFT, e, exec, bemoji -t "
+        " SUPER SHIFT, o, exec, wezterm start --class clipse clipse "
       ];
 
       binde = [

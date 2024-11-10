@@ -1,5 +1,6 @@
 {
   wayland.windowManager.hyprland.settings = {
+    cursor.no_hardware_cursors = true;
     exec-once = [
       "ags"
       "clipse -listen"
@@ -67,7 +68,8 @@
       "col.active_border" = "rgba(88888888)";
       "col.inactive_border" = "rgba(00000088)";
 
-      allow_tearing = true;
+      # Please see https://wiki.hyprland.org/Configuring/Tearing/ before you turn this on
+      allow_tearing = false;
     };
 
     gestures = {
@@ -84,6 +86,7 @@
 
     input = {
       kb_layout = "us";
+      kb_variant = "intl";
       kb_options = "compose:rctrl,caps:escape";
 
       accel_profile = "flat";
@@ -91,9 +94,11 @@
 
       touchpad = {
         disable_while_typing = true;
-        natural_scroll = true;
+        natural_scroll = false;
         scroll_factor = 0.8;
       };
+
+      sensitivity = 0; # -1.0 - 1.0, 0 means no modification.
     };
 
     misc = {
@@ -104,15 +109,17 @@
       disable_splash_rendering = true;
       focus_on_activate = true;
       force_default_wallpaper = 0;
-      key_press_enables_dpms = true;
-      mouse_move_enables_dpms = true;
-      vfr = true;
-      vrr = 1;
+      # key_press_enables_dpms = true;
+      # mouse_move_enables_dpms = true;
+      # vfr = true;
+      # vrr = 1;
     };
 
     monitor = [
       # name, resolution, position, scale
-      "eDP-1, highres, 0x0, 1"
+      # "eDP-1, highres, 0x0, 1"
+      "eDP-1, 1920x1080,auto,auto"
+      "HDMI-A-1,preferred,auto,1,mirror,eDP-1"
     ];
 
     xwayland.force_zero_scaling = true;

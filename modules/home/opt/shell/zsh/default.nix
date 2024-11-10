@@ -102,28 +102,27 @@
       initExtra = ''
         PROMPT_EOL_MARK=\'\'
         source <(kubectl completion zsh)
+        eval "$(zoxide init zsh)"
+
+        setopt completeinword NO_flowcontrol NO_listbeep NO_singlelinezle
+        autoload -Uz compinit
+        compinit
+
+        # keybinds
+        bindkey '^ ' autosuggest-accept
+        bindkey -v
+        bindkey '^R' history-incremental-search-backward
+
+        #compdef toggl
+        _toggl() {
+          eval $(env COMMANDLINE="$${words[1,$CURRENT]}" _TOGGL_COMPLETE=complete-zsh  toggl)
+        }
+        if [[ "$(basename -- $${(%):-%x})" != "_toggl" ]]; then
+          compdef _toggl toggl
+        fi
       '';
-
-      # initExtra = ''
-      #   setopt completeinword NO_flowcontrol NO_listbeep NO_singlelinezle
-      #   autoload -Uz compinit
-      #   compinit
-
-      #   # keybinds
-      #   bindkey '^ ' autosuggest-accept
-      #   bindkey -v
-      #   bindkey '^R' history-incremental-search-backward
-
-      #   #compdef toggl
-      #   _toggl() {
-      #     eval $(env COMMANDLINE="${words[1,$CURRENT]}" _TOGGL_COMPLETE=complete-zsh  toggl)
-      #   }
-      #   if [[ "$(basename -- ${(%):-%x})" != "_toggl" ]]; then
-      #     compdef _toggl toggl
-      #   fi
-      # ''
-
     };
+
     programs.atuin = {
       enable = true;
       enableZshIntegration = true;

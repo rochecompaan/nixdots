@@ -8,18 +8,121 @@
     };
     programs.zsh = {
       enable = true;
-      dotDir = ".config/zsh";
-      envExtra = ''
-        export PATH=~/.local/bin:~/.local/share/nvim/mason/bin:$PATH
-      '';
+      enableCompletion = true;
+      history.size = 1000000;
+      history.path = "${config.xdg.dataHome}/zsh/history";
+      syntaxHighlighting = {
+        enable = true;
+      };
+      sessionVariables = {
+        EDITOR = "nvim";
+        TERMINAL = "foot";
+        BROWSER = "firefox";
+        MANPAGER = "nvim +Man!";
+        MANWIDTH = "999";
+        GOPATH = "$HOME/.local/share/go";
+        # FPATH = "$HOME/tools/eza/completions/zsh";
+      };
+
+      shellAliases = {
+        g = "lazygit";
+        k = "kubectl";
+        ksy = "kubectl -n kube-system";
+        kgp = "kubectl get pods";
+        kgs = "kubectl get services";
+
+        # Colorize grep output (good for log files)
+        grep = "grep --color=auto";
+        egrep = "egrep --color=auto";
+        fgrep = "fgrep --color=auto";
+
+        # confirm before overwriting something
+        cp = "cp -i";
+        mv = "mv -i";
+        rm = "rm -i";
+
+        # easier to read disk
+        df = "df -h"; # human-readable sizes
+        free = "free -m"; # show sizes in MB
+
+        # get top process eating memory
+        psmem = "ps auxf | sort -nr -k 4 | head -5";
+
+        # get top process eating cpu ##
+        pscpu = "ps auxf | sort -nr -k 3 | head -5";
+
+        # gpg encryption
+        # verify signature for isos
+        gpg-check = "gpg2 --keyserver-options auto-key-retrieve --verify";
+        # receive the key of a developer
+        gpg-retrieve = "gpg2 --keyserver-options auto-key-retrieve --receive-keys";
+
+        cat = "bat -pp --theme \"Visual Studio Dark+\"";
+        catt = "bat --theme \"Visual Studio Dark+\"";
+        ls = "exa";
+        ll = "ls -alF";
+        la = "ls -A";
+        l = "ls -CF";
+        dotup = "pushd ~/projects/dotfiles/ && git pull && stow -t $HOME --ignore=.xinitrc */ && popd";
+        tt = "docker run --rm -v $HOME/projects/timetransfer:/src -it time-transfer today";
+        tty = "docker run --rm -v $HOME/projects/timetransfer:/src -it time-transfer yesterday";
+        tton = "docker run --rm -v $HOME/projects/timetransfer:/src -it time-transfer on";
+        terraform = "tofu";
+        tfplan = "tofu plan -out=\"tfplan.out\" && tofu show -no-color tfplan.out >> .terraform/tfplan-$(date +%Y%m%d-%H%M%S).log";
+        tfapply = "tofu apply \"tfplan.out\"";
+        iplocal = "ip -json route get 8.8.8.8 | jq -r '.[].prefsrc'";
+
+        ssh = "TERM=xterm-256color ssh";
+
+        # show history from first entry
+        history = "history 1";
+
+        vpnon = "openvpn3 session-start --config ~/.config/openvpn/sfu.ovpn";
+        vpnoff = "openvpn3 session-manage --disconnect --config ~/.config/openvpn/sfu.ovpn";
+        vpnstats = "openvpn3 sessions-list";
+
+        myip = "curl -s checkip.amazonaws.com";
+
+        nb = "sudo nixos-rebuild switch --flake .#djangf8sum";
+      };
+
+      zplug = {
+        enable = true;
+        plugins = [
+          { name = "zsh-users/zsh-autosuggestions"; }
+          { name = "hlissner/zsh-autopair"; }
+          { name = "zap-zsh/vim"; }
+          { name = "zap-zsh/zap-prompt"; }
+          { name = "zap-zsh/fzf"; }
+          { name = "zap-zsh/exa"; }
+          { name = "zsh-users/zsh-syntax-highlighting"; }
+        ];
+      };
+
       initExtra = ''
-        source ~/.config/zsh/env.zsh
-        source ~/.config/zsh/aliases.zsh
-        source ~/.config/zsh/options.zsh
-        source ~/.config/zsh/plugins.zsh
-        source ~/.config/zsh/utility.zsh
-        source ~/.config/zsh/keybinds.zsh
+        PROMPT_EOL_MARK=\'\'
+        source <(kubectl completion zsh)
       '';
+
+      # initExtra = ''
+      #   setopt completeinword NO_flowcontrol NO_listbeep NO_singlelinezle
+      #   autoload -Uz compinit
+      #   compinit
+
+      #   # keybinds
+      #   bindkey '^ ' autosuggest-accept
+      #   bindkey -v
+      #   bindkey '^R' history-incremental-search-backward
+
+      #   #compdef toggl
+      #   _toggl() {
+      #     eval $(env COMMANDLINE="${words[1,$CURRENT]}" _TOGGL_COMPLETE=complete-zsh  toggl)
+      #   }
+      #   if [[ "$(basename -- ${(%):-%x})" != "_toggl" ]]; then
+      #     compdef _toggl toggl
+      #   fi
+      # ''
+
     };
     programs.atuin = {
       enable = true;
@@ -42,56 +145,49 @@
     programs.starship = with config.lib.stylix.colors; {
       enable = true;
       settings = {
-        format = "$directory$nix_shell$fill$git_branch$azure$gcloud$kubernetes$git_status$cmd_duration$line_break$character";
-        add_newline = false;
+        format = "$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$line_break$\{custom.aws\}$kubernetes$python$nix_shell$line_break$character";
+
+        add_newline = true;
+        azure.disabled = true;
         c.disabled = true;
         cmake.disabled = true;
         haskell.disabled = true;
-        python.disabled = true;
         ruby.disabled = true;
         rust.disabled = true;
         perl.disabled = true;
         package.disabled = true;
         lua.disabled = true;
-        nodejs.disabled = true;
         java.disabled = true;
         golang.disabled = true;
 
-        fill = {
-          symbol = " ";
-        };
-        conda = {
-          format = " [ $symbol$environment ] (dimmed green) ";
-        };
         character = {
           success_symbol = "[ ](#${base05} bold)";
           error_symbol = "[ ](#${base08} bold)";
           vicmd_symbol = "[](#${base03})";
         };
         directory = {
-          format = "[]($style)[  ](bg:#${base01} fg:#${base05})[$path](bg:#${base01} fg:#${base05} bold)[ ]($style)";
-          style = "bg:none fg:#${base01}";
-          truncation_length = 3;
-          truncate_to_repo = false;
+          style = "bold yellow";
+          format = "[ $path ]($style)";
+          truncation_length = 0;
         };
         git_branch = {
-          format = "[]($style)[[ ](bg:#${base01} fg:#${base0A} bold)$branch](bg:#${base01} fg:#${base05} bold)[ ]($style)";
-          style = "bg:none fg:#${base01}";
+          format = "[$branch]($style)";
+          style = "bold purple";
+        };
+        git_state = {
+          format = "\([$state( $progress_current/$progress_total)]($style)\) ";
+          style = "bright-black";
         };
         git_status = {
-          format = "[]($style)[$all_status$ahead_behind](bg:#${base01} fg:#${base09} bold)[ ]($style)";
-          style = "bg:none fg:#${base01}";
-          conflicted = "=";
-          ahead = "[⇡\${count} ](fg:#${base0B} bg:#${base01}) ";
-          behind = "[⇣\${count} ](fg:#${base08} bg:#${base01})";
-          diverged = "↑\${ahead_count} ⇣\${behind_count} ";
-          up_to_date = "[ ](fg:#${base0B} bg:#${base01})";
-          untracked = "[?\${count} ](fg:#${base09} bg:#${base01}) ";
-          stashed = "";
-          modified = "[~\${count} ](fg:#${base09} bg:#${base01})";
-          staged = "[+\${count} ](fg:#${base0B} bg:#${base01}) ";
-          renamed = "[󰑕\${count} ](fg:#${base0A} bg:#${base01})";
-          deleted = "[ \${count} ](fg:#${base08} bg:#${base01}) ";
+          format = "[[(*$conflicted$untracked$modified$staged$renamed$deleted)](218) ($ahead_behind$stashed)]($style)";
+          style = "cyan";
+          conflicted = "​";
+          untracked = "​";
+          modified = "​";
+          staged = "​";
+          renamed = "​";
+          deleted = "​";
+          stashed = "≡";
         };
         cmd_duration = {
           min_time = 1;
@@ -124,12 +220,18 @@
         gcloud = {
           format = "[](fg:#${base01} bg:none)[  ](fg:#${base08} bg:#${base01})[$project]($style)[](fg:#${base01} bg:none) ";
           style = "fg:#${base05} bg:#${base01} bold";
-          disabled = false;
+          disabled = true;
         };
-        azure = {
-          format = "[](fg:#${base01} bg:none)[󰠅  ](fg:#${base0E} bg:#${base01})[$subscription]($style)[](fg:#${base01} bg:none) ";
-          style = "fg:#${base05} bg:#${base01} bold";
-          disabled = false;
+        custom = {
+          aws = {
+            style = "fg:#${base05} bg:#${base01} bold";
+            command = "echo \$AWS_PROFILE";
+            detect_files = [ ];
+            when = " test \"\$AWS_PROFILE\" != \"\" ";
+            format = "on [$symbol($output )]($style)";
+            symbol = " ";
+            disabled = false;
+          };
         };
       };
     };

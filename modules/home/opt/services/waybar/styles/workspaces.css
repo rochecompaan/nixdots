@@ -1,42 +1,63 @@
 #workspaces {
-  margin: 0.5em;
-  padding-left: 5px;
-  padding-right: 5px;
+  margin-left: 0;
+  padding: 0;
   color: @peach;
   font-weight: bold;
-  background-color: @surface0;
-  border: 2px solid @surface1;
+  background-color: @theme_base_color; /* Changed from @surface0 to match waybar */
+  border: none;
 }
 
-#workspaces label {
-  font-family: Iosevka NF;
-  font-size: 20px;
-}
-
+/* Adjust the base size and spacing of workspace buttons */
 #workspaces button {
-  padding: 0 0.5em;
-  background-color: @surface0;
+  padding: 0 0.25em; /* Horizontal spacing between workspace numbers */
+  min-width: 2.5em; /* Minimum width of each workspace button */
+  margin: 0;
+  background-color: @theme_base_color; /* Changed from @surface0 to match waybar */
   color: @text;
-  margin: 0.25em;
+  font-weight: normal; /* Default font weight */
 }
 
+/* Adjust the size of the workspace numbers */
+#workspaces button label {
+  padding: 0;
+  margin: 0;
+}
+
+/* Different styles for workspace states */
 #workspaces button.empty {
-  /* background-color: @surface2; */
   color: @overlay0;
-}
-
-#workspaces button.visible {
-  /* background-color: @surface2; */
-  color: @blue;
+  opacity: 0.7; /* Make empty workspaces more subtle */
 }
 
 #workspaces button.active {
-  /* background-color: @surface2; */
   color: @green;
+  font-weight: bold;
+  /* Add an indicator for active workspace */
+  border-bottom: 2px solid @green; /* Underline indicator */
+  /* Alternative indicator styles you can uncomment: */
+  /* background-color: @surface2; */ /* Background highlight */
+  /* box-shadow: inset 0 -3px @green; */ /* Subtle bottom glow */
+  /* border: 1px solid @green; */ /* Border indicator */
+}
+
+#workspaces button.visible {
+  color: @blue;
+  /* Add an indicator for visible but not active workspaces */
+  border-bottom: 2px solid @blue;
 }
 
 #workspaces button.urgent {
-  box-shadow: 2px 2px 2px 2px;
-  border-radius: 1em;
   color: @red;
+  font-weight: bold;
+  /* Add an indicator for urgent workspaces */
+  animation: blink 1s infinite; /* Blinking effect */
+  border: 1px solid @red;
+}
+
+/* Animation for urgent workspaces */
+@keyframes blink {
+  50% {
+    background-color: @red;
+    color: @surface0;
+  }
 }

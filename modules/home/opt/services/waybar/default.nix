@@ -25,16 +25,13 @@ let
   commonAttributes = {
     layer = "top";
     position = "top";
-
-    margin-top = 10;
-    margin-left = 10;
-    margin-right = 10;
+    margin-top = 0;
+    margin-left = 0;
+    margin-right = 0;
 
     modules-left = [
-      "custom/power"
       "hyprland/workspaces"
       "custom/separator-left"
-      "hyprland/window"
     ];
   };
 
@@ -46,9 +43,9 @@ let
       "custom/separator-right"
       "group/control-center"
       "hyprland/submap"
-      "custom/weather"
       "battery"
       "clock"
+      "custom/power"
     ];
   };
 
@@ -122,11 +119,6 @@ in
           ''
           "${style}${controlCenterStyle}${powerStyle}${statsStyle}${workspacesStyle}"
         ];
-    };
-    sops.secrets = {
-      weather_config = {
-        path = "${config.home.homeDirectory}/weather_config.json";
-      };
     };
   };
 }

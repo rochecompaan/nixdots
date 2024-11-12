@@ -87,7 +87,7 @@ in
 
   clock = with config.lib.stylix.colors; {
     tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-    format = "󰃭 {:%a %d %b \n 󰅐 %I:%M %p}";
+    format = "{:%d %b %H:%M}";
     calendar = {
       mode = "year";
       mode-mon-col = 3;
@@ -198,12 +198,17 @@ in
     in
     {
       interval = 1;
-      format-wifi = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
-      format-ethernet = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
-      tooltip-format = "󰈀 {ifname} via {gwaddr}";
+      format-wifi = "󰖩  {essid}"; # Icon + network name when connected
+      format-ethernet = "󰈀  {ipaddr}"; # Ethernet icon + IP
+      tooltip-format = ''
+        {ifname}
+        IP: {ipaddr}
+        Up: {bandwidthUpBits}
+        Down: {bandwidthDownBits}
+      '';
       format-linked = "󰈁 {ifname} (No IP)";
       format-disconnected = " Disconnected";
-      format-alt = "{ifname}: {ipaddr}/{cidr}";
+      format-alt = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
       on-click-right = "${nm-editor}";
     };
 

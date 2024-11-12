@@ -6,30 +6,11 @@
 }:
 let
   inherit (lib) getExe getExe';
-
-  githubHelper =
-    pkgs.writeShellScriptBin "githubHelper" # bash
-      ''
-        #!/usr/bin/env bash
-
-        NOTIFICATIONS="$(${getExe pkgs.gh} api notifications)"
-        COUNT="$(echo "$NOTIFICATIONS" | ${getExe pkgs.jq} 'length')"
-
-        echo '{"text":'"$COUNT"',"tooltip":"'"$COUNT"' Notifications","class":""}'
-      '';
 in
 {
   "custom/ellipses" = {
     format = "";
     tooltip = false;
-  };
-
-  "custom/github" = {
-    format = " {}";
-    return-type = "json";
-    interval = 60;
-    exec = "${getExe githubHelper}";
-    on-click = "${getExe' pkgs.coreutils "sleep"} 0.1 && gio open https://github.com/notifications";
   };
 
   "custom/lock" = {
@@ -145,24 +126,6 @@ in
         top = "${terminal} ${top}";
         logout = "$(${hyprctl} dispatch exit || ${swaymsg} exit) && ${systemctl} --user exit ";
       };
-  };
-
-  "custom/separator-right" = {
-    format = "";
-    tooltip = false;
-  };
-
-  "custom/separator-left" = {
-    format = "";
-    tooltip = false;
-  };
-
-  "custom/weather" = {
-    exec = "${getExe pkgs.wttrbar} --location $(${getExe pkgs.jq} -r '.wttr | (.location)' ~/weather_config.json) --main-indicator temp_C";
-    return-type = "json";
-    format = "{}";
-    tooltip = true;
-    interval = 3600;
   };
 
   "custom/wlogout" = {

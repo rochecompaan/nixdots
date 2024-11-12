@@ -30,11 +30,6 @@
   "group/control-center" = {
     orientation = "horizontal";
     modules = [
-      "gamemode"
-      "idle_inhibitor"
-      "systemd-failed-units"
-      "custom/notification"
-      "custom/github"
       "bluetooth"
       "group/audio"
     ];

@@ -4,11 +4,11 @@
 * {
   font-family: Iosevka NF;
   font-size: 16px;
-  border-radius: 0.5em;
+  border-radius: 0;
 }
 
 window#waybar {
-  border: 2px solid @surface1;
+  border: none;
   background: @theme_base_color;
   box-shadow: 1px 1px 10px 10px @mantle;
   color: @theme_text_color;

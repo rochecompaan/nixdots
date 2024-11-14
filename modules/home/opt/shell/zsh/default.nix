@@ -131,6 +131,7 @@
         show_tabs = false;
         show_help = false;
         enter_accept = true;
+        filter_mode = "session";
       };
     };
     home.file.kubie = {

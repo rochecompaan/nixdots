@@ -104,6 +104,7 @@ in
         inputs.anyrun.packages.${pkgs.system}.anyrun
         config.wayland.windowManager.hyprland.package
 
+        zoom-us
         autotiling-rs
         brightnessctl
         cliphist

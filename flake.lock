@@ -1191,11 +1191,11 @@
         "pre-commit-hooks": "pre-commit-hooks_2"
       },
       "locked": {
-        "lastModified": 1727623668,
-        "narHash": "sha256-zyxauQ0TsQQAKVLnm3Z8DTrhStLO02fkCPKM1GO8IYI=",
+        "lastModified": 1731495393,
+        "narHash": "sha256-HxFIuxMuvmO2aDDTZ3yAX0jYIrabVWhiUup9LWqCj7U=",
         "owner": "rochecompaan",
         "repo": "nixvim",
-        "rev": "ba8ac9ccbcf4c9a6ad71b911730fb00bb8597340",
+        "rev": "20b17c5793f0bbed0f3685f1af2127f018a61c83",
         "type": "github"
       },
       "original": {

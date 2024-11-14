@@ -56,6 +56,11 @@ let
       "text/plain" = [ "Helix" ];
       "x-scheme-handler/chrome" = [ "chromium-browser" ];
       "inode/directory" = [ "yazi" ];
+      "x-scheme-handler/zoommtg" = [ "zoom" ];
+      "x-scheme-handler/zoomus" = [ "zoom" ];
+      "x-scheme-handler/tel" = [ "zoom" ];
+      "x-scheme-handler/callto" = [ "zoom" ];
+      "x-scheme-handler/zoomphonecall" = [ "zoom" ];
     }
     // image
     // video
@@ -80,6 +85,32 @@ in
         XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
       };
     };
+    desktopEntries = {
+      zoom = {
+        name = "Zoom";
+        exec = "zoom %U";
+        icon = "Zoom";
+        type = "Application";
+        terminal = false;
+        mimeType = [
+          "x-scheme-handler/zoommtg"
+          "x-scheme-handler/zoomus"
+          "x-scheme-handler/tel"
+          "x-scheme-handler/callto"
+          "x-scheme-handler/zoomphonecall"
+        ];
+        categories = [
+          "Network"
+          "InstantMessaging"
+          "VideoConference"
+        ];
+        settings = {
+          StartupNotify = "true";
+          StartupWMClass = "zoom";
+        };
+      };
+    };
+
   };
 
   home.packages = [

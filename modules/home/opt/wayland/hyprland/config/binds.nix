@@ -48,7 +48,7 @@ in
         in
         [
           # Compositor commands
-          "CTRL SHIFT, Q, exit"
+          "SUPER SHIFT, Q, exit"
           "SUPER, Q, killactive"
           "SUPER, S, togglesplit"
           "SUPER, F, fullscreen"

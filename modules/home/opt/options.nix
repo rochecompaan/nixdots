@@ -37,8 +37,9 @@
         type = lib.types.enum [
           "wezterm"
           "foot"
+          "kitty"
         ];
-        default = "wezterm";
+        default = "kitty";
       };
     };
   };

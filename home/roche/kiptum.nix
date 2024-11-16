@@ -52,7 +52,7 @@
 
   default = {
     de = "hyprland";
-    terminal = "foot";
+    terminal = "kitty";
   };
 
   home = {

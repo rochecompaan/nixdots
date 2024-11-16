@@ -2,6 +2,7 @@
 {
   wallpaper = "${config.home.homeDirectory}/Pictures/wallpapers/${config.theme}.jpg";
   home.sessionVariables.EDITOR = "nvim";
+  home.sessionVariables.TERMINAL = "kitty";
   imports = [
     ./gtk.nix
     ./nixpkgs.nix

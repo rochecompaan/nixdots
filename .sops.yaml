@@ -1,5 +1,6 @@
+---
 keys:
-  - &roche CB28EBC0DBFF630B85BE20E0807ACF787AC92BEE
+  - &roche 9E57D2AE1DACE264
 creation_rules:
   - path_regex: secrets/roche/[^/]+\.(yaml|json|env|ini)$
     key_groups:

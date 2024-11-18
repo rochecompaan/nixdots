@@ -56,14 +56,6 @@ in
           }
           {
             key = "C";
-            command = "wanda git commit";
-            description = "commit with cz";
-            context = "files";
-            loadingText = "opening cz commit tool";
-            subprocess = true;
-          }
-          {
-            key = "c";
             command = "git commit";
             description = "commit";
             context = "files";

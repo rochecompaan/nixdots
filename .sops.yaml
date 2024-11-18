@@ -1,16 +1,18 @@
 ---
 keys:
-  - &roche 9E57D2AE1DACE264
+  - &roche age1fch4w0x0hjaug9uudjg64ugern2tckut50zc4x6wjm2u02qjau9s6zl8ft
+  - &kiptum age1tuvtu8ymxymejqfpmk87s0wh6hg95jtnz0vm7dl3472mjg55yfpsrpk20d
 creation_rules:
   - path_regex: secrets/roche/[^/]+\.(yaml|json|env|ini)$
     key_groups:
-      - pgp:
+      - age:
           - *roche
   - path_regex: secrets/kiptum/[^/]+\.(yaml|json|env|ini)$
     key_groups:
-      - pgp:
+      - age:
           - *roche
+          - *kiptum
   - path_regex: secrets/kipchoge/[^/]+\.(yaml|json|env|ini)$
     key_groups:
-      - pgp:
+      - age:
           - *roche

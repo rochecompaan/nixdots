@@ -7,6 +7,7 @@
 {
   imports = [
     ./cloudflared-tunnel.nix
+    ./duckdns.nix
     ./glance.nix
     ./immich.nix
     ./kanata.nix
@@ -17,6 +18,7 @@
     ./your_spotify.nix
   ];
   config = {
+    sops.secrets.duckdns_token = { };
     services = {
       asusd = {
         enable = true;
@@ -24,6 +26,10 @@
       };
       blueman.enable = true;
       dbus.enable = true;
+      duckdns = {
+        enable = true;
+        tokenFile = config.sops.secrets.duckdns_token.path;
+      };
       upower.enable = true;
       # automount disks with devmon, gvfs and udisks2
       devmon.enable = true;

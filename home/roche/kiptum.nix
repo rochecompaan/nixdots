@@ -55,6 +55,13 @@
     terminal = "kitty";
   };
 
+  wayland.windowManager.hyprland.settings = {
+    monitor = [
+      "eDP-1, 1920x1080@165, auto, auto"
+      "HDMI-A-1, 1920x1080@74.97, auto, auto"
+    ];
+  };
+
   home = {
     packages = with pkgs; [
       android-tools

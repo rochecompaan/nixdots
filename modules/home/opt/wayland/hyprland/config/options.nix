@@ -115,14 +115,6 @@
       # vrr = 1;
     };
 
-    monitor = [
-      # name, resolution, position, scale
-      # "eDP-1, highres, 0x0, 1"
-      "eDP-1, 1920x1080@165, auto, auto"
-      "HDMI-A-1, 1920x1080@74.97, auto, auto"
-      # "HDMI-A-1,preferred,auto,1,mirror,eDP-1"
-    ];
-
     xwayland.force_zero_scaling = true;
   };
 }

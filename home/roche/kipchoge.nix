@@ -1,6 +1,6 @@
 { inputs, pkgs, ... }:
 {
-  theme = "paradise";
+  theme = "tokyonight";
 
   imports = [
     inputs.stylix.homeManagerModules.stylix
@@ -15,7 +15,6 @@
     misc = {
       obsidian.enable = true;
       yamlfmt.enable = true;
-      rbw.enable = true;
     };
     music = {
       spicetify.enable = true;
@@ -33,8 +32,7 @@
       hyprpaper.enable = true;
       kanshi.enable = true;
       #swaync.enable = true;
-      #waybar.enable = true;
-
+      waybar.enable = true;
       glance.enable = true;
     };
     utils = {
@@ -54,7 +52,13 @@
 
   default = {
     de = "hyprland";
-    terminal = "foot";
+    terminal = "kitty";
+  };
+
+  wayland.windowManager.hyprland.settings = {
+    monitor = [
+      "eDP-1, 1920x1080@165, auto, auto"
+    ];
   };
 
   home = {

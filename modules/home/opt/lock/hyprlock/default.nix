@@ -156,28 +156,29 @@ in
           no_fade_in = false;
         };
 
-        background = [
-          {
-            path = "${config.wallpaper}";
-            blur_passes = 3;
-            blur_size = 8;
-          }
-        ];
+        # background = [
+        #   {
+        #     path = "${config.wallpaper}";
+        #     blur_passes = 3;
+        #     blur_size = 8;
+        #   }
+        # ];
 
-        input-field = [
-          {
-            size = "200, 50";
-            position = "0, -470";
-            monitor = "";
-            dots_center = true;
-            fade_on_empty = false;
-            inner_color = "rgba(0, 0, 0, 1)";
-            font_color = "rgba(200, 200, 200, 1)";
-            outline_thickness = 5;
-            placeholder_text = "Password...";
-            shadow_passes = 2;
-          }
-        ];
+        # input-field = [
+        #   {
+        #     size = "200, 50";
+        #     position = "0, -470";
+        #     monitor = "";
+        #     dots_center = true;
+        #     fade_on_empty = false;
+        #     inner_color = "rgba(0, 0, 0, 1)";
+        #     font_color = "rgba(200, 200, 200, 1)";
+        #     outline_thickness = 5;
+        #     placeholder_text = "Password...";
+        #     shadow_passes = 2;
+        #   }
+        # ];
+
         # Time
         label = [
           {

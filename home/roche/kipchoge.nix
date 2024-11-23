@@ -16,9 +16,6 @@
       obsidian.enable = true;
       yamlfmt.enable = true;
     };
-    music = {
-      spicetify.enable = true;
-    };
     launcher = {
       anyrun.enable = true;
     };

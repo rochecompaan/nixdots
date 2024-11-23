@@ -42,7 +42,6 @@
     slack
     slack-term
     slop
-    spotify
     srt
     terraform-ls
     unzip

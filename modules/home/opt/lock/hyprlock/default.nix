@@ -35,7 +35,6 @@ let
 
      	case "$trackid" in
      		*Feishin* ) echo -e "Feishin " ;;
-        *spotify* ) echo -e "Spotify " ;;
         *Firefox* ) echo -e "Firefox " ;;
      		*chromium* ) echo -e "Chrome " ;;
      	  *) 

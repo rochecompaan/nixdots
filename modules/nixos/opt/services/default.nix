@@ -15,7 +15,6 @@
     ./radicle.nix
     ./soft-serve.nix
     ./vikunja.nix
-    ./your_spotify.nix
   ];
   config = {
     sops.secrets.duckdns_token = { };

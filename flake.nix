@@ -57,10 +57,6 @@
     # Hyprpaper, wallpaper manager for hyprland
     hyprpaper.url = "github:hyprwm/hyprpaper";
 
-    # Spicetify, a spotify theming tool
-    spicetify.url = "github:Gerg-L/spicetify-nix";
-    spicetify.inputs.nixpkgs.follows = "nixpkgs";
-
     # My personal nixvim config
     nixvim.url = "github:rochecompaan/nixvim";
 

@@ -10,7 +10,7 @@
     # workspace rules
     workspace = [
       "1,monitor:HDMI-A-1"
-      "2,monitor:HDMI-A-1" 
+      "2,monitor:HDMI-A-1"
       "3,monitor:HDMI-A-1"
       "4,monitor:HDMI-A-1"
       "5,monitor:HDMI-A-1"
@@ -75,7 +75,6 @@
       "workspace special silent, title:^(Firefox — Sharing Indicator)$"
       "workspace special, class:^(obsidian)$"
       "workspace 2,class:^(zen-alpha)$"
-      "workspace 4,class:^(Spotify)$"
       "workspace 9,class:^(Slack)$"
     ];
   };

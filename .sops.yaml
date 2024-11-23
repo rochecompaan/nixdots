@@ -2,6 +2,7 @@
 keys:
   - &roche age1fch4w0x0hjaug9uudjg64ugern2tckut50zc4x6wjm2u02qjau9s6zl8ft
   - &kiptum age1tuvtu8ymxymejqfpmk87s0wh6hg95jtnz0vm7dl3472mjg55yfpsrpk20d
+  - &kipchoge age1x4cn6aakq8zcfjxux4gyvledwh06e7t7z2cm8hlxfmdghvyaevaqlv6xxa
 creation_rules:
   - path_regex: secrets/roche/[^/]+\.(yaml|json|env|ini)$
     key_groups:
@@ -16,3 +17,4 @@ creation_rules:
     key_groups:
       - age:
           - *roche
+          - *kipchoge

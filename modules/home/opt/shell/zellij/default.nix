@@ -106,6 +106,8 @@ in
         }
         tab {
           bind "Ctrl t" { SwitchToMode "Normal"; }
+          bind "Ctrl h" { MoveTab "Left"; }
+          bind "Ctrl l" { MoveTab "Right"; }
           bind "r" { SwitchToMode "RenameTab"; TabNameInput 0; }
           bind "h" "Left" "Up" "k" { GoToPreviousTab; SwitchToMode "Normal"; }
           bind "l" "Right" "Down" "j" { GoToNextTab; SwitchToMode "Normal"; }

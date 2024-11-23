@@ -18,3 +18,9 @@ creation_rules:
       - age:
           - *roche
           - *kipchoge
+  - path_regex: secrets/shared/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+          - *roche
+          - *kipchoge
+          - *kiptum

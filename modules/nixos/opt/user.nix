@@ -1,7 +1,11 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
+  sops.secrets.roche-password = {
+    neededForUsers = true;
+  };
   users = {
     users.roche = {
+      hashedPasswordFile = config.sops.secrets.roche-password.path;
       isNormalUser = true;
       extraGroups = [
         "wheel"

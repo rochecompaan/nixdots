@@ -16,21 +16,49 @@
   boot.initrd.availableKernelModules = [
     "nvme"
     "xhci_pci"
+    "ahci"
+    "usbhid"
     "usb_storage"
+    "uas"
     "sd_mod"
-    "rtsx_pci_sdmmc"
   ];
-  boot.initrd.kernelModules = [ ];
+
+  # Minimal list of modules to use the EFI system partition and the YubiKey
+  boot.initrd.kernelModules = [
+    "vfat"
+    "nls_cp437"
+    "nls_iso8859-1"
+    "usbhid"
+  ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
 
+  # Enable support for the YubiKey PBA
+  boot.initrd.luks.yubikeySupport = true;
+
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/04623ded-95b5-4310-ae4b-88e773a69a5a";
+    device = "/dev/disk/by-uuid/bc03aef7-32dc-44f1-b7a1-40ec28a48869";
     fsType = "ext4";
   };
 
+  boot.initrd.luks.devices = {
+    "root" = {
+      device = "/dev/disk/by-uuid/bd6b93d9-6d74-4d3b-9e03-a18514fceae5";
+      preLVM = false;
+      yubikey = {
+        slot = 2;
+        twoFactor = false;
+        storage = {
+          device = "/dev/disk/by-uuid/888C-3B8B";
+        };
+      };
+    };
+  };
+
+  boot.initrd.luks.devices."home".device = "/dev/disk/by-uuid/485cf243-54ad-44da-a4bd-a3ae98a03769";
+
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/FBCD-9A49";
+    device = "/dev/disk/by-uuid/888C-3B8B";
     fsType = "vfat";
     options = [
       "fmask=0077"
@@ -38,16 +66,21 @@
     ];
   };
 
-  swapDevices = [ ];
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/cc4e229a-6979-4a47-9c01-1edeecb9821f";
+    fsType = "ext4";
+  };
+
+  swapDevices = [ { device = "/dev/disk/by-uuid/e575ae7d-ec7f-458f-928c-2c720ddadde4"; } ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp2s0f0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp5s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp3s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp9s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp6s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlp8s0.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

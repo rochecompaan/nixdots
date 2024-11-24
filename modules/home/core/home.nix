@@ -118,7 +118,7 @@
       syncthing
       t-rec
       tailspin
-      (pkgs.callPackage ../../../packages/teams-for-linux { })
+      teams-for-linux
       telegram-desktop
       teleport
       tldr

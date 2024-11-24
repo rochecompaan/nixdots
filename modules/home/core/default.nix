@@ -1,6 +1,6 @@
-{ config, ... }:
+{ config, lib, ... }:
 {
-  wallpaper = "${config.home.homeDirectory}/Pictures/wallpapers/${config.theme}.jpg";
+  wallpaper = lib.mkForce (config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/Pictures/wallpapers/${config.theme}.jpg");
   home.sessionVariables.EDITOR = "nvim";
   home.sessionVariables.TERMINAL = "kitty";
   imports = [

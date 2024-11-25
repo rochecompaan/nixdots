@@ -27,7 +27,7 @@
         "uas"
         "sd_mod"
         # Network module for entropy
-        "r8125"
+        "r8169"
       ];
 
       network.enable = true;

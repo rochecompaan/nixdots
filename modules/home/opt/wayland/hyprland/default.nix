@@ -115,6 +115,7 @@ in
         hyprpicker
         libcanberra-gtk3
         libnotify
+        libreoffice
         pamixer
         sassc
         slurp

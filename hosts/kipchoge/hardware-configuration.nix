@@ -14,6 +14,9 @@
   ];
 
   boot = {
+    kernelParams = [
+      "ip=192.168.1.4::192.168.1.1:255.255.255.0::enp10s0:off"
+    ];
     initrd = {
       availableKernelModules = [
         "nvme"

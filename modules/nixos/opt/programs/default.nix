@@ -14,7 +14,7 @@
     wshowkeys.enable = true;
     openvpn3.enable = true;
     seahorse.enable = true; # keyring graphical frontend
-    _1password-cli.enable = true;
+    _1password.enable = true;
     _1password-gui = {
       enable = true;
       # Certain features, including CLI integration and system authentication support,

@@ -13,58 +13,61 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = [
-    "nvme"
-    "xhci_pci"
-    "ahci"
-    "usbhid"
-    "usb_storage"
-    "uas"
-    "sd_mod"
-  ];
+  boot = {
+    initrd = {
+      availableKernelModules = [
+        "nvme"
+        "xhci_pci"
+        "ahci"
+        "usbhid"
+        "usb_storage"
+        "uas"
+        "sd_mod"
+      ];
 
-  # Minimal list of modules to use the EFI system partition and the YubiKey
-  boot.initrd.kernelModules = [
-    "vfat"
-    "nls_cp437"
-    "nls_iso8859-1"
-    "usbhid"
-  ];
-  boot.kernelModules = [ "kvm-amd" ];
-  boot.extraModulePackages = [ ];
+      # Minimal list of modules to use the EFI system partition and the YubiKey
+      kernelModules = [
+        "vfat"
+        "nls_cp437"
+        "nls_iso8859-1"
+        "usbhid"
+      ];
 
-  # Enable support for the YubiKey PBA
-  boot.initrd.luks.yubikeySupport = true;
+      luks = {
+        yubikeySupport = true;
+        devices = {
+          "root" = {
+            device = "/dev/disk/by-uuid/bd6b93d9-6d74-4d3b-9e03-a18514fceae5";
+            preLVM = false;
+            yubikey = {
+              slot = 2;
+              twoFactor = false;
+              storage = {
+                device = "/dev/disk/by-uuid/888C-3B8B";
+              };
+            };
+          };
+          "home" = {
+            device = "/dev/disk/by-uuid/485cf243-54ad-44da-a4bd-a3ae98a03769";
+            preLVM = false;
+            yubikey = {
+              slot = 2;
+              twoFactor = false;
+              storage = {
+                device = "/dev/disk/by-uuid/888C-3B8B";
+              };
+            };
+          };
+        };
+      };
+    };
+    kernelModules = [ "kvm-amd" ];
+    extraModulePackages = [ ];
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/bc03aef7-32dc-44f1-b7a1-40ec28a48869";
     fsType = "ext4";
-  };
-
-  boot.initrd.luks.devices = {
-    "root" = {
-      device = "/dev/disk/by-uuid/bd6b93d9-6d74-4d3b-9e03-a18514fceae5";
-      preLVM = false;
-      yubikey = {
-        slot = 2;
-        twoFactor = false;
-        storage = {
-          device = "/dev/disk/by-uuid/888C-3B8B";
-        };
-      };
-    };
-  };
-
-  boot.initrd.luks.devices."home" = {
-    device = "/dev/disk/by-uuid/485cf243-54ad-44da-a4bd-a3ae98a03769";
-    preLVM = false;
-    yubikey = {
-      slot = 2;
-      twoFactor = false;
-      storage = {
-        device = "/dev/disk/by-uuid/888C-3B8B";
-      };
-    };
   };
 
   fileSystems."/boot" = {

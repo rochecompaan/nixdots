@@ -1,6 +1,11 @@
 { config, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption mkOption types;
+  inherit (lib)
+    mkIf
+    mkEnableOption
+    mkOption
+    types
+    ;
 
   cfg = config.opt.services.hypridle;
 in
@@ -24,22 +29,24 @@ in
           after_sleep_cmd = "hyprctl dispatch dpms on";
         };
 
-        listener = [
-          {
-            timeout = 300;
-            on-timeout = "brightnessctl -s set 10";
-            on-resume = "brightnessctl -r";
-          }
-          {
-            timeout = 600;
-            on-timeout = "hyprlock";
-          }
-        ] ++ lib.optionals cfg.enableSuspend [
-          {
-            timeout = 1800;
-            on-timeout = "systemctl suspend";
-          }
-        ];
+        listener =
+          [
+            {
+              timeout = 300;
+              on-timeout = "brightnessctl -s set 10";
+              on-resume = "brightnessctl -r";
+            }
+            {
+              timeout = 600;
+              on-timeout = "hyprlock";
+            }
+          ]
+          ++ lib.optionals cfg.enableSuspend [
+            {
+              timeout = 1800;
+              on-timeout = "systemctl suspend";
+            }
+          ];
       };
     };
   };

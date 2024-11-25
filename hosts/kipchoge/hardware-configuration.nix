@@ -23,7 +23,11 @@
         "usb_storage"
         "uas"
         "sd_mod"
+        # Network module for entropy
+        "r8125"
       ];
+
+      network.enable = true;
 
       # Minimal list of modules to use the EFI system partition and the YubiKey
       kernelModules = [

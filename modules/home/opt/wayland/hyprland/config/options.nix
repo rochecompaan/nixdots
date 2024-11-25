@@ -35,7 +35,7 @@
       rounding = "6";
       shadow = {
         color = "rgba(050505ff)";
-        enable = "true";
+        enabled = "true";
         range = "16";
         render_power = "12";
       };

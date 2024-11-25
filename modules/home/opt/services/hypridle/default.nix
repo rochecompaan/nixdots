@@ -1,11 +1,18 @@
 { config, lib, ... }:
 let
-  inherit (lib) mkIf mkEnableOption;
+  inherit (lib) mkIf mkEnableOption mkOption types;
 
   cfg = config.opt.services.hypridle;
 in
 {
-  options.opt.services.hypridle.enable = mkEnableOption "hyprdidle";
+  options.opt.services.hypridle = {
+    enable = mkEnableOption "hyprdidle";
+    enableSuspend = mkOption {
+      type = types.bool;
+      default = false;
+      description = "Whether to enable suspend after timeout";
+    };
+  };
 
   config = mkIf cfg.enable {
     services.hypridle = {
@@ -27,6 +34,7 @@ in
             timeout = 600;
             on-timeout = "hyprlock";
           }
+        ] ++ lib.optionals cfg.enableSuspend [
           {
             timeout = 1800;
             on-timeout = "systemctl suspend";

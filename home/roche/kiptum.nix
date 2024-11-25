@@ -25,7 +25,10 @@
     services = {
       ags.enable = true;
       cliphist.enable = true;
-      hypridle.enable = true;
+      hypridle = {
+        enable = true;
+        enableSuspend = true;
+      };
       hyprpaper.enable = true;
       kanshi.enable = true;
       #swaync.enable = true;

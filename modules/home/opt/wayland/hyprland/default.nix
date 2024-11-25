@@ -141,13 +141,15 @@ in
         CLUTTER_BACKEND = "wayland";
         MOZ_ENABLE_WAYLAND = "1";
         QT_STYLE_OVERRIDE = lib.mkForce "kvantum";
-        # XCURSOR_SIZE = "24";
+        XCURSOR_SIZE = "24";
         ELECTRON_OZONE_PLATFORM_HINT = "auto";
         LIBVA_DRIVER_NAME = "nvidia";
         __GLX_VENDOR_LIBRARY_NAME = "nvidia";
         XDG_SESSION_TYPE = "wayland";
         NVD_BACKEND = "direct";
         GBM_BACKEND = "nvidia-drm";
+        WLR_NO_HARDWARE_CURSORS = "1";
+        NIXOS_OZONE_WL = "1";
       };
     };
 

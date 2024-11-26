@@ -1,8 +1,5 @@
 {
-  config,
   inputs,
-  lib,
-  pkgs,
   ...
 }:
 {
@@ -44,29 +41,7 @@
     "kipchoge"
   ];
 
-  # Enable OpenGL
-  hardware.graphics = {
-    enable = true;
-    graphics = {
-      driSupport = true;
-      enable32Bit = true;
-      extraPackages = with pkgs; [
-        nvidia-vaapi-driver
-        vaapiVdpau
-        libvdpau-va-gl
-      ];
-    };
-  };
-
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];
 
-  hardware.nvidia = {
-    modesetting.enable = true;
-    powerManagement.enable = lib.mkForce false;
-    powerManagement.finegrained = lib.mkForce false;
-    open = false;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
 }

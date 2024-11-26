@@ -1,6 +1,6 @@
 { config, self, ... }:
 {
-  wallpaper = "${self}/home/shared/walls/${config.theme}.png";
+  wallpaper = "${self}/home/shared/walls/${config.theme}.jpg";
   home.sessionVariables.EDITOR = "nvim";
   home.sessionVariables.TERMINAL = "kitty";
   imports = [

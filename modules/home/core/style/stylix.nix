@@ -3,7 +3,7 @@
   stylix = {
     enable = true;
     base16Scheme = ./${config.theme}.yaml;
-    image = ../../../../home/shared/walls/${config.theme}.png;
+    image = ../../../../home/shared/walls/${config.theme}.jpg;
     polarity = "dark";
     cursor = {
       name = "Bibata-Modern-Ice";

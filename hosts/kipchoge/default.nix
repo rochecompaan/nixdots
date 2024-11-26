@@ -2,6 +2,7 @@
   config,
   inputs,
   lib,
+  pkgs,
   ...
 }:
 {
@@ -14,10 +15,12 @@
     hostName = "kipchoge";
     useDHCP = false;
     interfaces.enp10s0 = {
-      ipv4.addresses = [{
-        address = "192.168.1.4";
-        prefixLength = 24;
-      }];
+      ipv4.addresses = [
+        {
+          address = "192.168.1.4";
+          prefixLength = 24;
+        }
+      ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
@@ -44,6 +47,15 @@
   # Enable OpenGL
   hardware.graphics = {
     enable = true;
+    graphics = {
+      driSupport = true;
+      enable32Bit = true;
+      extraPackages = with pkgs; [
+        nvidia-vaapi-driver
+        vaapiVdpau
+        libvdpau-va-gl
+      ];
+    };
   };
 
   # Load nvidia driver for Xorg and Wayland

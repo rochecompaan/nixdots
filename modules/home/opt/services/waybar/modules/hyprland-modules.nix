@@ -23,7 +23,7 @@ in
   "hyprland/workspaces" = {
     format = "{name}";
     show-special = false;
-    all-outputs = true;
+    all-outputs = false;
     active-only = false;
     on-click = "activate";
   };

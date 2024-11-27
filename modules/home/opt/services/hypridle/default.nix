@@ -40,6 +40,11 @@ in
               timeout = 600;
               on-timeout = "hyprlock";
             }
+            {
+              timeout = 1800;
+              on-timeout = "hyprctl dispatch dpms off";
+              on-resume = "hyprctl dispatch dpms on";
+            }
           ]
           ++ lib.optionals cfg.enableSuspend [
             {

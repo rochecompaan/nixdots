@@ -107,8 +107,8 @@
 
         # Bell
         visual_bell_duration = "0.0";
-        enable_audio_bell = "yes";
-        bell_on_tab = "yes";
+        enable_audio_bell = "no";
+        bell_on_tab = "no";
 
         # Window
         remember_window_size = "no";

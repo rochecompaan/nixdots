@@ -115,7 +115,7 @@ in
           "app.normandy.enabled" = false;
           "app.shield.optoutstudies.enabled" = false;
 
-          "beacon.enabled" = false; # No bluetooth location BS in my webbrowser please
+          "beacon.enabled" = true; # Required by Grammarly
           "device.sensors.enabled" = false; # This isn't a phone
           "geo.enabled" = false; # Disable geolocation alltogether
 

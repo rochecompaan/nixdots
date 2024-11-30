@@ -17,8 +17,7 @@
         BROWSER = "firefox";
         MANPAGER = "nvim +Man!";
         MANWIDTH = "999";
-        GOPATH = "$HOME/.local/share/go";
-        # FPATH = "$HOME/tools/eza/completions/zsh";
+        NIX_BUILD_SHELL = "zsh";
       };
 
       shellAliases = {
@@ -60,10 +59,6 @@
         ll = "ls -alF";
         la = "ls -A";
         l = "ls -CF";
-        dotup = "pushd ~/projects/dotfiles/ && git pull && stow -t $HOME --ignore=.xinitrc */ && popd";
-        tt = "docker run --rm -v $HOME/projects/timetransfer:/src -it time-transfer today";
-        tty = "docker run --rm -v $HOME/projects/timetransfer:/src -it time-transfer yesterday";
-        tton = "docker run --rm -v $HOME/projects/timetransfer:/src -it time-transfer on";
         terraform = "tofu";
         tfplan = "tofu plan -out=\"tfplan.out\" && tofu show -no-color tfplan.out >> .terraform/tfplan-$(date +%Y%m%d-%H%M%S).log";
         tfapply = "tofu apply \"tfplan.out\"";

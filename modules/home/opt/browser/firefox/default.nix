@@ -179,6 +179,7 @@ in
           onepassword-password-manager
           sidebery
           vimium
+          languagetool
         ];
 
         search = {

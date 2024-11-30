@@ -17,9 +17,6 @@
         };
     in
     {
-      grovetender = mkHost "grovetender";
-      aurelionite = mkHost "aurelionite";
-      mithrix = mkHost "mithrix";
       kiptum = mkHost "kiptum";
       kipchoge = mkHost "kipchoge";
     };

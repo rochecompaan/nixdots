@@ -54,6 +54,7 @@
                 device = "/dev/disk/by-uuid/888C-3B8B";
               };
             };
+            fallbackToPassword = true;
           };
           "home" = {
             device = "/dev/disk/by-uuid/485cf243-54ad-44da-a4bd-a3ae98a03769";
@@ -65,6 +66,7 @@
                 device = "/dev/disk/by-uuid/888C-3B8B";
               };
             };
+            fallbackToPassword = true;
           };
         };
       };

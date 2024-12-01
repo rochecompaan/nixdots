@@ -2,7 +2,7 @@
 * Global configuration for theme
 * */
 * {
-  font-family: Iosevka NF;
+  font-family: 'Iosevka Nerd Font', 'Iosevka NF', monospace;
   font-size: 16px;
   border-radius: 0;
 }

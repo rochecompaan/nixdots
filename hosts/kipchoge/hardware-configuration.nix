@@ -42,31 +42,12 @@
       ];
 
       luks = {
-        yubikeySupport = true;
         devices = {
           "root" = {
             device = "/dev/disk/by-uuid/bd6b93d9-6d74-4d3b-9e03-a18514fceae5";
-            preLVM = false;
-            yubikey = {
-              slot = 2;
-              twoFactor = false;
-              storage = {
-                device = "/dev/disk/by-uuid/888C-3B8B";
-              };
-            };
-            fallbackToPassword = true;
           };
           "home" = {
             device = "/dev/disk/by-uuid/485cf243-54ad-44da-a4bd-a3ae98a03769";
-            # preLVM = false;
-            # yubikey = {
-            #   slot = 2;
-            #   twoFactor = false;
-            #   storage = {
-            #     device = "/dev/disk/by-uuid/888C-3B8B";
-            #   };
-            # };
-            fallbackToPassword = true;
           };
         };
       };

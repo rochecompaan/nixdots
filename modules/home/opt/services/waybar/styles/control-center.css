@@ -15,10 +15,15 @@
 #wireplumber,
 #pulseaudio,
 #audio,
-#bluetooth,
 #gamemode,
 #systemd-failed-units {
   padding: 0 0.5em;
+}
+
+#bluetooth {
+  padding: 0;
+  font-weight: bold;
+  color: #2492e0;
 }
 
 #custom-updates.updated {

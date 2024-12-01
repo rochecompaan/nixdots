@@ -6,6 +6,7 @@
     ./hypridle
     ./hyprpaper
     ./kanshi
+    ./notes
     ./onedrive
     ./swaync
     ./waybar

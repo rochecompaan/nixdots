@@ -111,7 +111,7 @@ in
   };
 
   cpu = {
-    format = " {usage}%";
+    format = "󰻠 {usage}%";
     tooltip = true;
     states = {
       "50" = 50;
@@ -121,7 +121,7 @@ in
   };
 
   disk = {
-    format = " {percentage_used}%";
+    format = "󰋊 {percentage_used}%";
   };
 
   idle_inhibitor = {
@@ -143,7 +143,7 @@ in
   };
 
   memory = {
-    format = "󰍛 {}%";
+    format = "󰘚 {}%";
   };
 
   mpris = {
@@ -198,23 +198,23 @@ in
     in
     {
       interval = 1;
-      format-wifi = "󰖩  {essid}"; # Icon + network name when connected
-      format-ethernet = "󰈀  {ipaddr}"; # Ethernet icon + IP
+      format-wifi = "󰖩 {essid}"; # Icon + network name when connected
+      format-ethernet = "󰈀 "; # Ethernet icon + IP
       tooltip-format = ''
         {ifname}
         IP: {ipaddr}
         Up: {bandwidthUpBits}
         Down: {bandwidthDownBits}
       '';
-      format-linked = "󰈁 {ifname} (No IP)";
+      format-linked = "󰈁{ifname} (No IP)";
       format-disconnected = " Disconnected";
       format-alt = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
       on-click-right = "${nm-editor}";
     };
 
   pulseaudio = {
-    format = "{volume}% {icon}";
-    format-bluetooth = "{volume}% {icon}";
+    format = "{volume}%{icon}";
+    format-bluetooth = "{volume}%{icon}";
     format-muted = "";
     format-icons = {
       headphone = "";

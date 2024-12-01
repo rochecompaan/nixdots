@@ -20,16 +20,12 @@
       liberation_ttf
       fira-code
 
-      (nerdfonts.override {
-        fonts = [
-          "FiraCode"
-          "FantasqueSansMono"
-          "ZedMono"
-          "Iosevka"
-          "JetBrainsMono"
-          "Monaspace"
-        ];
-      })
+      nerd-fonts.firaCode
+      nerd-fonts.fantasqueSansMono
+      nerd-fonts.zedMono 
+      nerd-fonts.iosevka
+      nerd-fonts.jetbrainsMono
+      nerd-fonts.monaspace
     ];
   };
 }

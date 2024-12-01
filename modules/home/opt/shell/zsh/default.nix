@@ -17,7 +17,6 @@
         BROWSER = "firefox";
         MANPAGER = "nvim +Man!";
         MANWIDTH = "999";
-        NIX_BUILD_SHELL = "zsh";
       };
 
       shellAliases = {

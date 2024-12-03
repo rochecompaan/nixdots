@@ -214,6 +214,13 @@ in
           bind "Alt -" { Resize "Decrease"; }
           bind "Alt [" { PreviousSwapLayout; }
           bind "Alt ]" { NextSwapLayout; }
+          bind "Ctrl Shift x" {
+              LaunchOrFocusPlugin "zellij:session-manager" {
+                floating true
+                move_to_focused_tab true
+              };
+              SwitchToMode "Normal"
+          }
         }
         shared_except "normal" "locked" {
           bind "Enter" "Esc" { SwitchToMode "Normal"; }

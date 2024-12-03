@@ -13,7 +13,6 @@
       "systemctl --user restart xdg-desktop-portal.service"
       "systemctl --user restart xdg-desktop-portal-wlr.service"
       "firefox"
-      "slack"
       "1password"
     ];
     animations = {

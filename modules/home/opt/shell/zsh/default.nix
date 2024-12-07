@@ -87,6 +87,7 @@
           { name = "zap-zsh/fzf"; }
           { name = "zap-zsh/exa"; }
           { name = "zsh-users/zsh-syntax-highlighting"; }
+          { name = "svenXY/timewarrior"; }
         ];
       };
 

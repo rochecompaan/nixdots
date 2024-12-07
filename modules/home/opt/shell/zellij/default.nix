@@ -346,12 +346,25 @@ in
               white 205 214 244
               orange 250 179 135
           }
+          gruvbox {
+              fg 213 196 161
+              bg 40 40 40
+              black 60 56 54
+              red 204 36 29
+              green 152 151 26
+              yellow 215 153 33
+              blue 69 133 136
+              magenta 177 98 134
+              cyan 104 157 106
+              white 251 241 199
+              orange 214 93 14
+          }
       }
 
       // Choose the theme that is specified in the themes section.
       // Default: default
       //
-      theme "catppuccin-mocha"
+      theme "gruvbox"
 
       // The name of the default layout to load on startup
       // Default: "default"

@@ -116,6 +116,7 @@ in
         libcanberra-gtk3
         libnotify
         libreoffice
+        obs-studio
         pamixer
         sassc
         slurp

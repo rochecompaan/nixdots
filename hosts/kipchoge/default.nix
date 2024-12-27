@@ -8,6 +8,16 @@
     # inputs.nixos-hardware.nixosModules.lenovo-thinkpad-p14s-amd-gen2
     ./hardware-configuration.nix
   ];
+
+  nix = {
+    settings = {
+      # Resource management settings
+      max-jobs = 8; # Limit parallel build jobs
+      cores = 8; # Cores per build job
+      min-free = "2G"; # Keep at least 2GB free
+    };
+  };
+
   networking = {
     hostName = "kipchoge";
     useDHCP = false;

@@ -87,5 +87,9 @@
       config = ''config /home/roche/.config/openvpn/urbint.ovpn '';
       updateResolvConf = true;
     };
+    sfu-vpn = {
+      config = ''config /home/roche/.config/openvpn/sfu.ovpn '';
+      updateResolvConf = true;
+    };
   };
 }

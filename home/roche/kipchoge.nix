@@ -1,4 +1,8 @@
-{ inputs, pkgs, lib, ... }:
+{
+  inputs,
+  pkgs,
+  ...
+}:
 {
   theme = "gruvbox";
 
@@ -81,7 +85,6 @@
       scrcpy
       stremio
       yazi
-      lunar-client
       wdisplays
     ];
   };

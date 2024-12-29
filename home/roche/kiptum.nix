@@ -69,7 +69,6 @@
       scrcpy
       stremio
       yazi
-      lunar-client
       wdisplays
     ];
   };

@@ -119,6 +119,7 @@ in
         obs-studio
         pamixer
         sassc
+        ssh-to-age
         signal-desktop
         slurp
         wf-recorder

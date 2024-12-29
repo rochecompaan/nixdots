@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
   imports = [
     # Include the results of the hardware scan.
@@ -33,9 +33,18 @@
   users.users.roche = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHPFBvBgaJTaA+jlRSY1GzgMptcN9XHwgbCyXR/+OOvt"
-    ];
+    openssh = {
+      authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHPFBvBgaJTaA+jlRSY1GzgMptcN9XHwgbCyXR/+OOvt"
+      ];
+      privateKeyFile = config.sops.secrets."roche_ssh_private_key".path;
+    };
+  };
+
+  sops.secrets."roche_ssh_private_key" = {
+    sopsFile = ../secrets/shared/roche.yaml;
+    owner = "roche";
+    mode = "0600";
   };
 
   # Sudo configuration

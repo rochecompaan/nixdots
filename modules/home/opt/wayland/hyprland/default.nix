@@ -119,6 +119,7 @@ in
         obs-studio
         pamixer
         sassc
+        signal-desktop
         slurp
         wf-recorder
         wl-clipboard

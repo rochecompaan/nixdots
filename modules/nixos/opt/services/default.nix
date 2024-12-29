@@ -70,10 +70,6 @@
               "--cmd 'Hyprland'"
             ];
             user = "greeter";
-
-            # start a wayland session directly without a login manager
-            # command = "Hyprland"; 
-            # user = "roche";
           };
         };
       };

@@ -1,6 +1,5 @@
 # copied from https://github.com/NixOS/nixpkgs/blob/master/nixos/modules/services/misc/duckdns.nix
 # TODO: remove after doing nix flake update
-# 
 {
   config,
   pkgs,

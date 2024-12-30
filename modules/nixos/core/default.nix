@@ -6,7 +6,6 @@
     ./i18n.nix
     ./networking.nix
     ./nix.nix
-    ./portal.nix
     ./qt.nix
     ./security.nix
     ./ssh.nix

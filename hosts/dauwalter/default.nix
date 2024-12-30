@@ -88,10 +88,6 @@
     ];
   };
 
-  # System packages
-  # System state version
-  system.stateVersion = "24.11";
-
   # Swap configuration
   swapDevices = [
     {

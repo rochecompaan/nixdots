@@ -1,3 +1,4 @@
+{ config, ... }:
 {
   nix = {
     settings = {
@@ -31,5 +32,10 @@
       options = "--delete-older-than 1d";
     };
     optimise.automatic = true;
+    nix.extraOptions = ''
+      !include ${config.sops.secrets.nix-access-tokens-github.path}
+    '';
   };
+
+  sops.secrets.nix-access-tokens-github = { };
 }

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 {
   imports = [
     # Include the results of the hardware scan.
@@ -37,7 +37,6 @@
       authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHPFBvBgaJTaA+jlRSY1GzgMptcN9XHwgbCyXR/+OOvt"
       ];
-      privateKeyFile = config.sops.secrets."roche_ssh_private_key".path;
     };
   };
 

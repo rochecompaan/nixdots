@@ -25,10 +25,6 @@
       };
       blueman.enable = true;
       dbus.enable = true;
-      duckdns = {
-        enable = true;
-        tokenFile = config.sops.secrets.duckdns_token.path;
-      };
       upower.enable = true;
       # automount disks with devmon, gvfs and udisks2
       devmon.enable = true;

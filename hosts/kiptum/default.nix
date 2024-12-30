@@ -22,5 +22,11 @@
   steam.enable = false;
   tpm.enable = true;
 
-  services.duckdns.domains = [ "rochelaptop" ];
+  services.duckdns = {
+    enable = true;
+    domains = [
+      "rochelaptop"
+    ];
+  };
+
 }

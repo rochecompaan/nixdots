@@ -1,4 +1,5 @@
 {
+  config,
   inputs,
   ...
 }:
@@ -39,10 +40,13 @@
   steam.enable = false;
   tpm.enable = true;
 
-  services.duckdns.domains = [
-    "roche"
-    "kipchoge"
-  ];
+  services.duckdns = {
+    enable = true;
+    domains = [
+      "roche"
+      "kipchoge"
+    ];
+  };
 
   # Load nvidia driver for Xorg and Wayland
   services.xserver.videoDrivers = [ "nvidia" ];

@@ -39,12 +39,6 @@
   steam.enable = false;
   tpm.enable = true;
 
-  services.openssh = {
-    enable = true;
-    settings.PasswordAuthentication = true;
-    settings.PermitRootLogin = "yes";
-  };
-
   services.duckdns.domains = [
     "roche"
     "kipchoge"

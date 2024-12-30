@@ -19,12 +19,6 @@
     {
       kiptum = mkHost "kiptum";
       kipchoge = mkHost "kipchoge";
-      dauwalter = nixosSystem {
-        inherit specialArgs;
-        modules = [
-          inputs.sops-nix.nixosModules.sops
-          ./dauwalter
-        ];
-      };
+      dauwalter = mkHost "dauwalter";
     };
 }

@@ -3,7 +3,7 @@
     ./fonts
     ./programs
     ./services
-    ./desktop-hardware.nix
+    ./desktop.nix
     ./pkgs.nix
     ./tpm.nix
     ./user.nix

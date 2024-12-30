@@ -21,6 +21,7 @@
   pipewire.enable = true;
   steam.enable = false;
   tpm.enable = true;
+  desktop.enable = true;
 
   services.duckdns = {
     enable = true;

@@ -78,7 +78,7 @@ in
       }
     ];
 
-    sops.secrets.duckdns_token = { };
+    sops.secrets.duckdns-token = { };
 
     environment.systemPackages = [ duckdns ];
 
@@ -97,7 +97,7 @@ in
       serviceConfig = {
         Type = "simple";
         LoadCredential = [
-          "DUCKDNS_TOKEN_FILE:${config.sops.secrets.duckdns_token.path}"
+          "DUCKDNS_TOKEN_FILE:${config.sops.secrets.duckdns-token.path}"
         ] ++ lib.optionals (cfg.domainsFile != null) [ "DUCKDNS_DOMAINS_FILE:${cfg.domainsFile}" ];
         DynamicUser = true;
       };

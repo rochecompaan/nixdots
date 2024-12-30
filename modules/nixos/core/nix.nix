@@ -32,7 +32,7 @@
       options = "--delete-older-than 1d";
     };
     optimise.automatic = true;
-    nix.extraOptions = ''
+    extraOptions = ''
       !include ${config.sops.secrets.nix-access-tokens-github.path}
     '';
   };

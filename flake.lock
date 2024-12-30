@@ -1039,6 +1039,23 @@
         "type": "github"
       }
     },
+    "nix-secrets": {
+      "locked": {
+        "lastModified": 1735587078,
+        "narHash": "sha256-9brXw6kNCk8XM9WK1AC7EQIxtvJQZvLP/Wj4S/rkx9I=",
+        "ref": "main",
+        "rev": "f83922a3140ee6461690d0e763d9f989e6dd3ddd",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/rochecompaan/nix-secrets.git"
+      },
+      "original": {
+        "ref": "main",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/rochecompaan/nix-secrets.git"
+      }
+    },
     "nixos-hardware": {
       "locked": {
         "lastModified": 1733861262,
@@ -1193,22 +1210,6 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1721379653,
-        "narHash": "sha256-8MUgifkJ7lkZs3u99UDZMB4kbOxvMEXQZ31FO3SopZ0=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "1d9c2c9b3e71b9ee663d11c5d298727dace8d374",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixos-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_6": {
-      "locked": {
         "lastModified": 1733940404,
         "narHash": "sha256-Pj39hSoUA86ZePPF/UXiYHHM7hMIkios8TYG29kQT4g=",
         "owner": "nixos",
@@ -1223,7 +1224,7 @@
         "type": "github"
       }
     },
-    "nixpkgs_7": {
+    "nixpkgs_6": {
       "locked": {
         "lastModified": 1732812356,
         "narHash": "sha256-LNcgjOLArRlx2W6XSi0yc0xwLjrK3KF9LxAMqUgFDgw=",
@@ -1242,22 +1243,26 @@
     "nixvim": {
       "inputs": {
         "flake-parts": "flake-parts_3",
-        "nixpkgs": "nixpkgs_5",
+        "nixpkgs": [
+          "nixpkgs"
+        ],
         "nixvim": "nixvim_2",
         "pre-commit-hooks": "pre-commit-hooks_2"
       },
       "locked": {
-        "lastModified": 1733497538,
-        "narHash": "sha256-IGtO1ueP8PSsAy9oPNmMVh4I0Lxb96fL4rZ830Ak3Aw=",
-        "owner": "rochecompaan",
-        "repo": "nixvim",
-        "rev": "8eaacbb6a3178d51388cc7216e8a7f3e75eb3b60",
-        "type": "github"
+        "lastModified": 1735547298,
+        "narHash": "sha256-t916PJINoKBjpI5pdaPH73rAkiI8n8f9twEw4f+ohNs=",
+        "ref": "main",
+        "rev": "f60c3b3a36d4a1f3a28696f6b1f865b9f6432e34",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/rochecompaan/nixvim.git"
       },
       "original": {
-        "owner": "rochecompaan",
-        "repo": "nixvim",
-        "type": "github"
+        "ref": "main",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/rochecompaan/nixvim.git"
       }
     },
     "nixvim_2": {
@@ -1291,7 +1296,7 @@
     "nur": {
       "inputs": {
         "flake-parts": "flake-parts_5",
-        "nixpkgs": "nixpkgs_6",
+        "nixpkgs": "nixpkgs_5",
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
@@ -1389,6 +1394,7 @@
         "hyprpaper": "hyprpaper",
         "hyprspace": "hyprspace",
         "nh": "nh",
+        "nix-secrets": "nix-secrets",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_4",
         "nixvim": "nixvim",
@@ -1728,7 +1734,7 @@
       "inputs": {
         "crane": "crane",
         "flake-utils": "flake-utils_3",
-        "nixpkgs": "nixpkgs_7",
+        "nixpkgs": "nixpkgs_6",
         "rust-overlay": "rust-overlay"
       },
       "locked": {

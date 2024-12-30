@@ -4,7 +4,7 @@
 
   config = {
     sops = {
-      defaultSopsFile = ../../../secrets/${config.networking.hostName}/secrets.yaml;
+      defaultSopsFile = "${inputs.nix-secrets}/secrets.yaml";
       defaultSopsFormat = "yaml";
 
       age = {
@@ -14,7 +14,7 @@
       };
 
       secrets = {
-        "private_keys/roche" = {
+        "ssh-keys/users/roche" = {
           path = "/home/roche/.ssh/id_ed25519";
         };
       };

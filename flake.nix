@@ -58,7 +58,17 @@
     hyprpaper.url = "github:hyprwm/hyprpaper";
 
     # My personal nixvim config
-    nixvim.url = "github:rochecompaan/nixvim";
+    nixvim = {
+      url = "git+ssh://git@github.com/rochecompaan/nixvim.git?ref=main&shallow=1";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Private repo
+    # Authenticate via ssh and use shallow clone
+    nix-secrets = {
+      url = "git+ssh://git@github.com/rochecompaan/nix-secrets.git?ref=main&shallow=1";
+      inputs = { };
+    };
 
   };
 

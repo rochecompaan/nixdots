@@ -2,8 +2,9 @@
 # TODO: remove after doing nix flake update
 {
   config,
-  pkgs,
   lib,
+  pkgs,
+  sops,
   ...
 }:
 let
@@ -76,6 +77,8 @@ in
         message = "services.duckdns.domains and services.duckdns.domainsFile can't both be defined at the same time";
       }
     ];
+
+    sops.secrets.duckdns_token = { };
 
     environment.systemPackages = [ duckdns ];
 

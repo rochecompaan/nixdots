@@ -1,4 +1,3 @@
-{ config, ... }:
 {
   imports = [
     ./cloudflared-tunnel.nix
@@ -11,7 +10,4 @@
     ./soft-serve.nix
     ./vikunja.nix
   ];
-  config = {
-    sops.secrets.duckdns_token = { };
-  };
 }

@@ -34,14 +34,6 @@ in
 {
   options.services.duckdns = {
     enable = lib.mkEnableOption "DuckDNS Dynamic DNS Client";
-    tokenFile = lib.mkOption {
-      default = null;
-      type = lib.types.path;
-      description = ''
-        The path to a file containing the token
-        used to authenticate with DuckDNS.
-      '';
-    };
 
     domains = lib.mkOption {
       default = null;
@@ -83,10 +75,6 @@ in
         assertion = !(cfg.domains != null && cfg.domainsFile != null);
         message = "services.duckdns.domains and services.duckdns.domainsFile can't both be defined at the same time";
       }
-      {
-        assertion = (cfg.tokenFile != null);
-        message = "services.duckdns.tokenFile has to be defined";
-      }
     ];
 
     environment.systemPackages = [ duckdns ];
@@ -106,7 +94,7 @@ in
       serviceConfig = {
         Type = "simple";
         LoadCredential = [
-          "DUCKDNS_TOKEN_FILE:${cfg.tokenFile}"
+          "DUCKDNS_TOKEN_FILE:${config.sops.secrets.duckdns_token.path}"
         ] ++ lib.optionals (cfg.domainsFile != null) [ "DUCKDNS_DOMAINS_FILE:${cfg.domainsFile}" ];
         DynamicUser = true;
       };

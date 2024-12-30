@@ -10,7 +10,6 @@
     ./ssh.nix
     ./sops.nix
     ./system.nix
-    ./systemd.nix
     ./time.nix
     ./virtualisation.nix
   ];

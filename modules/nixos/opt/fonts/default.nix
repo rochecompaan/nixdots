@@ -18,11 +18,16 @@
       roboto
       liberation_ttf
 
-      nerd-fonts.fira-code
-      nerd-fonts.zed-mono
-      nerd-fonts.iosevka
-      nerd-fonts.jetbrains-mono
-      nerd-fonts.monaspace
+      (nerdfonts.override {
+        fonts = [
+          "FiraCode"
+          "FantasqueSansMono"
+          "ZedMono"
+          "Iosevka"
+          "JetBrainsMono"
+          "Monaspace"
+        ];
+      })
     ];
   };
 }

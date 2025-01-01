@@ -1,5 +1,5 @@
 {
-  description = "Elyth's personal dotfile";
+  description = "Roché Compaan's NixOS configuration";
 
   inputs = {
     pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
@@ -8,10 +8,10 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     # Nixpkgs Stable
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     # Home-manager
-    hm.url = "github:nix-community/home-manager";
+    hm.url = "github:nix-community/home-manager/release-24.11";
     hm.inputs.nixpkgs.follows = "nixpkgs";
 
     # secret management
@@ -58,10 +58,7 @@
     hyprpaper.url = "github:hyprwm/hyprpaper";
 
     # My personal nixvim config
-    nixvim = {
-      url = "git+ssh://git@github.com/rochecompaan/nixvim.git?ref=main&shallow=1";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    nixvim.url = "github:rochecompaan/nixvim";
 
     # Private repo
     # Authenticate via ssh and use shallow clone

@@ -9,6 +9,7 @@
 
     # Nixpkgs Stable
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Home-manager
     hm.url = "github:nix-community/home-manager/release-24.11";
@@ -88,6 +89,7 @@
               pkgs.nixfmt-rfc-style
               pkgs.git
               pkgs.nh
+              inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.aider-chat
             ];
             name = "dots";
             DIRENV_LOG_FORMAT = "";

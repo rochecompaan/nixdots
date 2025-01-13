@@ -214,7 +214,7 @@ in
           bind "Alt -" { Resize "Decrease"; }
           bind "Alt [" { PreviousSwapLayout; }
           bind "Alt ]" { NextSwapLayout; }
-          bind "Ctrl Shift x" {
+          bind "Alt x" {
               LaunchOrFocusPlugin "zellij:session-manager" {
                 floating true
                 move_to_focused_tab true

@@ -112,6 +112,8 @@
         if [[ "\$(basename -- \''${(%):-%x})" != "_toggl" ]]; then
           compdef _toggl toggl
         fi
+
+        export PATH="$HOME/.krew/bin:$PATH"
       '';
     };
 

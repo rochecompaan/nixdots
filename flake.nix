@@ -73,6 +73,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    disko.url = "github:nix-community/disko";
   };
 
   outputs =
@@ -94,6 +95,7 @@
               pkgs.nixfmt-rfc-style
               pkgs.git
               pkgs.nh
+              pkgs.nixos-anywhere
               inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.aider-chat
             ];
             name = "dots";

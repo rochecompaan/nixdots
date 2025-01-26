@@ -13,7 +13,10 @@
         hostname:
         nixosSystem {
           inherit specialArgs;
-          modules = default ++ [ ./${hostname} ];
+          modules = default ++ [
+            inputs.disko.nixosModules.disko
+            ./${hostname}
+          ];
         };
     in
     {

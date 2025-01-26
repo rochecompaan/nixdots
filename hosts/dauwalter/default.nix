@@ -1,6 +1,6 @@
 {
   imports = [
-    # Include the results of the hardware scan.
+    ./disko.nix
     ./hardware-configuration.nix
   ];
 
@@ -11,7 +11,7 @@
   networking = {
     hostName = "dauwalter";
     interfaces = {
-      eno1 = {
+      enp0s20f0u2 = {
         ipv4 = {
           addresses = [
             {

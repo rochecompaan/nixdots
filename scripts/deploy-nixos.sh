@@ -63,11 +63,10 @@ install -d -m755 "$TEMP_DIR/etc/ssh"
 # Decrypt and install SSH host keys
 NIX_SECRETS_PATH=~/projects/nix-secrets/
 sops --config $NIX_SECRETS_PATH/.sops.yaml --decrypt $NIX_SECRETS_PATH/secrets.yaml | \
-    jq -r --arg name "$HOSTNAME" \
+    yq -r --arg name "$HOSTNAME" \
     '."ssh-keys".[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
 
 # Set correct permissions
-chmod 600 "$TEMP_DIR/etc/ssh/ssh_host_rsa_key"
 chmod 600 "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
 
 echo "Deploying $FLAKE_TARGET to $TARGET_HOST..." >&2

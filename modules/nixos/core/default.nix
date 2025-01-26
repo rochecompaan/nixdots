@@ -12,6 +12,7 @@
     ./sops.nix
     ./system.nix
     ./time.nix
+    ./user.nix
     ./virtualisation.nix
   ];
 }

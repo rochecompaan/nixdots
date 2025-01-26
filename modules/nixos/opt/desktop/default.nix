@@ -12,7 +12,9 @@ in
   imports = [
     ./hardware.nix
     ./packages.nix
+    ./portal.nix
     ./programs.nix
+    ./qt.nix
     ./services.nix
   ];
 }

@@ -1,4 +1,9 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.desktop;
 in
@@ -21,11 +26,6 @@ in
       _1password-gui = {
         enable = true;
         polkitPolicyOwners = [ "roche" ];
-      };
-      steam = lib.mkIf config.steam.enable {
-        enable = true;
-        remotePlay.openFirewall = true;
-        dedicatedServer.openFirewall = true;
       };
     };
   };

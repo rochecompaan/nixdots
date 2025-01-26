@@ -15,12 +15,9 @@
     ];
   };
 
-  tailscale.enable = true;
   fonts.enable = true;
   wayland.enable = true;
   pipewire.enable = true;
-  steam.enable = false;
-  tpm.enable = true;
   desktop.enable = true;
 
   services.duckdns = {

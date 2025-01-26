@@ -6,6 +6,7 @@
     ./i18n.nix
     ./networking.nix
     ./nix.nix
+    ./pkgs.nix
     ./security.nix
     ./ssh.nix
     ./sops.nix

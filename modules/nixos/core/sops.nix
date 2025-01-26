@@ -16,8 +16,16 @@
       secrets = {
         "ssh-keys/users/roche" = {
           path = "/home/roche/.ssh/id_ed25519";
+          mode = "0600";
+          owner = "roche";
+          group = "users";
         };
       };
     };
+
+    # Create .ssh directory with correct permissions
+    systemd.user.tmpfiles.rules = [
+      "d /home/roche/.ssh 0700 roche users - -"
+    ];
   };
 }

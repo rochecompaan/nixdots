@@ -3,7 +3,7 @@
     ./fonts
     ./programs
     ./services
-    ./desktop.nix
+    ./desktop
     ./portal.nix
     ./pkgs.nix
     ./qt.nix

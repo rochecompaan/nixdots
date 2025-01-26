@@ -3,7 +3,9 @@ set -euo pipefail
 
 # Default values
 HOSTNAME=""
+IP_ADDRESS=""
 EXTRA_ARGS=()
+
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -35,9 +37,6 @@ if [ ! -f "hosts/${HOSTNAME}/default.nix" ]; then
     echo "Error: Configuration for host '${HOSTNAME}' not found in hosts/${HOSTNAME}/default.nix" >&2
     exit 1
 fi
-
-# Extract IP address using common function
-IP_ADDRESS=$(get_server_ip "$HOSTNAME")
 
 if [ -z "$IP_ADDRESS" ]; then
     echo "Error: Could not extract IP address from host configuration" >&2

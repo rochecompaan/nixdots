@@ -6,7 +6,6 @@ HOSTNAME=""
 IP_ADDRESS=""
 EXTRA_ARGS=()
 
-
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -17,6 +16,8 @@ while [[ $# -gt 0 ]]; do
         *)
             if [ -z "$HOSTNAME" ]; then
                 HOSTNAME="$1"
+            elif [ -z "$IP_ADDRESS" ]; then
+                IP_ADDRESS="$1"
             else
                 EXTRA_ARGS+=("$1")
             fi
@@ -26,9 +27,9 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Validate required arguments
-if [ -z "$HOSTNAME" ]; then
-    echo "Usage: deploy-nixos <hostname> [extra nixos-anywhere args...]" >&2
-    echo "Example: deploy-nixos myserver" >&2
+if [ -z "$HOSTNAME" ] || [ -z "$IP_ADDRESS" ]; then
+    echo "Usage: deploy-nixos <hostname> <ip-address> [extra nixos-anywhere args...]" >&2
+    echo "Example: deploy-nixos myserver 192.168.1.100" >&2
     exit 1
 fi
 

@@ -6,6 +6,7 @@
     ./hardware-configuration.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.binfmt.emulatedSystems = [ "aarch64-linux" ];
   networking.hostName = "kiptum";
   networking.hosts = {
     "192.168.1.4" = [

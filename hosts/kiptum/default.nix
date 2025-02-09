@@ -28,6 +28,8 @@
     ];
   };
 
+  services.automatic-timezoned.enable = true;
+
   services.openvpn.servers = {
     urbint-vpn = {
       autoStart = false;

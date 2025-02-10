@@ -28,6 +28,8 @@
     ];
   };
 
+  services.resolved.enable = true;
+
   services.openvpn.servers = {
     urbint-vpn = {
       autoStart = false;

@@ -16,6 +16,8 @@
         "docker"
         "uinput"
         "adbusers"
+        "scanner"
+        "lp"
       ];
       openssh = {
         authorizedKeys.keys = [

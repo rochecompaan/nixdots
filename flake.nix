@@ -96,7 +96,6 @@
               pkgs.git
               pkgs.nh
               pkgs.nixos-anywhere
-              inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.aider-chat
             ];
             name = "dots";
             DIRENV_LOG_FORMAT = "";

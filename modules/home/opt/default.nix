@@ -2,6 +2,7 @@
   imports = [
     ./options.nix
 
+    ./aider
     ./bin
     ./browser
     ./launcher

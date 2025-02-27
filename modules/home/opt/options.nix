@@ -2,6 +2,7 @@
 {
   options = {
     modules = {
+      aider.enable = lib.mkEnableOption "Enable aider";
       gitui.enable = lib.mkEnableOption "Enable gitui";
       gpg-agent.enable = lib.mkEnableOption "Enable gpg-agent";
       k9s.enable = lib.mkEnableOption "Enable k9s";

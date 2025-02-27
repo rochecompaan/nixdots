@@ -22,9 +22,8 @@ let
         src = pfinal.fetchPypi {
           pname = "grep_ast";  # Note the underscore here
           inherit version;
-          hash = "sha256-5x2NdKsoKd6jrvn6BgkEDW0iX/kkn1xPqZFOw7FfalE=";
+          hash = "sha256-uQRYCpkUl6/UE1xRohfQAbJwhjI7x1KWc6HdQAPuJNA=";
           extension = "tar.gz";
-          dist = "py3";
         };
 
         buildInputs = with pfinal; [ 

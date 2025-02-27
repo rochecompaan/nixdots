@@ -13,22 +13,21 @@ let
     packageOverrides = pfinal: pprev: {
       tree-sitter = pprev.tree-sitter_0_21;
       
-      # Build grep-ast from source
+      # Build grep-ast from PyPI
       grep-ast = pfinal.buildPythonPackage rec {
         pname = "grep-ast";
-        version = "0.2.0";
-        format = "setuptools";
+        version = "0.6.1";
+        format = "pyproject";
 
-        src = fetchFromGitHub {
-          owner = "Aider-AI";
-          repo = "grep-ast";
-          rev = "v${version}";
-          hash = "sha256-yzWF0SkCpBQHoVXbVvOBBJxIVGCGFOTqUOVEZTgMOJY=";
+        src = pfinal.fetchPypi {
+          inherit pname version;
+          hash = "sha256-Ue2pFxLxBtpq1kHvVY5YmMhWIWvHKxP0/RJ9cEQFGXE=";
         };
 
         buildInputs = with pfinal; [ 
           cython 
           tree-sitter 
+          poetry-core
         ];
 
         propagatedBuildInputs = with pfinal; [

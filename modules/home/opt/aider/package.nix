@@ -40,6 +40,7 @@ let
         propagatedBuildInputs = with pfinal; [
           tree-sitter
           tree-sitter-languages
+          pathspec
         ];
 
         pythonImportsCheck = [ "grep_ast" "grep_ast.tsl" ];

@@ -20,8 +20,11 @@ let
         format = "pyproject";
 
         src = pfinal.fetchPypi {
-          inherit pname version;
+          pname = "grep_ast";  # Note the underscore here
+          inherit version;
           hash = "sha256-5x2NdKsoKd6jrvn6BgkEDW0iX/kkn1xPqZFOw7FfalE=";
+          extension = "tar.gz";
+          dist = "py3";
         };
 
         buildInputs = with pfinal; [ 

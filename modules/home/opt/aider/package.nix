@@ -21,7 +21,7 @@ let
 
         src = pfinal.fetchPypi {
           inherit pname version;
-          hash = "sha256-Ue2pFxLxBtpq1kHvVY5YmMhWIWvHKxP0/RJ9cEQFGXE=";
+          hash = "sha256-5x2NdKsoKd6jrvn6BgkEDW0iX/kkn1xPqZFOw7FfalE=";
         };
 
         buildInputs = with pfinal; [ 

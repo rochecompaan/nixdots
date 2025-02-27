@@ -26,10 +26,15 @@ let
           extension = "tar.gz";
         };
 
+        nativeBuildInputs = with pfinal; [
+          setuptools
+          setuptools-scm
+          poetry-core
+        ];
+
         buildInputs = with pfinal; [ 
           cython 
           tree-sitter 
-          poetry-core
         ];
 
         propagatedBuildInputs = with pfinal; [

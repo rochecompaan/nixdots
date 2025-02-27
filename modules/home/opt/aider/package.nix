@@ -12,15 +12,32 @@ let
     self = python3;
     packageOverrides = pfinal: pprev: {
       tree-sitter = pprev.tree-sitter_0_21;
-      grep-ast = pprev.grep-ast.overridePythonAttrs (old: {
-        buildInputs = (old.buildInputs or [ ]) ++ [
-          pfinal.cython
-          pfinal.tree-sitter
+      
+      # Build grep-ast from source
+      grep-ast = pfinal.buildPythonPackage rec {
+        pname = "grep-ast";
+        version = "0.2.0";
+        format = "setuptools";
+
+        src = fetchFromGitHub {
+          owner = "Aider-AI";
+          repo = "grep-ast";
+          rev = "v${version}";
+          hash = "sha256-yzWF0SkCpBQHoVXbVvOBBJxIVGCGFOTqUOVEZTgMOJY=";
+        };
+
+        buildInputs = with pfinal; [ 
+          cython 
+          tree-sitter 
         ];
-        propagatedBuildInputs = (old.propagatedBuildInputs or [ ]) ++ [
-          pfinal.tree-sitter
+
+        propagatedBuildInputs = with pfinal; [
+          tree-sitter
+          tree-sitter-languages
         ];
-      });
+
+        pythonImportsCheck = [ "grep_ast" "grep_ast.tsl" ];
+      };
     };
   };
   version = "0.75.1";

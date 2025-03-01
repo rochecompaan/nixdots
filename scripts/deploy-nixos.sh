@@ -66,6 +66,14 @@ sops --config $NIX_SECRETS_PATH/.sops.yaml --decrypt $NIX_SECRETS_PATH/secrets.y
     yq -r --arg name "$HOSTNAME" \
     '."ssh-keys".hosts.[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
 
+# Check if the key file is empty or wasn't created properly
+if [ ! -s "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key" ]; then
+    echo "Error: Failed to decrypt SSH host key for $HOSTNAME" >&2
+    echo "The key file is empty or wasn't created properly." >&2
+    echo "Make sure the host key exists in your secrets file and you have the necessary permissions." >&2
+    exit 1
+fi
+
 # Set correct permissions
 chmod 600 "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
 

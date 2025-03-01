@@ -66,11 +66,15 @@ sops --config $NIX_SECRETS_PATH/.sops.yaml --decrypt $NIX_SECRETS_PATH/secrets.y
     yq -r --arg name "$HOSTNAME" \
     '."ssh-keys".hosts.[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
 
-# Check if the key file is empty or wasn't created properly
-if [ ! -s "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key" ]; then
+# Check file size
+KEY_SIZE=$(wc -c < "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key")
+echo "Debug: Key file size is $KEY_SIZE bytes" >&2
+
+if [ ! -f "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key" ] || [ "$KEY_SIZE" -le 1 ]; then
     echo "Error: Failed to decrypt SSH host key for $HOSTNAME" >&2
-    echo "The key file is empty or wasn't created properly." >&2
-    echo "Make sure the host key exists in your secrets file and you have the necessary permissions." >&2
+    echo "The key file is empty or contains only whitespace (size: $KEY_SIZE bytes)." >&2
+    echo "Make sure the host key exists in your secrets file and you have the necessary
+  perissions." >&2
     exit 1
 fi
 

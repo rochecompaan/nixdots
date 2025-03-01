@@ -162,11 +162,13 @@
         directory = {
           style = "bold yellow";
           format = "[ $path ]($style)";
-          truncation_length = 0;
+          truncation_length = 3;
+          truncate_to_repo = false;
+          home_symbol = "~";
         };
         git_branch = {
           format = "[$branch]($style)";
-          style = "bold purple";
+          style = "bold red";
         };
         git_state = {
           format = "\([$state( $progress_current/$progress_total)]($style)\) ";

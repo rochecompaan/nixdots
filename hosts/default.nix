@@ -24,54 +24,48 @@
         kiptum = mkHost "kiptum";
         kipchoge = mkHost "kipchoge";
         dauwalter = mkHost "dauwalter";
+        kipsang = mkHost "kipsang";
+        fordyce = mkHost "fordyce";
+        walmsley = mkHost "walmsley";
       };
 
     # homelab nodes
-    deploy.nodes = [
-      {
-        name = "dauwalter";
-        value = {
-          hostname = "192.168.1.100";
-          profiles.system = {
-            user = "root";
-            sshUser = "nix";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.dauwalter;
-          };
+    deploy.nodes = {
+      dauwalter = {
+        hostname = "192.168.1.100";
+        profiles.system = {
+          user = "root";
+          sshUser = "roche";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.dauwalter;
         };
-      }
-      {
-        name = "kiptum";
-        value = {
-          hostname = "192.168.1.101";
-          profiles.system = {
-            user = "root";
-            sshUser = "nix";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.dauwalter;
-          };
+      };
+
+      kipsang = {
+        hostname = "192.168.1.101";
+        profiles.system = {
+          user = "root";
+          sshUser = "root";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.kiptum;
         };
-      }
-      {
-        name = "fordyce";
-        value = {
-          hostname = "192.168.1.102";
-          profiles.system = {
-            user = "root";
-            sshUser = "nix";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.dauwalter;
-          };
-        };
-      }
-      {
-        name = "walmsley";
-        value = {
-          hostname = "192.168.1.103";
-          profiles.system = {
-            user = "root";
-            sshUser = "nix";
-            path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.dauwalter;
-          };
-        };
-      }
-    ];
+      };
+    };
+
+    fordyce = {
+      hostname = "192.168.1.102";
+      profiles.system = {
+        user = "root";
+        sshUser = "root";
+        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fordyce;
+      };
+    };
+
+    walmsley = {
+      hostname = "192.168.1.103";
+      profiles.system = {
+        user = "root";
+        sshUser = "root";
+        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.walmsley;
+      };
+    };
   };
 }

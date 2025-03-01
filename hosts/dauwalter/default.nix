@@ -34,4 +34,21 @@
     }
   ];
 
+  # Disable suspend on lid close
+  services.logind = {
+    lidSwitch = "ignore";
+    lidSwitchDocked = "ignore";
+    lidSwitchExternalPower = "ignore";
+    extraConfig = ''
+      HandleSuspendKey=ignore
+      HandleHibernateKey=ignore
+    '';
+  };
+
+  # Ensure the system doesn't go to sleep automatically
+  powerManagement = {
+    enable = true;
+    powertop.enable = false;
+    cpuFreqGovernor = "performance";
+  };
 }

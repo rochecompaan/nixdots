@@ -16,5 +16,19 @@
       };
     };
     polkit.enable = true;
+
+    # Sudo configuration
+    sudo.extraRules = [
+      {
+        users = [ "roche" ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
+
   };
 }

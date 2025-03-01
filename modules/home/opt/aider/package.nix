@@ -12,7 +12,7 @@ let
     self = python3;
     packageOverrides = pfinal: pprev: {
       tree-sitter = pprev.tree-sitter_0_21;
-      
+
       # Build grep-ast from PyPI
       grep-ast = pfinal.buildPythonPackage rec {
         pname = "grep-ast";
@@ -20,7 +20,7 @@ let
         format = "pyproject";
 
         src = pfinal.fetchPypi {
-          pname = "grep_ast";  # Note the underscore here
+          pname = "grep_ast"; # Note the underscore here
           inherit version;
           hash = "sha256-uQRYCpkUl6/UE1xRohfQAbJwhjI7x1KWc6HdQAPuJNA=";
           extension = "tar.gz";
@@ -32,9 +32,9 @@ let
           poetry-core
         ];
 
-        buildInputs = with pfinal; [ 
-          cython 
-          tree-sitter 
+        buildInputs = with pfinal; [
+          cython
+          tree-sitter
         ];
 
         propagatedBuildInputs = with pfinal; [
@@ -43,7 +43,10 @@ let
           pathspec
         ];
 
-        pythonImportsCheck = [ "grep_ast" "grep_ast.tsl" ];
+        pythonImportsCheck = [
+          "grep_ast"
+          "grep_ast.tsl"
+        ];
       };
     };
   };

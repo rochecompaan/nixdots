@@ -37,18 +37,14 @@
   # Disable suspend on lid close
   services.logind = {
     lidSwitch = "ignore";
-    lidSwitchDocked = "ignore";
-    lidSwitchExternalPower = "ignore";
     extraConfig = ''
-      HandleSuspendKey=ignore
-      HandleHibernateKey=ignore
+      HandleLidSwitch=ignore
     '';
   };
 
-  # Ensure the system doesn't go to sleep automatically
-  powerManagement = {
-    enable = true;
-    powertop.enable = false;
-    cpuFreqGovernor = "performance";
-  };
+  # disable sleep
+  systemd.targets.sleep.enable = false;
+  systemd.targets.suspend.enable = false;
+  systemd.targets.hibernate.enable = false;
+  systemd.targets.hybrid-sleep.enable = false;
 }

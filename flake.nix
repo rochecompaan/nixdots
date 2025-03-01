@@ -74,6 +74,9 @@
     };
 
     disko.url = "github:nix-community/disko";
+
+    deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs =
@@ -92,6 +95,7 @@
         {
           devShells.default = pkgs.mkShell {
             packages = [
+              pkgs.deploy-rs
               pkgs.nixfmt-rfc-style
               pkgs.git
               pkgs.nh

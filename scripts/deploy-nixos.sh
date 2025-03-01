@@ -64,7 +64,7 @@ install -d -m755 "$TEMP_DIR/etc/ssh"
 NIX_SECRETS_PATH=~/projects/nix-secrets/
 sops --config $NIX_SECRETS_PATH/.sops.yaml --decrypt $NIX_SECRETS_PATH/secrets.yaml | \
     yq -r --arg name "$HOSTNAME" \
-    '."ssh-keys".[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
+    '."ssh-keys".hosts.[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
 
 # Set correct permissions
 chmod 600 "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"

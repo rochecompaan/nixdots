@@ -1,6 +1,5 @@
 {
   imports = [
-    ./disko.nix
     ./hardware-configuration.nix
   ];
 
@@ -9,13 +8,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking = {
-    hostName = "dauwalter";
+    hostName = "fordyce";
     interfaces = {
-      enp0s20f0u2 = {
+      eno1 = {
         ipv4 = {
           addresses = [
             {
-              address = "192.168.1.100";
+              address = "192.168.1.102";
               prefixLength = 24;
             }
           ];
@@ -33,18 +32,4 @@
       size = 8196; # Size in MB (8GB)
     }
   ];
-
-  # Disable suspend on lid close
-  services.logind = {
-    lidSwitch = "ignore";
-    extraConfig = ''
-      HandleLidSwitch=ignore
-    '';
-  };
-
-  # disable sleep
-  systemd.targets.sleep.enable = false;
-  systemd.targets.suspend.enable = false;
-  systemd.targets.hibernate.enable = false;
-  systemd.targets.hybrid-sleep.enable = false;
 }

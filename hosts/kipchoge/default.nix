@@ -38,14 +38,6 @@
   pipewire.enable = true;
   desktop.enable = true;
 
-  services.duckdns = {
-    enable = true;
-    domains = [
-      "roche"
-      "kipchoge"
-    ];
-  };
-
   services.avahi = {
     enable = true;
     nssmdns = true;

@@ -7,7 +7,7 @@ in
     enable = lib.mkEnableOption "Desktop configuration";
   };
 
-  config = lib.mkIf cfg.enable {};
+  config = lib.mkIf cfg.enable { };
 
   imports = [
     ./hardware.nix

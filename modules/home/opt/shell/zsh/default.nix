@@ -155,18 +155,20 @@
         golang.disabled = true;
 
         character = {
-          success_symbol = "[ ](#${base05} bold)";
-          error_symbol = "[ ](#${base08} bold)";
-          vicmd_symbol = "[](#${base03})";
+          success_symbol = "[>](#${base05} bold)";
+          error_symbol = "[x](#${base08} bold)";
+          vicmd_symbol = "[<](#${base03})";
         };
         directory = {
           style = "bold yellow";
           format = "[ $path ]($style)";
-          truncation_length = 0;
+          truncation_length = 3;
+          truncate_to_repo = false;
+          home_symbol = "~";
         };
         git_branch = {
           format = "[$branch]($style)";
-          style = "bold purple";
+          style = "bold red";
         };
         git_state = {
           format = "\([$state( $progress_current/$progress_total)]($style)\) ";
@@ -186,21 +188,23 @@
         cmd_duration = {
           min_time = 1;
           # duration & style ;
-          format = "[]($style)[[  ](bg:#${base01} fg:#${base08} bold)$duration](bg:#${base01} fg:#${base05} bold)[]($style)";
+          format = "[]($style)[[  ](bg:#${base01} fg:#${base08} bold)$duration](bg:#${base01}
+fg:#${base05} bold)[]($style)";
           disabled = false;
           style = "bg:none fg:#${base01}";
         };
         nix_shell = {
           disabled = false;
           heuristic = false;
-          format = "[]($style)[ ](bg:#${base01} fg:#${base05} bold)[]($style)";
+          format = "[]($style)[nix](bg:#${base01} fg:#${base05} bold)[]($style)";
           style = "bg:none fg:#${base01}";
           impure_msg = "";
           pure_msg = "";
           unknown_msg = "";
         };
         kubernetes = {
-          format = "[](fg:#${base01} bg:none)[  ](fg:#${base0D} bg:#${base01})[$context/$namespace]($style)[](fg:#${base01} bg:none) ";
+          format = "[](fg:#${base01} bg:none)[ k8s:](fg:#${base0D}
+bg:#${base01})[$context/$namespace]($style)[](fg:#${base01} bg:none) ";
           disabled = false;
           style = "fg:#${base05} bg:#${base01} bold";
           context_aliases = {
@@ -212,7 +216,8 @@
           };
         };
         gcloud = {
-          format = "[](fg:#${base01} bg:none)[  ](fg:#${base08} bg:#${base01})[$project]($style)[](fg:#${base01} bg:none) ";
+          format = "[](fg:#${base01} bg:none)[ gcp:](fg:#${base08}
+bg:#${base01})[$project]($style)[](fg:#${base01} bg:none) ";
           style = "fg:#${base05} bg:#${base01} bold";
           disabled = true;
         };
@@ -222,8 +227,8 @@
             command = "echo \$AWS_PROFILE";
             detect_files = [ ];
             when = " test \"\$AWS_PROFILE\" != \"\" ";
-            format = "on [$symbol($output )]($style)";
-            symbol = " ";
+            format = "on [aws:($output )]($style)";
+            symbol = "";
             disabled = false;
           };
         };

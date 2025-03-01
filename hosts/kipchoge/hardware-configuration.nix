@@ -119,6 +119,7 @@
       nvidiaSettings = true;
       package = config.boot.kernelPackages.nvidiaPackages.stable;
     };
+    sane.enable = true;
   };
 
 }

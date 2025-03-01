@@ -64,7 +64,19 @@ install -d -m755 "$TEMP_DIR/etc/ssh"
 NIX_SECRETS_PATH=~/projects/nix-secrets/
 sops --config $NIX_SECRETS_PATH/.sops.yaml --decrypt $NIX_SECRETS_PATH/secrets.yaml | \
     yq -r --arg name "$HOSTNAME" \
-    '."ssh-keys".[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
+    '."ssh-keys".hosts.[$name].private' > "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"
+
+# Check file size
+KEY_SIZE=$(wc -c < "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key")
+echo "Debug: Key file size is $KEY_SIZE bytes" >&2
+
+if [ ! -f "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key" ] || [ "$KEY_SIZE" -le 1 ]; then
+    echo "Error: Failed to decrypt SSH host key for $HOSTNAME" >&2
+    echo "The key file is empty or contains only whitespace (size: $KEY_SIZE bytes)." >&2
+    echo "Make sure the host key exists in your secrets file and you have the necessary
+  perissions." >&2
+    exit 1
+fi
 
 # Set correct permissions
 chmod 600 "$TEMP_DIR/etc/ssh/ssh_host_ed25519_key"

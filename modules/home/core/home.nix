@@ -19,7 +19,6 @@
     };
 
     packages = with pkgs; [
-      inputs.nixpkgs-unstable.legacyPackages.${pkgs.system}.aider-chat
       inputs.zjstatus.packages.${system}.default
       (pkgs.callPackage ../../../home/shared/icons/whitesur.nix { })
       (pkgs.callPackage ../../../home/shared/icons/reversal.nix { })
@@ -133,7 +132,6 @@
       xdotool
       xwayland
       yarn
-      zed-editor
       zellij
       zoxide
     ];

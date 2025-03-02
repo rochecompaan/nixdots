@@ -27,7 +27,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     # Stylix, nix-colors alertnative
-    stylix.url = "github:danth/stylix";
+    stylix.url = "github:danth/stylix/release-24.11";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Zellij plugin for statusbar

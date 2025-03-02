@@ -20,6 +20,8 @@
           owner = "roche";
           group = "users";
         };
+
+        "cluster-token" = { };
       };
     };
 

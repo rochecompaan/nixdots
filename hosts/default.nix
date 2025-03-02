@@ -44,28 +44,30 @@
         hostname = "192.168.1.101";
         profiles.system = {
           user = "root";
-          sshUser = "root";
+          sshUser = "roche";
           path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.kipsang;
         };
       };
+
+      fordyce = {
+        hostname = "192.168.1.102";
+        profiles.system = {
+          user = "root";
+          sshUser = "roche";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fordyce;
+        };
+      };
+
+      walmsley = {
+        hostname = "192.168.1.103";
+        profiles.system = {
+          user = "root";
+          sshUser = "roche";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.walmsley;
+        };
+      };
+
     };
 
-    fordyce = {
-      hostname = "192.168.1.102";
-      profiles.system = {
-        user = "root";
-        sshUser = "root";
-        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fordyce;
-      };
-    };
-
-    walmsley = {
-      hostname = "192.168.1.103";
-      profiles.system = {
-        user = "root";
-        sshUser = "root";
-        path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.walmsley;
-      };
-    };
   };
 }

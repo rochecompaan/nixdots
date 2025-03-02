@@ -176,8 +176,9 @@ in
 
         search = {
           force = true;
-          default = "Google";
+          default = "Kagi";
           order = [
+            "Kagi"
             "Google"
             "DuckDuckGo"
             "Youtube"

@@ -128,13 +128,6 @@
         filter_mode = "directory";
       };
     };
-    home.file.kubie = {
-      target = ".kube/kubie.yaml";
-      text = ''
-        prompt:
-          disable: true
-      '';
-    };
 
     programs.starship = with config.lib.stylix.colors; {
       enable = true;

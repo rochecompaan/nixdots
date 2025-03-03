@@ -73,7 +73,6 @@
       kubectl
       kubectx
       kubernetes-helm
-      kubie
       lapce
       light
       magic-wormhole

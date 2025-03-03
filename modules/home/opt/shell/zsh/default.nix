@@ -132,7 +132,7 @@
     programs.starship = with config.lib.stylix.colors; {
       enable = true;
       settings = {
-        format = "$username$hostname$directory$git_branch$git_state$git_status$cmd_duration$line_break$\{custom.aws\}$kubernetes$python$nix_shell$line_break$character";
+        format = "$nix_shell$username$hostname$directory$git_branch$git_state$git_status$line_break$\{custom.aws\}$kubernetes$python$line_break$character";
 
         add_newline = true;
         azure.disabled = true;
@@ -160,7 +160,7 @@
           home_symbol = "~";
         };
         git_branch = {
-          format = "[$branch]($style)";
+          format = "[](fg:#${base01} bg:none)[git:](fg:#${base0C} bg:none)[$branch]($style)";
           style = "bold red";
         };
         git_state = {
@@ -178,28 +178,19 @@
           deleted = "​";
           stashed = "≡";
         };
-        cmd_duration = {
-          min_time = 1;
-          # duration & style ;
-          format = "[]($style)[[  ](bg:#${base01} fg:#${base08} bold)$duration](bg:#${base01}
-fg:#${base05} bold)[]($style)";
-          disabled = false;
-          style = "bg:none fg:#${base01}";
-        };
         nix_shell = {
+          symbol = "❄️";
           disabled = false;
           heuristic = false;
-          format = "[]($style)[nix](bg:#${base01} fg:#${base05} bold)[]($style)";
-          style = "bg:none fg:#${base01}";
+          format = "[$symbol]($style)";
           impure_msg = "";
           pure_msg = "";
           unknown_msg = "";
         };
         kubernetes = {
-          format = "[](fg:#${base01} bg:none)[ k8s:](fg:#${base0D}
-bg:#${base01})[$context/$namespace]($style)[](fg:#${base01} bg:none) ";
+          format = "[](fg:#${base01} bg:none)[ k8s:](fg:#${base0C} bg:none)[$context/$namespace]($style)[](fg:#${base01} bg:none) ";
           disabled = false;
-          style = "fg:#${base05} bg:#${base01} bold";
+          style = "fg:#${base0D} bg:none bold";
           context_aliases = {
             "dev.local.cluster.k8s" = "dev";
           };
@@ -216,11 +207,11 @@ bg:#${base01})[$project]($style)[](fg:#${base01} bg:none) ";
         };
         custom = {
           aws = {
-            style = "fg:#${base05} bg:#${base01} bold";
+            style = "fg:#${base09} bg:none bold";
             command = "echo \$AWS_PROFILE";
             detect_files = [ ];
             when = " test \"\$AWS_PROFILE\" != \"\" ";
-            format = "on [aws:($output )]($style)";
+            format = "on (fg:#${base01} bg:none)[aws:](fg:#${base0C} bg:none)[($output )]($style)";
             symbol = "";
             disabled = false;
           };

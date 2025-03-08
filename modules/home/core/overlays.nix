@@ -12,6 +12,19 @@
     #       '';
     #   });
     # })
+    # Zellij 0.41.2 overlay
+    (final: prev: {
+      zellij = prev.zellij.overrideAttrs (oldAttrs: {
+        version = "0.41.2";
+        
+        src = prev.fetchFromGitHub {
+          owner = "zellij-org";
+          repo = "zellij";
+          rev = "v0.41.2";
+          hash = "sha256-Hl4+Vc+ZiA2fkxDQDnJqVEMlQOLfUhQZMSXBPuaX/+Y=";
+        };
+      });
+    })
     (_: prev: { zjstatus = inputs.zjstatus.packages.${prev.system}.default; })
   ];
 }

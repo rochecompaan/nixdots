@@ -16,6 +16,7 @@
   opt = {
     browser = {
       firefox.enable = true;
+      zen.enable = true;
     };
     misc = {
       obsidian.enable = true;

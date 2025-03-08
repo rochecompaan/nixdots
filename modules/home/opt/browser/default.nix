@@ -1,1 +1,6 @@
-{ imports = [ ./firefox ]; }
+{
+  imports = [
+    ./firefox
+    ./zen
+  ];
+}

@@ -13,15 +13,26 @@
     #   });
     # })
     # Zellij 0.41.2 overlay
-    (final: prev: {
-      zellij = prev.zellij.overrideAttrs (oldAttrs: {
+    (_: prev: {
+      zellij = prev.zellij.overrideAttrs (_: rec {
         version = "0.41.2";
-        
+        name = "zellij";
+
         src = prev.fetchFromGitHub {
           owner = "zellij-org";
           repo = "zellij";
           rev = "v0.41.2";
-          hash = "sha256-Hl4+Vc+ZiA2fkxDQDnJqVEMlQOLfUhQZMSXBPuaX/+Y=";
+          hash = "sha256-Eufw+AweOd7tVjjEZi/AcIVc7gJQp+sdds777vjC83Y=";
+        };
+
+        postPatch = ''
+          substituteInPlace Cargo.toml \
+            --replace-fail ', "vendored_curl"' ""
+        '';
+        cargoDeps = prev.rustPlatform.fetchCargoTarball {
+          inherit src;
+          name = "${name}-${version}";
+          hash = "sha256-38hTOsa1a5vpR1i8GK1aq1b8qaJoCE74ewbUOnun+Qs=";
         };
       });
     })

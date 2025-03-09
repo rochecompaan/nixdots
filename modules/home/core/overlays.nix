@@ -22,7 +22,7 @@
           owner = "zellij-org";
           repo = "zellij";
           rev = "v0.41.2";
-          hash = "sha256-Eufw+AweOd7tVjjEZi/AcIVc7gJQp+sdds777vjC83Y=";
+          hash = "sha256-xdWfaXWmqFJuquE7n3moUjGuFqKB90OE6lqPuC3onOg=";
         };
 
         postPatch = ''

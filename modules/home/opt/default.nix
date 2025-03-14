@@ -5,6 +5,7 @@
     ./aider
     ./bin
     ./browser
+    ./claude-code
     ./launcher
     ./lock
     ./misc

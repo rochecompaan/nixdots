@@ -20,8 +20,6 @@
 
     packages = with pkgs; [
       inputs.zjstatus.packages.${system}.default
-      (pkgs.callPackage ../../../home/shared/icons/whitesur.nix { })
-      (pkgs.callPackage ../../../home/shared/icons/reversal.nix { })
       _1password-cli
       _1password-gui
       awscli

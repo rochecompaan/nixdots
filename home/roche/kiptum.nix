@@ -47,8 +47,10 @@
   };
 
   modules = {
+    aider.enable = true;
     zsh.enable = true;
     gpg-agent.enable = true;
+    claude-code.enable = true;
   };
 
   default = {

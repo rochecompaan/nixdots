@@ -37,5 +37,17 @@
       });
     })
     (_: prev: { zjstatus = inputs.zjstatus.packages.${prev.system}.default; })
+    (_: prev: {
+      _1password-gui =
+        let
+          unstable = import inputs.nixpkgs-unstable {
+            system = prev.system;
+            config = {
+              allowUnfree = true;
+            };
+          };
+        in
+        unstable._1password-gui;
+    })
   ];
 }

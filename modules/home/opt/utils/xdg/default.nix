@@ -85,6 +85,31 @@ in
         XDG_SCREENSHOTS_DIR = "${config.xdg.userDirs.pictures}/Screenshots";
       };
     };
+    desktopEntries = {
+      zoom = {
+        name = "Zoom";
+        exec = "zoom %U";
+        icon = "Zoom";
+        type = "Application";
+        terminal = false;
+        mimeType = [
+          "x-scheme-handler/zoommtg"
+          "x-scheme-handler/zoomus"
+          "x-scheme-handler/tel"
+          "x-scheme-handler/callto"
+          "x-scheme-handler/zoomphonecall"
+        ];
+        categories = [
+          "Network"
+          "InstantMessaging"
+          "VideoConference"
+        ];
+        settings = {
+          StartupNotify = "true";
+          StartupWMClass = "zoom";
+        };
+      };
+    };
 
   };
 

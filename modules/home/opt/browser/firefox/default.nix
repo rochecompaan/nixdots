@@ -194,6 +194,23 @@ in
             "Bing".metaData.hidden = true;
             "Amazon.com".metaData.hidden = true;
 
+            "Kagi" = {
+              iconUpdateURL = "https://kagi.com/favicon.ico";
+              updateInterval = 24 * 60 * 60 * 1000;
+              definedAliases = [ "@kg" ];
+              urls = [
+                {
+                  template = "https://kagi.com/search";
+                  params = [
+                    {
+                      name = "q";
+                      value = "{searchTerms}";
+                    }
+                  ];
+                }
+              ];
+            };
+
             "Nixvim" = {
               iconUpdateURL = "https://github.com/nix-community/nixvim/raw/main/assets/nixvim_logo.svg";
               updateInterval = 24 * 60 * 60 * 1000;

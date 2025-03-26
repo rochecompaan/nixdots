@@ -5,6 +5,8 @@
     monitor = [
       "HDMI-A-1,preferred,auto,1"
       "eDP-1,preferred,auto,1"
+      # https://github.com/hyprwm/hyprlock/issues/434#issuecomment-2323347005
+      "FALLBACK,1920x1080@60,auto,1"
     ];
 
     # layer rules

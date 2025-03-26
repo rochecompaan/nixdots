@@ -14,6 +14,12 @@
       "sidecar.local"
       "kipchoge"
     ];
+    "127.0.0.1" = [
+      "www.emas"
+      "m.emas"
+      "mailhog.emas"
+      "minio.emas"
+    ];
   };
 
   fonts.enable = true;

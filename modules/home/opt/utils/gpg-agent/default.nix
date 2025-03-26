@@ -10,7 +10,7 @@
       enable = true;
       enableSshSupport = true;
       defaultCacheTtl = 3600;
-      pinentryPackage = pkgs.pinentry-curses;
+      pinentryPackage = pkgs.pinentry-qt;
     };
   };
 }

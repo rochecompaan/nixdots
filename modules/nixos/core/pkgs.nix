@@ -9,6 +9,7 @@
     # System tools
     dig
     btop
+    inetutils
     killall
     ncdu
     pciutils

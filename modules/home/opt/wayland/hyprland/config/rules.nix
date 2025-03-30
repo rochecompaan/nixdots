@@ -50,6 +50,7 @@
       "float, class:^(nm-connection-editor)$"
       "float, class:^(org.gnome.Loupe)$"
       "float, class:^(pavucontrol)$"
+      "float, class:^(qalculate-gtk)$"
       "float, class:^(xdg-desktop-portal-gtk)$"
       "float, title:^(Media viewer)$"
       "float, title:^(Picture-in-Picture)$"

@@ -94,6 +94,7 @@ in
           "SUPER SHIFT, Z, exec, ${getExe zellij-attach}"
           "SUPER SHIFT, B, exec, firefox"
           "SUPER SHIFT, L, exec, hyprlock"
+          "SUPER ALT, 0, exec, qalculate-gtk"
           "SUPER, P, exec, 1password"
           "SUPER, O, exec, run-as-service wl-ocr"
 

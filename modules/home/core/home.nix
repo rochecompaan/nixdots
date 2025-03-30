@@ -101,6 +101,7 @@
       python311Packages.pygobject3
       python311Packages.setuptools
       python311Packages.virtualenv
+      qalculate-gtk
       qutebrowser
       rcon
       rustup

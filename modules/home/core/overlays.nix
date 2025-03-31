@@ -4,7 +4,7 @@
     inputs.nur.overlays.default
     # Use unstable version of OBS Studio
     (_: prev: {
-      obs-studio = inputs.nixpkgs-unstable.legacyPackages.${prev.system}.obs-studio;
+      inherit (inputs.nixpkgs-unstable.legacyPackages.${prev.system}) obs-studio;
     })
     # Zellij 0.41.2 overlay
     (_: prev: {
@@ -35,7 +35,7 @@
       _1password-gui =
         let
           unstable = import inputs.nixpkgs-unstable {
-            system = prev.system;
+            inherit (prev) system;
             config = {
               allowUnfree = true;
             };

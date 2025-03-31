@@ -2,9 +2,17 @@
 {
   nixpkgs.overlays = [
     inputs.nur.overlays.default
-    # Use unstable version of OBS Studio
-    (_: prev: {
-      inherit (inputs.nixpkgs-unstable.legacyPackages.${prev.system}) obs-studio;
+    # Use unstable version of OBS Studio with Qt fix
+    (final: prev: {
+      obs-studio = (inputs.nixpkgs-unstable.legacyPackages.${prev.system}.obs-studio.overrideAttrs (oldAttrs: {
+        # Create a proper wrapper script to ensure correct Qt libraries are used
+        postFixup = (oldAttrs.postFixup or "") + ''
+          wrapProgram $out/bin/obs \
+            --set LD_LIBRARY_PATH "${final.qtbase.out}/lib:${final.qtwayland.out}/lib:${final.qtdeclarative.out}/lib" \
+            --unset QT_STYLE_OVERRIDE \
+            --unset QT_QPA_PLATFORMTHEME
+        '';
+      }));
     })
     # Zellij 0.41.2 overlay
     (_: prev: {

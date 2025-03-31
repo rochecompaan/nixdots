@@ -8,7 +8,7 @@
         # Create a proper wrapper script to ensure correct Qt libraries are used
         postFixup = (oldAttrs.postFixup or "") + ''
           wrapProgram $out/bin/obs \
-            --set LD_LIBRARY_PATH "${final.qtbase.out}/lib:${final.qtwayland.out}/lib:${final.qtdeclarative.out}/lib" \
+            --set LD_LIBRARY_PATH "${final.qt6.qtbase.out}/lib:${final.qt6.qtwayland.out}/lib:${final.qt6.qtdeclarative.out}/lib" \
             --unset QT_STYLE_OVERRIDE \
             --unset QT_QPA_PLATFORMTHEME
         '';

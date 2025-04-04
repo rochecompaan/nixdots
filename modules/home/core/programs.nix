@@ -17,6 +17,7 @@
         "cnpg"
         "minio"
         "node-shell"
+        "oidc-login"
       ];
     };
   };

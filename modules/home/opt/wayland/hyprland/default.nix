@@ -94,9 +94,7 @@ let
     '';
 in
 {
-  imports = [
-    ./config
-  ];
+  imports = [ ./config ];
 
   config = mkIf (config.default.de == "hyprland") {
     home = {
@@ -121,6 +119,7 @@ in
         ssh-to-age
         signal-desktop
         slurp
+        transmission_4
         wf-recorder
         wl-clipboard
         wl-screenrec

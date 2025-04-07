@@ -107,6 +107,7 @@ in
         cliphist
         dbus
         glib
+        goose-cli
         grim
         gtk3
         hyprpicker

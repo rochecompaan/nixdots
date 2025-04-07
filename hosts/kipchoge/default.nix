@@ -1,8 +1,4 @@
-{
-  config,
-  inputs,
-  ...
-}:
+{ inputs, pkgs, ... }:
 {
   imports = [
     inputs.hm.nixosModule
@@ -85,13 +81,21 @@
   services.openvpn.servers = {
     urbint-vpn = {
       autoStart = false;
-      config = ''config /home/roche/.config/openvpn/urbint.ovpn '';
+      config = "config /home/roche/.config/openvpn/urbint.ovpn ";
       updateResolvConf = true;
     };
     sfu-vpn = {
       autoStart = false;
-      config = ''config /home/roche/.config/openvpn/sfu.ovpn '';
+      config = "config /home/roche/.config/openvpn/sfu.ovpn ";
       updateResolvConf = true;
     };
   };
+
+  services.jellyfin.enable = true;
+  environment.systemPackages = with pkgs; [
+    jellyfin
+    jellyfin-web
+    jellyfin-ffmpeg
+  ];
+
 }

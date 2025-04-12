@@ -56,7 +56,17 @@
         unstable._1password-gui;
     })
     (_: prev: {
-      inherit (inputs.nixpgks-unstable.legacyPackages.${prev.system}) goose-cli;
+      goose-cli =
+        let
+          unstable = import inputs.nixpkgs-unstable {
+            inherit (prev) system;
+            # dependens on unfree tokenizer package
+            config = {
+              allowUnfree = true;
+            };
+          };
+        in
+        unstable.goose-cli;
     })
   ];
 }

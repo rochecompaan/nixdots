@@ -111,6 +111,7 @@ in
         grim
         gtk3
         hyprpicker
+        keymapp
         libcanberra-gtk3
         libnotify
         libreoffice

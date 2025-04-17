@@ -16,6 +16,14 @@
 
   networking = {
     hostName = "kipchoge";
+    hosts = {
+      "127.0.0.1" = [
+        "www.emas"
+        "m.emas"
+        "mailhog.emas"
+        "minio.emas"
+      ];
+    };
     useDHCP = false;
     interfaces.enp10s0 = {
       ipv4.addresses = [

@@ -6,6 +6,7 @@
     ./bin
     ./browser
     ./claude-code
+    ./goose
     ./launcher
     ./lock
     ./misc

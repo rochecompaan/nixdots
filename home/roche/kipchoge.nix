@@ -53,6 +53,7 @@
     zsh.enable = true;
     gpg-agent.enable = true;
     claude-code.enable = true;
+    goose-cli.enable = true;
   };
 
   default = {

@@ -8,7 +8,6 @@
 with lib;
 let
   cfg = config.modules.claude-code;
-  claude-code-pkg = pkgs.callPackage ./package.nix { };
 in
 {
   options.modules.claude-code = {
@@ -17,7 +16,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = [
-      claude-code-pkg
+      pkgs.claude-code
     ];
   };
 }

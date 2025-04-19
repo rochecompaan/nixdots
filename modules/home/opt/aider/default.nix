@@ -11,7 +11,7 @@ in
 {
   config = lib.mkIf cfg.enable {
     home.packages = [
-      (pkgs.callPackage ./package.nix { })
+      pkgs.aider-chat
     ];
   };
 }

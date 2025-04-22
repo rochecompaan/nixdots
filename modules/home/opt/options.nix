@@ -4,7 +4,6 @@
     modules = {
       aider.enable = lib.mkEnableOption "Enable aider";
       gitui.enable = lib.mkEnableOption "Enable gitui";
-      goose-cli.enable = lib.mkEnableOption "Enable goose-cli";
       gpg-agent.enable = lib.mkEnableOption "Enable gpg-agent";
       k9s.enable = lib.mkEnableOption "Enable k9s";
       lazygit.enable = lib.mkEnableOption "Enable lazygit";

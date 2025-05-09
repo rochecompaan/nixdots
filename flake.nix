@@ -47,10 +47,6 @@
     # Nix User Repository
     nur.url = "github:nix-community/NUR";
 
-    # Hyprland, the modern compositor for wayland
-    # hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-    # hyprland.inputs.nixpkgs.follows = "nixpkgs";
-
     # Hyprspacem workspace overview plugin
     hyprspace.url = "github:KZDKM/Hyprspace";
     # hyprspace.inputs.hyprland.follows = "hyprland";

@@ -125,7 +125,8 @@
         show_tabs = false;
         show_help = false;
         enter_accept = true;
-        filter_mode = "directory";
+        filter_mode = "global";
+        filter_mode_shell_up_key_binding = "directory";
       };
     };
 

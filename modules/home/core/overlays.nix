@@ -73,5 +73,17 @@
         in
         unstable.claude-code;
     })
+    (_: prev: {
+      goose-cli =
+        let
+          unstable = import inputs.nixpkgs-unstable {
+            inherit (prev) system;
+            config = {
+              allowUnfree = true;
+            };
+          };
+        in
+        unstable.goose-cli;
+    })
   ];
 }

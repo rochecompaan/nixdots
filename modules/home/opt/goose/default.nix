@@ -8,7 +8,6 @@
 with lib;
 let
   cfg = config.modules.goose-cli;
-  goose-pkg = pkgs.callPackage ./package.nix { };
 in
 {
   options.modules.goose-cli = {
@@ -17,7 +16,7 @@ in
 
   config = mkIf cfg.enable {
     home.packages = [
-      goose-pkg
+      pkgs.goose-cli
     ];
   };
 }

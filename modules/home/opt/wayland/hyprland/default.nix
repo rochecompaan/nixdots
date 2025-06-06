@@ -131,7 +131,6 @@ in
         ydotool
         wlprop
         xorg.xprop
-        zoom-us
 
         ocrScript
         volumectl

@@ -40,6 +40,7 @@
 
     # window rules
     windowrulev2 = [
+      "stayfocused, class:zoom, title:menu window"
       "dimaround, class:^(gcr-prompter)$"
       "dimaround, class:^(xdg-desktop-portal-gtk)$"
       "dimaround, class:^(polkit-gnome-authentication-agent-1)$"

@@ -7,8 +7,8 @@
   theme = "gruvbox";
 
   imports = [
-    inputs.stylix.homeManagerModules.stylix
     inputs.anyrun.homeManagerModules.default
+    inputs.stylix.homeModules.stylix
     inputs.krewfile.homeManagerModules.krewfile
     ../../modules/home
   ];

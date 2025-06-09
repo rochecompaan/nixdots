@@ -3,7 +3,7 @@
   theme = "tokyonight";
 
   imports = [
-    inputs.stylix.homeManagerModules.stylix
+    inputs.stylix.homeModules.stylix
     inputs.anyrun.homeManagerModules.default
     inputs.krewfile.homeManagerModules.krewfile
     ../../modules/home

@@ -10,7 +10,7 @@
       enable = true;
       enableSshSupport = true;
       defaultCacheTtl = 3600;
-      pinentryPackage = pkgs.pinentry-gtk2;
+      pinentry.package = pkgs.pinentry-gtk2;
     };
   };
 }

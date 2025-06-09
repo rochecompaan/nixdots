@@ -127,7 +127,7 @@ in
         wlr-randr
         wlr-randr
         wtype
-        xwaylandvideobridge
+        kdePackages.xwaylandvideobridge
         ydotool
         wlprop
         xorg.xprop

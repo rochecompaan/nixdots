@@ -22,6 +22,8 @@
         };
 
         "cluster-token" = { };
+
+        "duckdns-token" = { };
       };
     };
 

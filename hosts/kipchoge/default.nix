@@ -1,4 +1,9 @@
-{ inputs, pkgs, ... }:
+{
+  config,
+  inputs,
+  pkgs,
+  ...
+}:
 {
   imports = [
     inputs.hm.nixosModules.default
@@ -105,5 +110,13 @@
     jellyfin-web
     jellyfin-ffmpeg
   ];
+
+  services.duckdns = {
+    enable = true;
+    domains = [
+      "roche"
+    ];
+    tokenFile = config.sops.secrets."duckdns-token".path;
+  };
 
 }

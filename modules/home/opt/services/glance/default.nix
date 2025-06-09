@@ -11,20 +11,6 @@ let
     mkEnableOption
     ;
 
-  background-color =
-    if config.theme == "paradise" then
-      "0 0 8"
-    else if config.theme == "aquarium" then
-      "240 14 15"
-    else
-      "120 0 0";
-  primary-color =
-    if config.theme == "paradise" then
-      "0 10 90"
-    else if config.theme == "aquarium" then
-      "232 19 32"
-    else
-      "120 0 0";
   cfg = config.opt.services.glance;
 in
 {
@@ -49,8 +35,7 @@ in
             inherit (cfg) port host;
           };
           theme = {
-            inherit background-color primary-color;
-            contrast-multiplier = 1.1;
+            contrast-multiplier = lib.mkForce 1.1;
           };
           pages = [
             {

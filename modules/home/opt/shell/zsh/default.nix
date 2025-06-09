@@ -91,7 +91,7 @@
         ];
       };
 
-      initExtra = ''
+      initContent = ''
         PROMPT_EOL_MARK=\'\'
         source <(kubectl completion zsh)
         eval "$(zoxide init zsh)"

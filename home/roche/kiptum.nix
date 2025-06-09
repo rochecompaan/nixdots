@@ -4,7 +4,6 @@
 
   imports = [
     inputs.stylix.homeModules.stylix
-    inputs.anyrun.homeManagerModules.default
     inputs.krewfile.homeManagerModules.krewfile
     ../../modules/home
   ];

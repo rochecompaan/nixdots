@@ -23,6 +23,7 @@ in
   config = mkIf cfg.enable {
     programs.anyrun = {
       enable = true;
+      package = inputs.anyrun.packages.${system}.anyrun;
       config = {
         plugins = with anyrun.packages.${system}; [
           applications

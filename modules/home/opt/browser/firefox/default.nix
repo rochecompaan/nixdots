@@ -179,9 +179,9 @@ in
           default = "Kagi";
           order = [
             "Kagi"
-            "Google"
-            "DuckDuckGo"
-            "Youtube"
+            "google"
+            "ddg"
+            "youtube"
             "NixOS Options"
             "Nix Packages"
             "GitHub"
@@ -191,11 +191,11 @@ in
           ];
 
           engines = {
-            "Bing".metaData.hidden = true;
-            "Amazon.com".metaData.hidden = true;
+            "bing".metaData.hidden = true;
+            "amazondotcom-us".metaData.hidden = true;
 
             "Kagi" = {
-              iconUpdateURL = "https://kagi.com/favicon.ico";
+              icon = "https://kagi.com/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000;
               definedAliases = [ "@kg" ];
               urls = [
@@ -212,7 +212,7 @@ in
             };
 
             "Nixvim" = {
-              iconUpdateURL = "https://github.com/nix-community/nixvim/raw/main/assets/nixvim_logo.svg";
+              icon = "https://github.com/nix-community/nixvim/raw/main/assets/nixvim_logo.svg";
               updateInterval = 24 * 60 * 60 * 1000;
               definedAliases = [ "@v" ];
               urls = [
@@ -228,7 +228,7 @@ in
               ];
             };
             "YouTube" = {
-              iconUpdateURL = "https://youtube.com/favicon.ico";
+              icon = "https://youtube.com/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000;
               definedAliases = [ "@yt" ];
               urls = [
@@ -285,7 +285,7 @@ in
             };
 
             "GitHub" = {
-              iconUpdateURL = "https://github.com/favicon.ico";
+              icon = "https://github.com/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000;
               definedAliases = [ "@gh" ];
 
@@ -320,7 +320,7 @@ in
             };
 
             "HackerNews" = {
-              iconUpdateURL = "https://hn.algolia.com/favicon.ico";
+              icon = "https://hn.algolia.com/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000;
               definedAliases = [ "@hn" ];
 

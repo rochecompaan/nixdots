@@ -1,7 +1,12 @@
-{ pkgs, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 {
   imports = [
-    inputs.hm.nixosModule
+    inputs.hm.nixosModules.default
     inputs.nixos-hardware.nixosModules.asus-zephyrus-ga402x-nvidia
     ./hardware-configuration.nix
   ];
@@ -32,6 +37,7 @@
     domains = [
       "rochelaptop"
     ];
+    tokenFile = config.sops.secrets."duckdns-token".path;
   };
 
   services.resolved.enable = true;

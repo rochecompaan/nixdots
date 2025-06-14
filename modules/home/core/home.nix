@@ -35,6 +35,7 @@
       chromium
       circumflex
       clipse
+      codespell
       colordiff
       copyq
       deadnix
@@ -130,6 +131,8 @@
       xdotool
       xwayland
       yarn
+      yamlfmt
+      yamllint
       zellij
       zoxide
     ];

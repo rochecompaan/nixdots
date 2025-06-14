@@ -27,6 +27,10 @@
           helper = "store";
         };
 
+        pull = {
+          rebase = true;
+        };
+
         color = {
           ui = true;
           pager = true;

@@ -361,6 +361,20 @@ in
           }
       }
 
+      // Define layouts
+      // For more examples, see: https://zellij.dev/documentation/layouts.html
+      layouts {
+          coder {
+              pane split_direction="vertical" {
+                  pane command="nvim"
+                  pane split_direction="horizontal" {
+                      pane command="aider"
+                      pane
+                  }
+              }
+          }
+      }
+
       // Choose the theme that is specified in the themes section.
       // Default: default
       //
@@ -369,7 +383,7 @@ in
       // The name of the default layout to load on startup
       // Default: "default"
       //
-      // default_layout "compact"
+      default_layout "coder"
 
       // Choose the mode that zellij uses when starting up.
       // Default: normal

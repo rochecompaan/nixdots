@@ -25,6 +25,11 @@
         ksy = "kubectl -n kube-system";
         kgp = "kubectl get pods";
         kgs = "kubectl get services";
+        kgd = "kubectl get deploy,daemonsets";
+        kge = "kubectl exec -it";
+
+        # Atuin
+        asr = "atuin script run";
 
         # Colorize grep output (good for log files)
         grep = "grep --color=auto";
@@ -75,6 +80,9 @@
         myip = "curl -s checkip.amazonaws.com";
 
         nb = "sudo nixos-rebuild switch --flake .#djangf8sum";
+
+        aider = "GEMINI_API_KEY=$(pass show GOOGLE_API_KEY_SFU) aider --no-gitignore --vim --model gemini/gemini-2.5-pro-preview-03-25";
+
       };
 
       zplug = {

@@ -18,6 +18,7 @@
         "minio"
         "node-shell"
         "oidc-login"
+        "rook-ceph"
       ];
     };
   };

@@ -431,11 +431,31 @@ in
 
       // The folder in which Zellij will look for layouts
       //
-      // layout_dir "/Users/omerhamerman/dotfiles/zellij/layouts"
+      layout_dir "${config.xdg.configHome}/zellij/layouts"
 
       // The folder in which Zellij will look for themes
       //
       // theme_dir "/home/roche/.config/zellij/themes"
     '';
+
+    xdg.configFile."zellij/layouts/agibase.kdl".text = ''
+      layout {
+        pane split_direction="vertical" {
+          pane {
+              command "nvim"
+              cwd "${config.home.homeDirectory}/projects/agibase"
+          }
+          pane split_direction="horizontal" {
+            pane {
+                cwd "${config.home.homeDirectory}/projects/agibase"
+            }
+            pane borderless=true {
+                cwd "${config.home.homeDirectory}/projects/agibase"
+            }
+         }
+        }
+      }
+    '';
+
   };
 }

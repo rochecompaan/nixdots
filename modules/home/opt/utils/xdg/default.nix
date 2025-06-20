@@ -72,6 +72,14 @@ in
   xdg = {
     enable = true;
     cacheHome = config.home.homeDirectory + "/.local/cache";
+    portal = {
+      enable = true;
+      xdgOpenUsePortal = true;
+      extraPortals = [
+        pkgs.xdg-desktop-portal-gtk
+        pkgs.xdg-desktop-portal-wlr
+      ];
+    };
 
     mimeApps = {
       enable = true;

@@ -85,8 +85,5 @@
         in
         unstable.goose-cli;
     })
-    (_: prev: {
-      opencode = inputs.opencode.packages.${prev.system}.default;
-    })
   ];
 }

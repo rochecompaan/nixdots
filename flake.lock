@@ -492,25 +492,7 @@
     },
     "flake-utils_3": {
       "inputs": {
-        "systems": "systems_8"
-      },
-      "locked": {
-        "lastModified": 1731533236,
-        "narHash": "sha256-l0KFg5HjrsfsO/JpG+r7fRrqm12kzFHyUHqHCVpMMbI=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "11707dc2f618dd54ca8739b309ec4fc024de578b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
-    "flake-utils_4": {
-      "inputs": {
-        "systems": "systems_10"
+        "systems": "systems_9"
       },
       "locked": {
         "lastModified": 1731533236,
@@ -1452,11 +1434,11 @@
         "pre-commit-hooks": "pre-commit-hooks_2"
       },
       "locked": {
-        "lastModified": 1750679356,
-        "narHash": "sha256-hFwg2tWGkBTbq8aNyOVz8atiCGSE8HHZPGrvQIIr/uQ=",
+        "lastModified": 1751617477,
+        "narHash": "sha256-ubresr/0Y60sHjJBFMqlu4ce+XLP20zYsNiFh04FeEU=",
         "owner": "rochecompaan",
         "repo": "nixvim",
-        "rev": "ad4763d6a98e055480956a4b03faf342edefd391",
+        "rev": "d05cb199349e4caabd40b7adbaa8bb6ad43a00aa",
         "type": "github"
       },
       "original": {
@@ -1560,27 +1542,6 @@
         "type": "github"
       }
     },
-    "opencode": {
-      "inputs": {
-        "flake-utils": "flake-utils_3",
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1751240987,
-        "narHash": "sha256-XsFY8IedN5Jo5oYcZX6dkj7jTSI0AXsOD6ZCTQ1e1zo=",
-        "owner": "raulescobar-g",
-        "repo": "opencode",
-        "rev": "6639c0c3b28f2dc2e5db81a3fe05ae7ab0ee21be",
-        "type": "github"
-      },
-      "original": {
-        "owner": "raulescobar-g",
-        "repo": "opencode",
-        "type": "github"
-      }
-    },
     "pre-commit-hooks": {
       "inputs": {
         "flake-compat": "flake-compat_2",
@@ -1668,7 +1629,6 @@
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nixvim": "nixvim",
         "nur": "nur",
-        "opencode": "opencode",
         "pre-commit-hooks": "pre-commit-hooks_3",
         "sops-nix": "sops-nix",
         "stylix": "stylix",
@@ -1733,7 +1693,7 @@
           "nixpkgs"
         ],
         "nur": "nur_2",
-        "systems": "systems_9",
+        "systems": "systems_8",
         "tinted-foot": "tinted-foot",
         "tinted-kitty": "tinted-kitty",
         "tinted-schemes": "tinted-schemes",
@@ -1767,21 +1727,6 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default-linux",
-        "type": "github"
-      }
-    },
-    "systems_10": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
         "type": "github"
       }
     },
@@ -2118,7 +2063,7 @@
     "zjstatus": {
       "inputs": {
         "crane": "crane",
-        "flake-utils": "flake-utils_4",
+        "flake-utils": "flake-utils_3",
         "nixpkgs": "nixpkgs_8",
         "rust-overlay": "rust-overlay"
       },

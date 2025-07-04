@@ -53,6 +53,7 @@
     gpg-agent.enable = true;
     claude-code.enable = true;
     goose-cli.enable = true;
+    opencode.enable = true;
   };
 
   default = {

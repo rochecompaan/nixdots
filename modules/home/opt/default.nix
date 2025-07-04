@@ -11,6 +11,7 @@
     ./lock
     ./misc
     ./music
+    ./opencode
     ./services
     ./shell
     ./term

@@ -73,6 +73,9 @@
 
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs.url = "github:serokell/deploy-rs";
+
+    opencode.url = "github:raulescobar-g/opencode";
+    opencode.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
 
   outputs =

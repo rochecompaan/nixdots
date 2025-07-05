@@ -32,6 +32,9 @@
   pipewire.enable = true;
   desktop.enable = true;
 
+  vpn.nordvpn.enable = true;
+  vpn.sfu.enable = true;
+
   services.duckdns = {
     enable = true;
     domains = [
@@ -42,16 +45,4 @@
 
   services.resolved.enable = true;
 
-  services.openvpn.servers = {
-    urbint-vpn = {
-      autoStart = false;
-      config = ''config /home/roche/.config/openvpn/urbint.ovpn '';
-      updateResolvConf = true;
-    };
-    sfu-vpn = {
-      autoStart = false;
-      config = ''config /home/roche/.config/openvpn/sfu.ovpn '';
-      updateResolvConf = true;
-    };
-  };
 }

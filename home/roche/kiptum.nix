@@ -50,6 +50,7 @@
     zsh.enable = true;
     gpg-agent.enable = true;
     claude-code.enable = true;
+    opencode.enable = true;
   };
 
   default = {

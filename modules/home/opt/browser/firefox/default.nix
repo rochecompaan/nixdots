@@ -119,7 +119,7 @@ in
           "toolkit.telemetry.enabled" = false; # enforced by nixos
           "toolkit.telemetry.server" = "";
           "toolkit.telemetry.unified" = false;
-          "extensions.webcompat-reporter.enabled" = false; # don't report compability problems to mozilla
+          "extensions.webcompat-reporter.enabled" = false; # don't report compatibility problems to mozilla
           "datareporting.policy.dataSubmissionEnabled" = false;
           "datareporting.healthreport.uploadEnabled" = false;
           "browser.ping-centre.telemetry" = false;
@@ -133,7 +133,7 @@ in
           "identity.fxaccounts.toolbar.enabled" = false;
           "identity.fxaccounts.pairing.enabled" = false;
           "identity.fxaccounts.commands.enabled" = false;
-          "browser.contentblocking.report.lockwise.enabled" = false; # don't use firefox password manger
+          "browser.contentblocking.report.lockwise.enabled" = false; # don't use firefox password manager
           "browser.uitour.enabled" = false; # no tutorial please
           "browser.newtabpage.activity-stream.showSponsored" = false;
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;
@@ -227,7 +227,7 @@ in
                 }
               ];
             };
-            "YouTube" = {
+            "youtube" = {
               icon = "https://youtube.com/favicon.ico";
               updateInterval = 24 * 60 * 60 * 1000;
               definedAliases = [ "@yt" ];
@@ -411,7 +411,7 @@ in
           "toolkit.telemetry.enabled" = false; # enforced by nixos
           "toolkit.telemetry.server" = "";
           "toolkit.telemetry.unified" = false;
-          "extensions.webcompat-reporter.enabled" = false; # don't report compability problems to mozilla
+          "extensions.webcompat-reporter.enabled" = false; # don't report compatibility problems to mozilla
           "datareporting.policy.dataSubmissionEnabled" = false;
           "datareporting.healthreport.uploadEnabled" = false;
           "browser.ping-centre.telemetry" = false;
@@ -425,7 +425,7 @@ in
           "identity.fxaccounts.toolbar.enabled" = false;
           "identity.fxaccounts.pairing.enabled" = false;
           "identity.fxaccounts.commands.enabled" = false;
-          "browser.contentblocking.report.lockwise.enabled" = false; # don't use firefox password manger
+          "browser.contentblocking.report.lockwise.enabled" = false; # don't use firefox password manager
           "browser.uitour.enabled" = false; # no tutorial please
           "browser.newtabpage.activity-stream.showSponsored" = false;
           "browser.newtabpage.activity-stream.showSponsoredTopSites" = false;

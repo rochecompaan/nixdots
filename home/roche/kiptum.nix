@@ -1,6 +1,6 @@
 { inputs, pkgs, ... }:
 {
-  theme = "tokyonight";
+  theme = "gruvbox";
 
   imports = [
     inputs.stylix.homeModules.stylix

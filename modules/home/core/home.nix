@@ -115,6 +115,7 @@
       starship
       stern
       syncthing
+      swappy
       t-rec
       tailspin
       teams-for-linux

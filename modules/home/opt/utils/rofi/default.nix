@@ -38,14 +38,15 @@ in
 
         /*****----- Configuration -----*****/
         configuration {
-        	modi:                       "drun,run,filebrowser,window";
-            show-icons:                 false;
+          font: "FiraCode Nerd Font 12";
+          modi:                       "drun,run,filebrowser,window";
+            show-icons:                 true;
             display-drun:               " ";
             display-run:                " ";
             display-filebrowser:        " ";
             display-window:             " ";
-        	drun-display-format:        "{name}";
-        	window-format:              "{w} · {c} · {t}";
+          drun-display-format:        "{name}";
+          window-format:              "{w} · {c} · {t}";
         }
 
         /*****----- Global Properties -----*****/
@@ -84,7 +85,7 @@ in
             location:                    center;
             anchor:                      center;
             fullscreen:                  false;
-            width:                       400px;
+            width:                       600px;
             x-offset:                    0px;
             y-offset:                    0px;
 
@@ -92,13 +93,13 @@ in
             enabled:                     true;
             margin:                      0px;
             padding:                     0px;
-            border:                      0px solid;
+            border:                      1px solid;
             border-radius:               10px;
             border-color:                #89B4FA;
             cursor:                      "default";
-            /* Backgroud Colors */
+            /* Background Colors */
             background-color:            @background-colour;
-            /* Backgroud Image */
+            /* Background Image */
             //background-image:          url("/path/to/image.png", none);
             /* Simple Linear Gradient */
             //background-image:          linear-gradient(red, orange, pink, purple);
@@ -127,11 +128,11 @@ in
             enabled:                     true;
             spacing:                     10px;
             margin:                      0px;
-            padding:                     0px;
+            padding:                     10px;
             border:                      0px solid;
-            border-radius:               0px;
+            border-radius:               10px;
             border-color:                @border-colour;
-            background-color:            transparent;
+            background-color:            @background-input;
             text-color:                  @foreground-colour;
             children:                    [ "textbox-prompt-colon", "entry", "mode-switcher" ];
         }
@@ -143,7 +144,7 @@ in
         }
         textbox-prompt-colon {
             enabled:                     true;
-            padding:                     5px 0px;
+            padding:                     5px 10px;
             expand:                      false;
             str:                         "";
             background-color:            inherit;
@@ -342,6 +343,7 @@ in
         * {
             background:     #${config.lib.stylix.colors.base00};
             background-alt: #${config.lib.stylix.colors.base01};
+            background-input: #${config.lib.stylix.colors.base02};
             foreground:     #${config.lib.stylix.colors.base05};
             selected:       #${config.lib.stylix.colors.base08};
             active:         #${config.lib.stylix.colors.base04};

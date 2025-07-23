@@ -23,7 +23,6 @@ let
       ]
     ) 10
   );
-
   zellij-attach = pkgs.writeShellScriptBin "zellij-attach" ''
     #! /bin/sh
 
@@ -34,6 +33,11 @@ let
     fi
 
     ${terminal} -e zellij attach --create $session
+  '';
+
+  hypr-screenshot = pkgs.writeShellScriptBin "hypr-screenshot" ''
+    #! /bin/sh
+    ${pkgs.grimblast}/bin/grimblast save area - | ${pkgs.swappy}/bin/swappy -f -
   '';
 
   # Get default application
@@ -99,15 +103,14 @@ in
           "SUPER, O, exec, run-as-service wl-ocr"
 
           # Screenshot
-          "SUPER SHIFT, S, exec, grimblast copy area --notify"
-          "CTRL SHIFT, S, exec, grimblast --notify --cursor copysave output"
+          "SUPER SHIFT, S, exec, ${getExe hypr-screenshot}"
           "SUPER SHIFT, T, exec, kitty -e twt"
         ]
         ++ workspaces;
 
       bindr = [
         # Launchers
-        " SUPER, R, exec, pkill anyrun || run-as-service anyrun "
+        " SUPER, R, exec, rofi -show drun"
         " SUPER SHIFT, p, exec, rofi-rbw --no-help --clipboarder wl-copy --keybindings Alt+x:type:password "
         " SUPER SHIFT, e, exec, bemoji -t "
         " SUPER SHIFT, o, exec, wezterm start --class clipse clipse "

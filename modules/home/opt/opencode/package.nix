@@ -4,17 +4,18 @@
   buildGoModule,
   bun,
   fetchFromGitHub,
-  fetchurl,
+  models-dev,
   nix-update-script,
   testers,
+  writableTmpDirAsHomeHook,
 }:
 
 let
   opencode-node-modules-hash = {
-    "aarch64-darwin" = "sha256-ZI4wJvBeSejhHjyRsYqpfUvJ959WU01JCW+2HIBs3Cg=";
-    "aarch64-linux" = "sha256-g/IyhBxVyU39rh2R9SfmHwBi4oMS12bo60Apbay06v0=";
-    "x86_64-darwin" = "sha256-ckWsqrwJEpL1ejrOSp5wTGwQYsDapLH3imNnSOEHQSw=";
-    "x86_64-linux" = "sha256-ZMz7vfndYrpjUvhX8L9qv/lXcWKqXZwvfahGAE5EKYo=";
+    "aarch64-darwin" = "sha256-sZ7rU/IVgqCHoIqCMhCCz2GLkozfJsf40Kehorzu6kM=";
+    "aarch64-linux" = "sha256-l7vBt2+iAhdCgBABQYfCLRjLxNbY41jcVwqHJwOR64w=";
+    "x86_64-darwin" = "sha256-PVgBPdygsptjNQdF6JOuv+//HUqkFQjQ0ZSKctDmiEM=";
+    "x86_64-linux" = "sha256-MWukQJXa7k448kM4vGdJfverVeYofBXVjIhQYX7EmJ4=";
   };
   bun-target = {
     "aarch64-darwin" = "bun-darwin-arm64";
@@ -25,12 +26,12 @@ let
 in
 stdenvNoCC.mkDerivation (finalAttrs: {
   pname = "opencode";
-  version = "0.3.57";
+  version = "0.3.78";
   src = fetchFromGitHub {
     owner = "sst";
     repo = "opencode";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-/YIfLYzCprgTedjAeSFuck4aix/Drx7iwG7rCC2MfPE=";
+    hash = "sha256-sKvA5486IYRUD0J3ljD+zW9t8qqDGya7id2ZcohBcUE=";
   };
 
   tui = buildGoModule {
@@ -38,7 +39,7 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     inherit (finalAttrs) version;
     src = "${finalAttrs.src}/packages/tui";
 
-    vendorHash = "sha256-8OIPFa+bl1If55YZtacyOZOqMLslbMyO9Hx0HOzmrA0=";
+    vendorHash = "sha256-g2IhNOIKuBf4G4PioXhFvKIWds9ZiYfiG9vnyXCaz6o=";
 
     subPackages = [ "cmd/opencode" ];
 
@@ -46,7 +47,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
 
     ldflags = [
       "-s"
-      "-w"
       "-X=main.Version=${finalAttrs.version}"
     ];
 
@@ -68,23 +68,29 @@ stdenvNoCC.mkDerivation (finalAttrs: {
       "SOCKS_SERVER"
     ];
 
-    nativeBuildInputs = [ bun ];
+    nativeBuildInputs = [
+      bun
+      writableTmpDirAsHomeHook
+    ];
 
     dontConfigure = true;
 
     buildPhase = ''
+      runHook preBuild
 
-      export HOME=$(mktemp -d)
-      export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
+       export BUN_INSTALL_CACHE_DIR=$(mktemp -d)
 
-      bun install \
-        --filter=opencode \
-        --force \
-        --no-progress
+       bun install \
+         --filter=opencode \
+         --force \
+         --frozen-lockfile \
+         --no-progress
+
+      runHook postBuild
     '';
 
     installPhase = ''
-      runHook preInstall 
+      runHook preInstall
 
       mkdir -p $out/node_modules
       cp -R ./node_modules $out
@@ -100,14 +106,16 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     outputHashMode = "recursive";
   };
 
-  models-dev-data = fetchurl {
-    url = "https://models.dev/api.json";
-    sha256 = "sha256-igxQOC+Hz2FnXIW/S4Px9WhRuBhcIQIHO+7U8jHU1TQ=";
-  };
+  nativeBuildInputs = [
+    bun
+    models-dev
+  ];
 
-  nativeBuildInputs = [ bun ];
-
-  patches = [ ./fix-models-macro.patch ];
+  patches = [
+    # Patch `packages/opencode/src/provider/models-macro.ts` to get contents of
+    # `api.json` from the file bundled with `bun build`.
+    ./local-models-dev.patch
+  ];
 
   configurePhase = ''
     runHook preConfigure
@@ -117,10 +125,11 @@ stdenvNoCC.mkDerivation (finalAttrs: {
     runHook postConfigure
   '';
 
+  env.MODELS_DEV_API_JSON = "${models-dev}/dist/api.json";
+
   buildPhase = ''
     runHook preBuild
 
-    export MODELS_JSON="$(cat ${finalAttrs.models-dev-data})"
     bun build \
       --define OPENCODE_VERSION="'${finalAttrs.version}'" \
       --compile \
@@ -138,7 +147,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/bin
     install -Dm755 opencode $out/bin/opencode
 
     runHook postInstall
@@ -156,8 +164,6 @@ stdenvNoCC.mkDerivation (finalAttrs: {
         "tui"
         "--subpackage"
         "node_modules"
-        "--subpackage"
-        "models-dev-data"
       ];
     };
   };

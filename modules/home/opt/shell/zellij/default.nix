@@ -90,6 +90,8 @@ in
           bind "l" "Right" { MoveFocus "Right"; SwitchToMode "Normal"; }
           bind "Ctrl h" { MovePane "Left"; SwitchToMode "Normal"; }
           bind "Ctrl l" { MovePane "Right"; SwitchToMode "Normal"; }
+          bind "Ctrl j" { MovePane "Down"; SwitchToMode "Normal"; }
+          bind "Ctrl k" { MovePane "Up"; SwitchToMode "Normal"; }
           bind "j" "Down" { MoveFocus "Down"; SwitchToMode "Normal"; }
           bind "k" "Up" { MoveFocus "Up"; SwitchToMode "Normal"; }
           bind "p" { SwitchFocus; SwitchToMode "Normal"; }

@@ -78,11 +78,6 @@
         vpnstats = "openvpn3 sessions-list";
 
         myip = "curl -s checkip.amazonaws.com";
-
-        nb = "sudo nixos-rebuild switch --flake .#djangf8sum";
-
-        aider = "GEMINI_API_KEY=$(pass show GOOGLE_API_KEY_SFU) aider --no-gitignore --vim --model gemini/gemini-2.5-pro-preview-03-25";
-
       };
 
       zplug = {

@@ -20,8 +20,8 @@
     misc = {
       obsidian.enable = true;
       yamlfmt.enable = true;
-      crush.enable = true;
     };
+    crush.enable = true;
     launcher = {
       anyrun.enable = true;
     };

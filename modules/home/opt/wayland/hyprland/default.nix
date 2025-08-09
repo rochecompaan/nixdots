@@ -129,6 +129,7 @@ in
         wtype
         kdePackages.xwaylandvideobridge
         ydotool
+        zoom-us
         wlprop
         xorg.xprop
 

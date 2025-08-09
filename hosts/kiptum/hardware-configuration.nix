@@ -27,13 +27,14 @@
   boot.kernelParams = [ "nvidia.NVreg_PreserveVideoMemoryAllocations=1" ];
   boot.extraModulePackages = [ ];
 
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-    version = "570.153.02"; # Latest 570 driver
-    sha256_64bit = "sha256-FIiG5PaVdvqPpnFA5uXdblH5Cy7HSmXxp6czTfpd4bY=";
-    openSha256 = "sha256-ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
-    settingsSha256 = "sha256-5m6caud68Owy4WNqxlIQPXgEmbTe4kZV2vZyTWHWe+M=";
-    usePersistenced = false;
-  };
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  # hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+  #   version = "570.153.02"; # Latest 570 driver
+  #   sha256_64bit = "sha256-FIiG5PaVdvqPpnFA5uXdblH5Cy7HSmXxp6czTfpd4bY=";
+  #   openSha256 = "sha256-ABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=";
+  #   settingsSha256 = "sha256-5m6caud68Owy4WNqxlIQPXgEmbTe4kZV2vZyTWHWe+M=";
+  #   usePersistenced = false;
+  # };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/41ff16eb-2439-4957-aafe-5af9a4a24069";

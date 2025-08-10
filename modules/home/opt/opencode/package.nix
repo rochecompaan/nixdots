@@ -1,5 +1,6 @@
 {
   lib,
+  stdenv,
   stdenvNoCC,
   buildGoModule,
   bun,
@@ -24,7 +25,7 @@ let
     "x86_64-linux" = "bun-linux-x64";
   };
 in
-stdenvNoCC.mkDerivation (finalAttrs: {
+stdenv.mkDerivation (finalAttrs: {
   pname = "opencode";
   version = "0.4.2";
   src = fetchFromGitHub {

@@ -54,6 +54,9 @@
     # Hyprpaper, wallpaper manager for hyprland
     hyprpaper.url = "github:hyprwm/hyprpaper";
 
+    # Numtide AI Tools
+    nix-ai-tools.url = "github:numtide/nix-ai-tools";
+
     # My personal nixvim config
     nixvim.url = "github:rochecompaan/nixvim";
 

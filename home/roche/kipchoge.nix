@@ -21,7 +21,6 @@
       obsidian.enable = true;
       yamlfmt.enable = true;
     };
-    crush.enable = true;
     launcher = {
       anyrun.enable = true;
     };
@@ -52,9 +51,7 @@
     aider.enable = true;
     zsh.enable = true;
     gpg-agent.enable = true;
-    claude-code.enable = true;
     goose-cli.enable = true;
-    opencode.enable = true;
   };
 
   default = {
@@ -85,13 +82,21 @@
   };
 
   home = {
-    packages = with pkgs; [
-      android-tools
-      vesktop
-      scrcpy
-      stremio
-      yazi
-      wdisplays
-    ];
+    packages =
+      with pkgs;
+      [
+        android-tools
+        vesktop
+        scrcpy
+        stremio
+        yazi
+        wdisplays
+      ]
+      ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+        claude-code
+        opencode
+        gemini-cli
+        qwen-code
+      ]);
   };
 }

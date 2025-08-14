@@ -108,14 +108,6 @@
         bindkey -v
         bindkey '^R' history-incremental-search-backward
 
-        #compdef toggl
-        _toggl() {
-          eval \$(env COMMANDLINE="\''${words[1,\$CURRENT]}" _TOGGL_COMPLETE=complete-zsh  toggl)
-        }
-        if [[ "\$(basename -- \''${(%):-%x})" != "_toggl" ]]; then
-          compdef _toggl toggl
-        fi
-
         export PATH="$HOME/.krew/bin:$PATH"
       '';
     };

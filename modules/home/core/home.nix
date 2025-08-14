@@ -55,6 +55,7 @@
       gnumake
       go
       google-cloud-sdk
+      go-task
       grimblast
       gum
       helmfile

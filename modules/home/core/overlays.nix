@@ -71,5 +71,14 @@
         in
         unstable.goose-cli;
     })
+    (_: prev: {
+      k8sgpt =
+        let
+          unstable = import inputs.nixpkgs-unstable {
+            inherit (prev) system;
+          };
+        in
+        unstable.k8sgpt;
+    })
   ];
 }

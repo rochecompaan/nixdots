@@ -67,6 +67,7 @@
       jq
       jqp
       just
+      k8sgpt
       k9s
       keybase
       kubecolor

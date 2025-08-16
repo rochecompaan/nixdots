@@ -438,6 +438,8 @@ in
       // The folder in which Zellij will look for themes
       //
       // theme_dir "/home/roche/.config/zellij/themes"
+
+      post_command_discovery_hook "echo \"$RESURRECT_COMMAND\" | sed 's| --cmd .*-vim-pack-dir||g; s|/etc/profiles/per-user/$USER/bin/||g; s|/nix/store/.*/bin/||g'"
     '';
 
     xdg.configFile."zellij/layouts/agibase.kdl".text = ''

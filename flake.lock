@@ -176,11 +176,11 @@
         "systems": "systems_6"
       },
       "locked": {
-        "lastModified": 1755028070,
-        "narHash": "sha256-fcRwk9l12JZEvXucs8Y32Nw0Y3Sy/C2cEyMfhplA7pY=",
+        "lastModified": 1755332143,
+        "narHash": "sha256-jaiZPA5ND7HPJ4U/bzp+BKGOYR14+rIe9tC6XA4jBHU=",
         "owner": "numtide",
         "repo": "blueprint",
-        "rev": "0127cf037c9d83bb76d8654c68561e72f25c083a",
+        "rev": "3c8bf84e28df2be19cc6623cb3ceeb6fc0839b91",
         "type": "github"
       },
       "original": {
@@ -1163,11 +1163,11 @@
         "treefmt-nix": "treefmt-nix"
       },
       "locked": {
-        "lastModified": 1755346692,
-        "narHash": "sha256-1zPs+VnjgoHiM6gPMKDIcBwj2CRFvQjVXCLLnV4KvRw=",
+        "lastModified": 1755485700,
+        "narHash": "sha256-koTv4R2ombQcOV1RR49NlV/eztYYF2C/fp3LwElOuJc=",
         "owner": "numtide",
         "repo": "nix-ai-tools",
-        "rev": "7688318587a33495ab6331582c198f3ddccf4289",
+        "rev": "a8a1aab5e2d1a962e68ec0242854aa9ff41a0995",
         "type": "github"
       },
       "original": {

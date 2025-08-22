@@ -3,7 +3,7 @@
     hardwareClockInLocalTime = true;
     timeZone = "Africa/Johannesburg";
   };
-  services.tzupdate.enable = false;
+  # services.tzupdate.enable = false;
 
   # systemd.timers.tzupdate = {
   #   description = "Update timezone automatically";

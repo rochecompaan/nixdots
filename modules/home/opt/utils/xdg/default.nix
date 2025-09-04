@@ -1,6 +1,12 @@
-{ config, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   browser = [ "firefox" ];
+  chromium = lib.getExe pkgs.chromium;
   imageViewer = [ "org.gnome.Loupe" ];
   videoPlayer = [ "io.github.celluloid_player.Celluloid" ];
   audioPlayer = [ "io.bassi.Amberol" ];
@@ -96,7 +102,7 @@ in
     desktopEntries = {
       zoom = {
         name = "Zoom";
-        exec = "zoom %U";
+        exec = "${chromium} --app=https://app.zoom.us";
         icon = "Zoom";
         type = "Application";
         terminal = false;

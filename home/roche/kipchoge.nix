@@ -92,7 +92,9 @@
         wdisplays
       ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+        codex
         claude-code
+        crush
         opencode
         gemini-cli
         qwen-code

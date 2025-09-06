@@ -99,11 +99,6 @@
       playerctl
       pre-commit
       presenterm
-      python311Packages.gst-python
-      python311Packages.pip
-      python311Packages.pygobject3
-      python311Packages.setuptools
-      python311Packages.virtualenv
       qalculate-gtk
       qutebrowser
       rcon
@@ -120,8 +115,6 @@
       swappy
       t-rec
       tailspin
-      teams-for-linux
-      telegram-desktop
       teleport
       tldr
       tuba

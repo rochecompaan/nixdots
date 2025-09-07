@@ -123,6 +123,40 @@ in
           StartupWMClass = "zoom";
         };
       };
+      msteams = {
+        name = "Microsoft Teams";
+        exec = "${chromium} --app=https://teams.microsoft.com";
+        icon = "teams";
+        type = "Application";
+        terminal = false;
+        mimeType = [
+          "x-scheme-handler/msteams"
+        ];
+        categories = [
+          "Network"
+          "InstantMessaging"
+          "VideoConference"
+        ];
+        settings = {
+          StartupNotify = "true";
+          StartupWMClass = "teams";
+        };
+      };
+      outlook = {
+        name = "Microsoft Outlook";
+        exec = "${chromium} --app=https://outlook.microsoft.com";
+        icon = "outlook";
+        type = "Application";
+        terminal = false;
+        mimeType = [
+          "x-scheme-handler/msoutlook"
+        ];
+        settings = {
+          StartupNotify = "true";
+          StartupWMClass = "outlook";
+        };
+      };
+
     };
 
   };

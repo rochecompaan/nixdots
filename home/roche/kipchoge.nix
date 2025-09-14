@@ -49,6 +49,7 @@
   modules = {
     aider.enable = true;
     zsh.enable = true;
+    fish.enable = true;
     gpg-agent.enable = true;
     goose-cli.enable = true;
   };

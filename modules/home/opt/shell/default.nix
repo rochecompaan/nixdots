@@ -2,5 +2,6 @@
   imports = [
     ./zellij
     ./zsh
+    ./fish
   ];
 }

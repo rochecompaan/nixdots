@@ -1,8 +1,16 @@
 { config, self, ... }:
 {
   wallpaper = "${self}/home/shared/walls/${config.theme}.jpg";
-  home.sessionVariables.EDITOR = "nvim";
-  home.sessionVariables.TERMINAL = "kitty";
+  home = {
+    sessionVariables = {
+      EDITOR = "nvim";
+      TERMINAL = "foot";
+      BROWSER = "firefox";
+      MANPAGER = "nvim +Man!";
+      MANWIDTH = "999";
+    };
+    sessionPath = [ "${config.home.homeDirectory}/.krew/bin" ];
+  };
   imports = [
     ./gtk.nix
     ./nixpkgs.nix

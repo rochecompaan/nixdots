@@ -11,13 +11,6 @@
       syntaxHighlighting = {
         enable = true;
       };
-      sessionVariables = {
-        EDITOR = "nvim";
-        TERMINAL = "foot";
-        BROWSER = "firefox";
-        MANPAGER = "nvim +Man!";
-        MANWIDTH = "999";
-      };
 
       shellAliases = {
         g = "lazygit";
@@ -107,8 +100,6 @@
         bindkey '^ ' autosuggest-accept
         bindkey -v
         bindkey '^R' history-incremental-search-backward
-
-        export PATH="$HOME/.krew/bin:$PATH"
       '';
     };
 

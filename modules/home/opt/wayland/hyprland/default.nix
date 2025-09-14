@@ -115,7 +115,8 @@ in
         libnotify
         libreoffice
         obs-studio
-        pamixer
+        qbittorrent-cli
+        qbittorrent-enhanced
         sassc
         ssh-to-age
         signal-desktop

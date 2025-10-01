@@ -4,6 +4,9 @@
     neededForUsers = true;
   };
   users = {
+    groups = {
+      ziti = { };
+    };
     users.roche = {
       hashedPasswordFile = config.sops.secrets.roche-password.path;
       isNormalUser = true;
@@ -18,6 +21,7 @@
         "adbusers"
         "scanner"
         "lp"
+        "ziti"
       ];
       openssh = {
         authorizedKeys.keys = [

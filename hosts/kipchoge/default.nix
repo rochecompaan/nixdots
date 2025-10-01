@@ -39,7 +39,10 @@
       ];
     };
     defaultGateway = "192.168.1.1";
-    nameservers = [ "192.168.1.1" ];
+    nameservers = [
+      "100.64.0.2"
+      "192.168.1.1"
+    ];
   };
 
   fonts.enable = true;
@@ -107,6 +110,11 @@
       "roche"
     ];
     tokenFile = config.sops.secrets."duckdns-token".path;
+  };
+
+  programs.openziti = {
+    enable = true;
+    tunnel.enable = false;
   };
 
 }

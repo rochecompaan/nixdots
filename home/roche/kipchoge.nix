@@ -95,10 +95,9 @@
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
         codex
         claude-code
-        crush
+        claude-code-router
         opencode
         gemini-cli
-        qwen-code
       ]);
   };
 }

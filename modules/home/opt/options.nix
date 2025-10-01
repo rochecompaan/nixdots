@@ -13,6 +13,7 @@
       wezterm.enable = lib.mkEnableOption "Enable wezterm";
       zellij.enable = lib.mkEnableOption "Enable zellij";
       zsh.enable = lib.mkEnableOption "Enable zsh";
+      fish.enable = lib.mkEnableOption "Enable fish";
     };
 
     var = lib.mkOption {

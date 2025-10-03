@@ -112,6 +112,10 @@
     tokenFile = config.sops.secrets."duckdns-token".path;
   };
 
+  programs.ziti = {
+    enable = true;
+  };
+
   programs.ziti-edge-tunnel = {
     enable = true;
     tunnel.enable = false;

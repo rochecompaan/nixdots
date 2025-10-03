@@ -3,7 +3,8 @@
     ./fonts
     ./desktop
     ./vpn
-    ./openziti
+    ./ziti
+    ./ziti-edge-tunnel
     ./options.nix
   ];
 }

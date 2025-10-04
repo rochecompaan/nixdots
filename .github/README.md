@@ -1,4 +1,4 @@
-Originally forked from from elythh/flake.
+Originally forked from from [elythh/flake](https://github.com/elythh/flake).
 
 ## :package: Repository Contents
 

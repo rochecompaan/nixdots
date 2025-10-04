@@ -16,10 +16,8 @@ buildGoModule rec {
     hash = "sha256-J655F9lFRLL1LdNOelRpipiIb2u2HEvVSehvPpRYRUw=";
   };
 
-  # Go modules vendoring hash; will be filled by the first failing build
   vendorHash = "sha256-CD/7WfRf6MEo7V9akA1/gP7b8wUr+2QCjbn6yIJYBYM=";
 
-  # The CLI is provided by the `ziti` subpackage in the repo
   subPackages = [ "ziti" ];
 
   # Upstream builds with cgo enabled; match that here

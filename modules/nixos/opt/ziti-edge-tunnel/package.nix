@@ -4,18 +4,21 @@ pkgs.stdenv.mkDerivation rec {
   pname = "ziti-edge-tunnel";
   version = "1.7.12";
 
-  src = pkgs.fetchFromGitHub {
-    owner = "openziti";
-    repo = "ziti-tunnel-sdk-c";
-    rev = "v${version}";
-    hash = "sha256-32EbWJVhgStffvBvwexuh3mj/kK3wvk6VmkXlXtO95M=";
+  src = pkgs.fetchgit {
+    url = "https://github.com/openziti/ziti-tunnel-sdk-c.git";
+    rev = "64900406faec1f02f59b73e3cdfd7e8299c40c76"; # 1.7.12
+    hash = "sha256-19KoJfxXLa/oarIG/LZQt0MexcDuiq1HURnridu4kfQ=";
     leaveDotGit = true;
+    fetchSubmodules = true;
+    deepClone = true;
   };
-  ziti_sdk_src = pkgs.fetchFromGitHub {
-    owner = "openziti";
-    repo = "ziti-sdk-c";
-    rev = "1.8.5";
-    hash = "sha256-iP6O9CEPbsqeQmPqg0Om68RUTGRobH58f6cKZ54o4ts=";
+  ziti_sdk_src = pkgs.fetchgit {
+    url = "https://github.com/openziti/ziti-sdk-c.git";
+    rev = "ca0d903e5d6826bf1fc78b5a7a6f80222e48a9ff"; # 1.8.5
+    hash = "sha256-LbxgAATn15x1n56Ey5cH6WcinadP5kO5s54qpMFQWf0=";
+    leaveDotGit = true;
+    fetchSubmodules = true;
+    deepClone = true;
   };
   lwip_src = pkgs.fetchFromGitHub {
     owner = "lwip-tcpip";
@@ -75,6 +78,9 @@ pkgs.stdenv.mkDerivation rec {
     "-DDISABLE_LIBSYSTEMD_FEATURE=ON" # Disable direct integration to use resolvectl fallback
     "-DZITI_SDK_DIR=../deps/ziti-sdk-c"
     "-DZITI_SDK_VERSION=1.8.5"
+    # Ensure a concrete version is embedded; upstream library stringifies ZITI_VERSION
+    "-DCMAKE_C_FLAGS=-DZITI_VERSION=v${version}"
+    "-DCMAKE_CXX_FLAGS=-DZITI_VERSION=v${version}"
     "-DFETCHCONTENT_SOURCE_DIR_LWIP=../deps/lwip"
     "-DFETCHCONTENT_SOURCE_DIR_LWIP-CONTRIB=../deps/lwip-contrib"
     "-DFETCHCONTENT_SOURCE_DIR_SUBCOMMAND=../deps/subcommand.c"

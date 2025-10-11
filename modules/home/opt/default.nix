@@ -16,8 +16,5 @@
     ./utils
     ./wayland
     ./nvim/nixvim.nix
-    # ./claude-code
-    # ./crush
-    # ./opencode
   ];
 }

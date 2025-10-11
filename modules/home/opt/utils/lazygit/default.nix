@@ -63,6 +63,9 @@ in
             output = "terminal";
           }
         ];
+        os = {
+          editPreset = "nvim-remote";
+        };
       };
     };
   };

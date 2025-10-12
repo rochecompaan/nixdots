@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
 {
   imports = [ ./run-as-service.nix ];
 
@@ -101,6 +106,22 @@
         bindkey -v
         bindkey '^R' history-incremental-search-backward
       '';
+    };
+
+    # Wrapper script to ensure a unique NVIM_LISTEN_ADDRESS per launch
+    home.sessionPath = lib.mkBefore [ "${config.home.homeDirectory}/.local/bin" ];
+    home.file.".local/bin/nvim" = {
+      text = ''
+        #!${pkgs.bash}/bin/bash
+        set -euo pipefail
+        NV_DIR="''${XDG_RUNTIME_DIR:-/tmp}"
+        mkdir -p "''${NV_DIR}"
+        NVIM_LISTEN_ADDRESS="$(mktemp -u "''${NV_DIR}/nvim-''${USER}-XXXXXX.sock")"
+        export NVIM_LISTEN_ADDRESS
+        # Use the user's nix-profile nvim (nixvim) instead of nixpkgs.neovim to honor the configured nixvim build
+        exec -a nvim "$HOME/.nix-profile/bin/nvim" --listen "''${NVIM_LISTEN_ADDRESS}" "$@"
+      '';
+      executable = true;
     };
 
     programs.atuin = {

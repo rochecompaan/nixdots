@@ -5,7 +5,6 @@
     ./aider
     ./bin
     ./browser
-    ./goose
     ./launcher
     ./lock
     ./misc

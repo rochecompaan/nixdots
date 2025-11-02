@@ -65,7 +65,7 @@ in
         ];
         os = {
           editCommand = "nvim";
-          editCommandTemplate = "{{editor}} --server \"\${NVIM_LISTEN_ADDRESS}\" --remote-tab \"{{filename}}\"";
+          editCommandTemplate = "{{editor}} --server \"\${NVIM}\" --remote-send '<C-\\><C-N>:q<CR>' && {{editor}} --server \"\${NVIM}\" --remote-tab \"{{filename}}\"";
         };
       };
     };

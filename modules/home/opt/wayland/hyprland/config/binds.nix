@@ -94,7 +94,7 @@ in
           "SUPER ALT, down, workspace, m+1"
 
           # Utilities
-          "SUPER, Return, exec, run-as-service ${terminal}"
+          "SUPER, Return, exec, run-as-service kitty"
           "SUPER SHIFT, Z, exec, ${getExe zellij-attach}"
           "SUPER SHIFT, B, exec, firefox"
           "SUPER SHIFT, L, exec, hyprlock"

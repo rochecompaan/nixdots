@@ -11,7 +11,7 @@ let
     ''}
     ${builtins.concatStringsSep "\n" (
       lib.mapAttrsToList (k: v: ''
-        export ${k}=${toString v}
+        export ${k}=${lib.escapeShellArg (toString v)}
       '') config.home.sessionVariables
     )}
     ${config.home.sessionVariablesExtra}

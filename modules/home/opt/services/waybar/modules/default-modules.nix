@@ -195,6 +195,7 @@ in
   network =
     let
       nm-editor = "${getExe' pkgs.networkmanagerapplet "nm-connection-editor"}";
+      nm-rofi = "${getExe pkgs.rofi-network-manager}";
     in
     {
       interval = 1;
@@ -209,6 +210,7 @@ in
       format-linked = "󰈁{ifname} (No IP)";
       format-disconnected = " Disconnected";
       format-alt = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
+      on-click = "${nm-rofi}";
       on-click-right = "${nm-editor}";
     };
 

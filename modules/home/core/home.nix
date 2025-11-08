@@ -81,6 +81,7 @@
       mods
       neovide
       networkmanagerapplet
+      rofi-network-manager
       neovim-remote
       nix-fast-build
       nix-inspect

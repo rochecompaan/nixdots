@@ -51,7 +51,6 @@
     zsh.enable = true;
     fish.enable = false;
     gpg-agent.enable = true;
-    goose-cli.enable = true;
   };
 
   default = {

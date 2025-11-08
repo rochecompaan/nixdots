@@ -5,6 +5,5 @@
       nushell
       zsh
     ];
-    variables.FLAKE = "/etc/nixos";
   };
 }

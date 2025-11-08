@@ -3,6 +3,7 @@
     ./boot.nix
     ./console.nix
     ./environment.nix
+    ./nh.nix
     ./i18n.nix
     ./networking.nix
     ./nix.nix

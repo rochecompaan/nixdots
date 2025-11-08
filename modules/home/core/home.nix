@@ -81,7 +81,6 @@
       mods
       neovide
       networkmanagerapplet
-      nh
       neovim-remote
       nix-fast-build
       nix-inspect

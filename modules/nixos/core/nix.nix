@@ -27,10 +27,6 @@
       auto-optimise-store = true;
       warn-dirty = false;
     };
-    gc = {
-      automatic = true;
-      options = "--delete-older-than 1d";
-    };
     optimise.automatic = true;
     extraOptions = ''
       !include ${config.sops.secrets.nix-access-tokens-github.path}

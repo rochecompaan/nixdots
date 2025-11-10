@@ -47,7 +47,7 @@ in
               "--remember-user-session"
               "--asterisks"
               "--sessions 'Hyprland'"
-              "--cmd 'Hyprland'"
+              "--cmd 'hyprland'"
             ];
             user = "greeter";
           };

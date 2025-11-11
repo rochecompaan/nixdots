@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
@@ -99,7 +98,6 @@ in
   config = mkIf (config.default.de == "hyprland") {
     home = {
       packages = with pkgs; [
-        inputs.anyrun.packages.${pkgs.system}.anyrun
         config.wayland.windowManager.hyprland.package
 
         autotiling-rs

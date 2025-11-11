@@ -20,9 +20,6 @@
       obsidian.enable = true;
       yamlfmt.enable = true;
     };
-    launcher = {
-      anyrun.enable = true;
-    };
     lock = {
       hyprlock.enable = true;
     };

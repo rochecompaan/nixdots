@@ -5,7 +5,6 @@
     ./aider
     ./bin
     ./browser
-    ./launcher
     ./lock
     ./misc
     ./music

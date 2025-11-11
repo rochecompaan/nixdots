@@ -16,9 +16,6 @@
       obsidian.enable = true;
       yamlfmt.enable = true;
     };
-    launcher = {
-      anyrun.enable = true;
-    };
     lock = {
       hyprlock.enable = true;
     };
@@ -75,11 +72,12 @@
         wdisplays
       ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+        codex
         claude-code
         claude-code-router
         opencode
         gemini-cli
-        qwen-code
+        goose-cli
       ]);
   };
 }

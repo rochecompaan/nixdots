@@ -32,7 +32,7 @@ in
       path = [ pkgs.iproute2 ];
 
       serviceConfig = {
-        Type = "simple";
+        Type = "exec";
         ExecStart = "${pkgs.ziti-edge-tunnel}/bin/ziti-edge-tunnel run -I /opt/openziti/etc/identities";
         Restart = "on-failure";
         Environment = [ "ZITI_LOG=6;tlsuv=6" ];

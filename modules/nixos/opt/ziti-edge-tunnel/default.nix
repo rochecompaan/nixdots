@@ -29,6 +29,7 @@ in
       description = "Ziti Edge Tunnel";
       wantedBy = [ "multi-user.target" ];
       after = [ "network-online.target" ];
+      path = [ pkgs.iproute2 ];
 
       serviceConfig = {
         Type = "simple";

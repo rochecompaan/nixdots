@@ -45,4 +45,13 @@
 
   services.resolved.enable = true;
 
+  programs.ziti = {
+    enable = true;
+  };
+
+  programs.ziti-edge-tunnel = {
+    enable = true;
+    tunnel.enable = true;
+  };
+
 }

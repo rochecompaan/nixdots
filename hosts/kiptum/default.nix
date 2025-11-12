@@ -45,6 +45,8 @@
 
   services.resolved.enable = true;
 
+  services.flatpak.enable = true;
+
   programs.ziti = {
     enable = true;
   };

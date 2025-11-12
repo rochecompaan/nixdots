@@ -2,20 +2,22 @@
 
 pkgs.stdenv.mkDerivation rec {
   pname = "ziti-edge-tunnel";
-  version = "1.7.12";
+  version = "1.9.3";
 
   src = pkgs.fetchgit {
     url = "https://github.com/openziti/ziti-tunnel-sdk-c.git";
-    rev = "64900406faec1f02f59b73e3cdfd7e8299c40c76"; # 1.7.12
-    hash = "sha256-19KoJfxXLa/oarIG/LZQt0MexcDuiq1HURnridu4kfQ=";
+    # v1.9.3
+    rev = "d9a63d44aceb6460af4fec8e4145e65d1e6d17fa";
+    hash = "sha256-fXm8WoEM++DeCGc7N+q6sdunGHsShW+fkwWOPc4yxW4=";
     leaveDotGit = true;
     fetchSubmodules = true;
     deepClone = true;
   };
   ziti_sdk_src = pkgs.fetchgit {
     url = "https://github.com/openziti/ziti-sdk-c.git";
-    rev = "ca0d903e5d6826bf1fc78b5a7a6f80222e48a9ff"; # 1.8.5
-    hash = "sha256-LbxgAATn15x1n56Ey5cH6WcinadP5kO5s54qpMFQWf0=";
+    # 1.9.15
+    rev = "4e059d4f814b239219c5b04a287b531bfaaa4f04";
+    hash = "sha256-SMAYyQmbPgAV8dDj97dOSTxzwhakkjxU6TurODnnxio=";
     leaveDotGit = true;
     fetchSubmodules = true;
     deepClone = true;
@@ -41,8 +43,8 @@ pkgs.stdenv.mkDerivation rec {
   tlsuv_src = pkgs.fetchFromGitHub {
     owner = "openziti";
     repo = "tlsuv";
-    rev = "v0.38.1";
-    hash = "sha256-JTyLr1OSk2k1+EpK2IfTj9geRW0f7RIua5JkkMpcBUI=";
+    rev = "v0.39.6";
+    hash = "sha256-ezW6vUEqIJt59cJ1n5pbWodq59W1cs9VYnF4uE7yfhU=";
   };
 
   postPatch = ''
@@ -77,7 +79,7 @@ pkgs.stdenv.mkDerivation rec {
     "-DDISABLE_SEMVER_VERIFICATION=ON"
     "-DDISABLE_LIBSYSTEMD_FEATURE=ON" # Disable direct integration to use resolvectl fallback
     "-DZITI_SDK_DIR=../deps/ziti-sdk-c"
-    "-DZITI_SDK_VERSION=1.8.5"
+    "-DZITI_SDK_VERSION=1.9.15"
     # Ensure a concrete version is embedded; upstream library stringifies ZITI_VERSION
     "-DCMAKE_C_FLAGS=-DZITI_VERSION=v${version}"
     "-DCMAKE_CXX_FLAGS=-DZITI_VERSION=v${version}"

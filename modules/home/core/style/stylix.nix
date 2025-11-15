@@ -15,6 +15,7 @@
     };
 
     targets = {
+      kde.enable = false;
       nixvim.enable = true;
       zellij.enable = true;
       lazygit.enable = false;

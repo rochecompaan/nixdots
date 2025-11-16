@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   ...
@@ -9,19 +10,36 @@ let
 in
 {
   config = mkIf config.default.isDesktop {
-    home.packages = with pkgs; [
-      libreoffice
-      obs-studio
-      signal-desktop
-      qbittorrent-cli
-      qbittorrent-enhanced
-      transmission_4
-      ssh-to-age
-      stretchly
-      keymapp
-      ydotool
-      wlprop
-      xorg.xprop
-    ];
+    home.packages =
+      with pkgs;
+      [
+        android-tools
+        keymapp
+        libreoffice
+        obs-studio
+        qbittorrent-cli
+        qbittorrent-enhanced
+        scrcpy
+        signal-desktop
+        ssh-to-age
+        stremio
+        stretchly
+        transmission_4
+        vesktop
+        wdisplays
+        wlprop
+        xorg.xprop
+        yazi
+        ydotool
+      ]
+      ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+        codex
+        claude-code
+        claude-code-router
+        opencode
+        gemini-cli
+        goose-cli
+      ]);
+
   };
 }

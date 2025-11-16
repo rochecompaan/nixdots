@@ -1,6 +1,5 @@
 {
   inputs,
-  pkgs,
   ...
 }:
 {
@@ -79,24 +78,4 @@
 
   programs.element-desktop.enable = true;
 
-  home = {
-    packages =
-      with pkgs;
-      [
-        android-tools
-        vesktop
-        scrcpy
-        stremio
-        yazi
-        wdisplays
-      ]
-      ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
-        codex
-        claude-code
-        claude-code-router
-        opencode
-        gemini-cli
-        goose-cli
-      ]);
-  };
 }

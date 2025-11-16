@@ -11,17 +11,21 @@
 let
   inherit (lib) mkIf mkEnableOption;
 
-  dependencies = with pkgs; [
-    bash
-    config.wayland.windowManager.hyprland.package
-    coreutils
-    grim
-    hyprpicker
-    jq
-    libnotify
-    slurp
-    wl-clipboard
-  ];
+  dependencies =
+    with pkgs;
+    [
+      bash
+      coreutils
+      grim
+      hyprpicker
+      jq
+      libnotify
+      slurp
+      wl-clipboard
+    ]
+    ++ lib.optionals (config.default.de == "hyprland") [
+      config.wayland.windowManager.hyprland.package
+    ];
 
   settings = import ./settings.nix { inherit lib pkgs; };
   style = import ./style.nix { inherit config; };

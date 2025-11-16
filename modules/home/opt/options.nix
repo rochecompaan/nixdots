@@ -1,4 +1,4 @@
-{ lib, ... }:
+{ config, lib, ... }:
 {
   options = {
     modules = {
@@ -26,7 +26,13 @@
           ""
           "hyprland"
         ];
-        default = "hyprland";
+        # Hosts must opt-in to a desktop environment
+        default = "";
+      };
+      isDesktop = lib.mkOption {
+        type = lib.types.bool;
+        # Any non-empty DE implies a desktop session
+        default = config.default.de != "";
       };
       browser = lib.mkOption {
         type = lib.types.enum [

@@ -24,9 +24,6 @@
       _1password-gui
       awscli
       bemoji
-      betterdiscordctl
-      bitwarden
-      bitwarden-cli
       bore-cli
       bruno
       charm

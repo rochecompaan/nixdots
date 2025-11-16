@@ -12,6 +12,7 @@
     ./shell
     ./term
     ./utils
+    ./desktop/packages.nix
     ./wayland
     ./nvim/nixvim.nix
   ];

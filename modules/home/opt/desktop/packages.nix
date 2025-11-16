@@ -17,6 +17,7 @@ in
       qbittorrent-enhanced
       transmission_4
       ssh-to-age
+      stretchly
       keymapp
       ydotool
       wlprop

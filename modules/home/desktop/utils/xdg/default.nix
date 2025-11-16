@@ -81,9 +81,35 @@ in
     portal = {
       enable = true;
       xdgOpenUsePortal = true;
+      # Explicit portal selection to avoid xdg-desktop-portal >=1.17 warning
+      config = lib.mkMerge [
+        (lib.mkIf (config.default.de == "hyprland") {
+          hyprland.default = [
+            "hyprland"
+            "gtk"
+          ];
+          common.default = [
+            "hyprland"
+            "gtk"
+          ];
+        })
+        (lib.mkIf (config.default.de == "niri") {
+          common.default = [
+            "gnome"
+            "gtk"
+          ];
+        })
+      ];
+
       extraPortals = [
         pkgs.xdg-desktop-portal-gtk
+      ]
+      ++ lib.optionals (config.default.de == "hyprland") [
+        pkgs.xdg-desktop-portal-hyprland
         pkgs.xdg-desktop-portal-wlr
+      ]
+      ++ lib.optionals (config.default.de == "niri") [
+        pkgs.xdg-desktop-portal-gnome
       ];
     };
 

@@ -6,6 +6,7 @@
         type = lib.types.enum [
           ""
           "hyprland"
+          "niri"
         ];
         # Hosts must opt-in to a desktop environment
         default = "";

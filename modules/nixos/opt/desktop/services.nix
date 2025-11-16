@@ -40,15 +40,32 @@ in
         settings = {
           terminal.vt = 1;
           default_session = {
-            command = lib.concatStringsSep " " [
-              (lib.getExe pkgs.greetd.tuigreet)
-              "--time"
-              "--remember"
-              "--remember-user-session"
-              "--asterisks"
-              "--sessions 'Hyprland'"
-              "--cmd 'hyprland'"
-            ];
+            command =
+              let
+                sessionArgs =
+                  if config.desktop.de == "hyprland" then
+                    [
+                      "--sessions 'Hyprland'"
+                      "--cmd 'hyprland'"
+                    ]
+                  else if config.desktop.de == "niri" then
+                    [
+                      "--sessions 'niri'"
+                      "--cmd 'niri-session'"
+                    ]
+                  else
+                    [ ];
+              in
+              lib.concatStringsSep " " (
+                [
+                  (lib.getExe pkgs.greetd.tuigreet)
+                  "--time"
+                  "--remember"
+                  "--remember-user-session"
+                  "--asterisks"
+                ]
+                ++ sessionArgs
+              );
             user = "greeter";
           };
         };

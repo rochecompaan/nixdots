@@ -23,7 +23,8 @@ in
       dosis
       grim
       gtk3
-      hyprland
+      (lib.mkIf (config.desktop.de == "hyprland") hyprland)
+      (lib.mkIf (config.desktop.de == "niri") niri)
       kanata
       pamixer
       pulseaudio

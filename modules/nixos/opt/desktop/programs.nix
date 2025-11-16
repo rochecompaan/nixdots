@@ -27,6 +27,9 @@ in
         enable = true;
         polkitPolicyOwners = [ "roche" ];
       };
+    }
+    // lib.mkIf (config.desktop.de == "niri") {
+      niri.enable = true;
     };
   };
 }

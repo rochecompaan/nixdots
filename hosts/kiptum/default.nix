@@ -30,7 +30,10 @@
   fonts.enable = true;
   wayland.enable = true;
   pipewire.enable = true;
-  desktop.enable = true;
+  desktop = {
+    enable = true;
+    de = "niri";
+  };
 
   vpn.nordvpn.enable = true;
   vpn.sfu.enable = true;

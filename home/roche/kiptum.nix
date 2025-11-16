@@ -12,7 +12,7 @@
   home.sessionVariables.TERMINAL = "foot";
 
   default = {
-    de = "hyprland";
+    de = "niri";
     terminal = "kitty";
   };
 

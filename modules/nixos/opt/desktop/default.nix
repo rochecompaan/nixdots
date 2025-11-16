@@ -5,6 +5,14 @@ in
 {
   options.desktop = {
     enable = lib.mkEnableOption "Desktop configuration";
+    de = lib.mkOption {
+      type = lib.types.enum [
+        "hyprland"
+        "niri"
+      ];
+      default = "hyprland";
+      description = "Selected Wayland desktop environment/window manager.";
+    };
   };
 
   config = lib.mkIf cfg.enable { };

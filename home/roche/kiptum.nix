@@ -28,7 +28,7 @@
       };
       hyprpaper.enable = true;
       kanshi.enable = true;
-      #swaync.enable = true;
+      swaync.enable = true;
       waybar.enable = true;
       glance.enable = true;
     };

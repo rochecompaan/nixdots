@@ -1,11 +1,8 @@
 {
-  config,
   pkgs,
-  lib,
   ...
 }:
-lib.mkIf (config.default.terminal == "foot") {
-  home.sessionVariables.TERMINAL = "foot";
+{
   programs.foot = {
     enable = true;
     server.enable = false;

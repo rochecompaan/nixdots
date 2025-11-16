@@ -1,100 +1,71 @@
+{ lib, ... }:
 {
-  config,
-  lib,
-  ...
-}:
-let
-  inherit (lib)
-    mkIf
-    mkOption
-    types
-    mkEnableOption
-    ;
-
-  cfg = config.opt.services.glance;
-in
-{
-  options.opt.services.glance = {
-    enable = mkEnableOption "Glance";
-    host = mkOption {
-      type = types.str;
-      default = "0.0.0.0";
-    };
-    port = mkOption {
-      type = types.int;
-      default = 5555;
-    };
-  };
-
-  config = mkIf cfg.enable {
-    services = {
-      glance = {
-        enable = true;
-        settings = {
-          server = {
-            inherit (cfg) port host;
-          };
-          theme = {
-            contrast-multiplier = lib.mkForce 1.1;
-          };
-          pages = [
+  services.glance = {
+    enable = true;
+    settings = {
+      server = {
+        host = "0.0.0.0";
+        port = 5555;
+      };
+      theme = {
+        contrast-multiplier = lib.mkForce 1.1;
+      };
+      pages = [
+        {
+          name = "Home";
+          columns = [
             {
-              name = "Home";
-              columns = [
+              size = "small";
+              widgets = [
                 {
-                  size = "small";
-                  widgets = [
-                    {
-                      type = "bookmarks";
-                      groups = lib.lists.singleton {
-                        links = [
-                          {
-                            title = "Mail";
-                            url = "https://app.tuta.com";
-                          }
-                          {
-                            title = "GitHub";
-                            url = "https://github.com";
-                          }
-                          {
-                            title = "NixOS Status";
-                            url = "https://status.nixos.org";
-                          }
-                        ];
-                      };
-                    }
-                    {
-                      type = "clock";
-                      hour-format = "24h";
-                      timezones = [ { timezone = "Europe/Paris"; } ];
-                    }
-                    { type = "calendar"; }
-                    {
-                      type = "weather";
-                      location = "Paris, France";
-                    }
-                  ];
+                  type = "bookmarks";
+                  groups = lib.lists.singleton {
+                    links = [
+                      {
+                        title = "Mail";
+                        url = "https://app.tuta.com";
+                      }
+                      {
+                        title = "GitHub";
+                        url = "https://github.com";
+                      }
+                      {
+                        title = "NixOS Status";
+                        url = "https://status.nixos.org";
+                      }
+                    ];
+                  };
                 }
                 {
-                  size = "full";
-                  widgets = [
-                    { type = "hacker-news"; }
-                    { type = "lobsters"; }
-                    {
-                      type = "reddit";
-                      subreddit = "neovim";
-                    }
-                    {
-                      type = "reddit";
-                      subreddit = "unixporn";
-                    }
-                  ];
+                  type = "clock";
+                  hour-format = "24h";
+                  timezones = [ { timezone = "Africa/Johannesburg"; } ];
+                }
+                { type = "calendar"; }
+                {
+                  type = "weather";
+                  location = "Port Elizabeth, South Africa";
+                }
+              ];
+            }
+            {
+              size = "full";
+              widgets = [
+                { type = "hacker-news"; }
+                { type = "lobsters"; }
+                {
+                  type = "reddit";
+                  subreddit = "neovim";
+                }
+                {
+                  type = "reddit";
+                  subreddit = "unixporn";
                 }
               ];
             }
           ];
-        };
-      };
+        }
+      ];
     };
   };
 }

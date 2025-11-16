@@ -9,45 +9,11 @@
     inputs.stylix.homeModules.stylix
     inputs.krewfile.homeManagerModules.krewfile
     ../../modules/home
+    ../desktop.nix
   ];
 
-  opt = {
-    browser = {
-      firefox.enable = true;
-    };
-    misc = {
-      obsidian.enable = true;
-      yamlfmt.enable = true;
-    };
-    lock = {
-      hyprlock.enable = true;
-    };
-    services = {
-      ags.enable = true;
-      cliphist.enable = true;
-      hypridle.enable = true;
-      hyprpaper.enable = true;
-      kanshi.enable = true;
-      swaync.enable = true;
-      waybar.enable = true;
-      glance.enable = true;
-    };
-    utils = {
-      rofi.enable = true;
-      lazygit.enable = true;
-      k9s.enable = true;
-    };
-    shell = {
-      zellij.enable = true;
-    };
-  };
-
-  modules = {
-    aider.enable = true;
-    zsh.enable = true;
-    fish.enable = false;
-    gpg-agent.enable = true;
-  };
+  # Base profile already enables zsh, gpg-agent. Keep fish override.
+  modules.fish.enable = false;
 
   default = {
     de = "hyprland";

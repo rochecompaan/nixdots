@@ -1,6 +1,5 @@
-{ config, lib, ... }:
-lib.mkIf (config.default.terminal == "wezterm") {
-  home.sessionVariables.TERMINAL = "wezterm";
+{ config, ... }:
+{
   programs.wezterm = {
     enable = true;
     colorSchemes = import ./colors.nix { inherit config; };
@@ -47,7 +46,7 @@ lib.mkIf (config.default.terminal == "wezterm") {
         use_fancy_tab_bar            = false,
         hide_tab_bar_if_only_one_tab = true,
         show_tab_index_in_tab_bar    = false,
-        -- Miscelaneous
+        -- Miscellaneous
         ---------------
         window_close_confirmation = "NeverPrompt",
         inactive_pane_hsb         = {

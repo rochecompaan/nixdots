@@ -134,8 +134,5 @@ in
       };
     };
 
-    # Auto-enable idle/lock services for Wayland desktops
-    opt.services.hypridle.enable = lib.mkDefault true;
-    opt.lock.hyprlock.enable = lib.mkDefault true;
   };
 }

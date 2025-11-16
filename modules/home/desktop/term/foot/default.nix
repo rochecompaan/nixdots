@@ -15,9 +15,7 @@
         vertical-letter-offset = "-0.75";
         pad = "12x21 center";
         resize-delay-ms = 100;
-        notify = "notify-send -a \${app-id} -i \${app-id} \${title} \${body}";
         selection-target = "primary";
-        # box-drawings-uses-font-glyphs = "yes";
         bold-text-in-bright = "no";
         word-delimiters = ",│`|:\"'()[]{}<>";
       };
@@ -40,9 +38,6 @@
         launch = "${pkgs.xdg-utils}/bin/xdg-open \${url}";
         label-letters = "sadfjklewcmpgh";
         osc8-underline = "url-mode";
-        protocols = "http, https, ftp, ftps, file, gemini, gopher, irc, ircs";
-
-        uri-characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.,~:;/?#@!$&%*+=\"'()[]";
       };
       mouse = {
         hide-when-typing = "yes";

@@ -6,8 +6,10 @@
     inputs.stylix.homeModules.stylix
     inputs.krewfile.homeManagerModules.krewfile
     ../../modules/home
-    ../desktop.nix
+    ../../modules/home/desktop
   ];
+
+  home.sessionVariables.TERMINAL = "foot";
 
   default = {
     de = "hyprland";

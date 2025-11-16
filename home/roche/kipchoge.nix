@@ -9,11 +9,10 @@
     inputs.stylix.homeModules.stylix
     inputs.krewfile.homeManagerModules.krewfile
     ../../modules/home
-    ../desktop.nix
+    ../../modules/home/desktop
   ];
 
-  # Base profile already enables zsh, gpg-agent. Keep fish override.
-  modules.fish.enable = false;
+  home.sessionVariables.TERMINAL = "foot";
 
   default = {
     de = "hyprland";

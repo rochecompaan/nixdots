@@ -21,6 +21,7 @@ in
       blueman
       brightnessctl
       dosis
+      discord
       grim
       gtk3
       (lib.mkIf (config.desktop.de == "hyprland") hyprland)
@@ -35,6 +36,7 @@ in
       srt
       (lib.mkIf config.wayland.enable wayland)
       xdg-utils
+      zoom-us
 
       # Development GUI
       nodejs

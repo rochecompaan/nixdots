@@ -25,7 +25,6 @@ in
         stremio
         stretchly
         transmission_4
-        vesktop
         wdisplays
         wlprop
         xorg.xprop

@@ -25,6 +25,7 @@ in
       // Quit / kill
       Mod+Shift+Q { quit; }
       Mod+Q { close-window; }
+      Mod+O repeat=false { toggle-overview; }
 
       // Column/window sizing
       Mod+F { maximize-column; }
@@ -56,7 +57,7 @@ in
           in
           ''
             Mod+${i} { focus-workspace ${i}; }
-            Mod+Ctrl+${i} { move-column-to-workspace ${i}; }
+            Mod+Shift+${i} { move-column-to-workspace ${i}; }
           ''
         ) 9
       )}

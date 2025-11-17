@@ -29,10 +29,16 @@ let
     margin-left = 0;
     margin-right = 0;
 
-    modules-left = [
-      "hyprland/workspaces"
-      "custom/separator-left"
-    ];
+    modules-left =
+      if config.default.de == "hyprland" then
+        [
+          "hyprland/workspaces"
+          "custom/separator-left"
+        ]
+      else
+        [
+          "custom/separator-left"
+        ];
   };
 
   fullSizeModules = {
@@ -49,14 +55,16 @@ let
     ];
   };
 
-  mkBarSettings = mkMerge [
-    commonAttributes
-    fullSizeModules
-    custom-modules
-    default-modules
-    group-modules
-    hyprland-modules
-  ];
+  mkBarSettings = mkMerge (
+    [
+      commonAttributes
+      fullSizeModules
+      custom-modules
+      default-modules
+      group-modules
+    ]
+    ++ lib.optionals (config.default.de == "hyprland") [ hyprland-modules ]
+  );
 
   generateOutputSettings =
     outputList:
@@ -74,7 +82,8 @@ in
 {
   programs.waybar = {
     enable = true;
-    systemd.enable = true;
+    # Under niri, prefer compositor autostart over systemd to ensure env is set
+    systemd.enable = lib.mkIf (config.default.de == "hyprland") true;
 
     settings = generateOutputSettings [
       "eDP-1"

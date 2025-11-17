@@ -11,7 +11,9 @@
       After = [ "graphical-session.target" ];
     };
     Service = {
-      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${lib.getBin pkgs.cliphist}/cliphist store";
+      Type = "simple";
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --type text --watch ${lib.getBin pkgs.cliphist}/cliphist store";
+      ExecStartPost = "${pkgs.wl-clipboard}/bin/wl-paste --type image --watch ${lib.getBin pkgs.cliphist}/cliphist store";
       Restart = "on-failure";
     };
     Install.WantedBy = [ "graphical-session.target" ];

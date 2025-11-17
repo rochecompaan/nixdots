@@ -25,6 +25,7 @@ in
       gtk3
       (lib.mkIf (config.desktop.de == "hyprland") hyprland)
       (lib.mkIf (config.desktop.de == "niri") niri)
+      (lib.mkIf (config.desktop.de == "niri") xwayland-satellite)
       kanata
       pamixer
       pulseaudio

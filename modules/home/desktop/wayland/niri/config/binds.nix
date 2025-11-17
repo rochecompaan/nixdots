@@ -13,10 +13,6 @@ let
     [ -z "$session" ] && exit 0
     ${term} -e zellij attach --create "$session"
   '';
-  screenshot = pkgs.writeShellScriptBin "niri-screenshot" ''
-    #! /usr/bin/env bash
-    ${pkgs.grimblast}/bin/grimblast save area - | ${pkgs.swappy}/bin/swappy -f -
-  '';
 in
 {
   # Binds translated to Niri's default command names
@@ -45,7 +41,11 @@ in
         Mod+Shift+B { spawn "firefox"; }
         Mod+Alt+0 { spawn "qalculate-gtk"; }
         Mod+P { spawn "1password"; }
-        Mod+Shift+S { spawn "${getExe screenshot}"; }
+        Mod+Shift+S { screenshot; }
+
+        // Annotate screenshot before saving (swappy)
+        Mod+Shift+A { spawn-sh "grim -g \"$(slurp)\" - | swappy -f -"; }
+
         Mod+D { spawn "rofi" "-show" "drun"; }
         Mod+Shift+O { spawn "wezterm" "start" "--class" "clipse" "clipse"; }
 

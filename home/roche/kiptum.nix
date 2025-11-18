@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, lib, ... }:
 {
   theme = "gruvbox";
 
@@ -44,5 +44,13 @@
       "10,monitor:eDP-1"
     ];
   };
+
+  # Niri: host-specific output configuration for kiptum
+  # Append to Niri's config to set eDP-1 to 1920x1200@165.002
+  xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
+    output "eDP-1" {
+      mode "1920x1200@165.002"
+    }
+  '';
 
 }

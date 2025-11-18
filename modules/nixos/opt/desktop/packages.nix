@@ -36,7 +36,6 @@ in
       srt
       (lib.mkIf config.wayland.enable wayland)
       xdg-utils
-      zoom-us
 
       # Development GUI
       nodejs

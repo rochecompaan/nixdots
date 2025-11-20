@@ -15,6 +15,8 @@
           nixosSystem {
             inherit specialArgs;
             modules = default ++ [
+              # Provide openziti overlay + modules to all hosts
+              inputs.openziti-nix.nixosModules.default
               inputs.disko.nixosModules.disko
               ./${hostname}
             ];

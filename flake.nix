@@ -56,6 +56,12 @@
     # My personal nixvim config
     nixvim.url = "github:rochecompaan/nixvim";
 
+    # OpenZiti packages + modules
+    openziti-nix = {
+      url = "github:rochecompaan/openziti-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Private repo
     # Authenticate via ssh and use shallow clone
     nix-secrets = {

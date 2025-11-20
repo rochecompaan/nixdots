@@ -8,7 +8,7 @@ pkgs.stdenv.mkDerivation rec {
     url = "https://github.com/openziti/ziti-tunnel-sdk-c.git";
     # v1.9.3
     rev = "d9a63d44aceb6460af4fec8e4145e65d1e6d17fa";
-    hash = "sha256-fXm8WoEM++DeCGc7N+q6sdunGHsShW+fkwWOPc4yxW4=";
+    hash = "sha256-ekmvxj3xJAyq51HIRIT4f1bFcli32fTd/XnAj9LOqvQ=";
     leaveDotGit = true;
     fetchSubmodules = true;
     deepClone = true;
@@ -17,7 +17,7 @@ pkgs.stdenv.mkDerivation rec {
     url = "https://github.com/openziti/ziti-sdk-c.git";
     # 1.9.15
     rev = "4e059d4f814b239219c5b04a287b531bfaaa4f04";
-    hash = "sha256-SMAYyQmbPgAV8dDj97dOSTxzwhakkjxU6TurODnnxio=";
+    hash = "sha256-bFyUc6SDpv38rC+mXNTZRz/HwBMF7vDXynGwTKazReE=";
     leaveDotGit = true;
     fetchSubmodules = true;
     deepClone = true;

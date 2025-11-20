@@ -183,6 +183,21 @@ in
         };
       };
 
+      ganttic = {
+        name = "Ganttic";
+        exec = "${chromium} --app=https://sixfeetup.ganttic.com/view/332055";
+        icon = "calendar";
+        type = "Application";
+        terminal = false;
+        categories = [
+          "Network"
+          "Office"
+        ];
+        settings = {
+          StartupNotify = "true";
+        };
+      };
+
     };
 
   };

@@ -63,6 +63,10 @@
       "workspace special, class:^(obsidian)$"
       "workspace 2,class:^(zen-alpha)$"
       "workspace 9,class:^(Slack)$"
+      # Place PWA windows (Chromium apps) on workspace 10 by title
+      "workspace 10,title:^(.*Outlook.*)$"
+      "workspace 10,title:^(.*Ganttic.*)$"
+      "workspace 10,title:^(.*Zoom.*)$"
     ];
   };
 }

@@ -14,6 +14,11 @@
       "systemctl --user restart xdg-desktop-portal-wlr.service"
       "firefox"
       "1password"
+      # Launch core PWAs
+      "gtk-launch outlook"
+      "gtk-launch ganttic"
+      "gtk-launch zoom"
+      "gtk-launch slack"
     ];
     animations = {
       enabled = true;

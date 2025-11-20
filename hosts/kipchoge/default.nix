@@ -118,7 +118,7 @@
 
   programs.ziti-edge-tunnel = {
     enable = true;
-    tunnel.enable = false;
+    tunnel.enable = true;
   };
 
 }

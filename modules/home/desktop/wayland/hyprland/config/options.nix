@@ -14,6 +14,7 @@
       "systemctl --user restart xdg-desktop-portal-wlr.service"
       "firefox"
       "1password"
+      "stretchly"
       # Launch core PWAs
       "gtk-launch outlook"
       "gtk-launch ganttic"

@@ -1462,11 +1462,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1763915501,
-        "narHash": "sha256-Iotr43r9k+o6P6xeLBwCgMxbPIp5ZjhHxiz83b8NzB0=",
+        "lastModified": 1764272407,
+        "narHash": "sha256-b4urFqpVscQ8HMXSAHQfuoRsEQ/bvD5GJaooDfnFGfs=",
         "owner": "rochecompaan",
         "repo": "openziti-nix",
-        "rev": "41c2558c3f77307f4e19b852a0419def2bcc7ed0",
+        "rev": "87fb3a11d21422dfab8e7e5b703654939fb0620c",
         "type": "github"
       },
       "original": {

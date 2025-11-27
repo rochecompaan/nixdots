@@ -56,7 +56,7 @@
 
   programs.ziti-edge-tunnel = {
     enable = true;
-    tunnel.enable = true;
+    service.enable = true;
   };
 
 }

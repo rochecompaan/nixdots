@@ -1,8 +1,8 @@
 { lib, ... }:
 {
   disko.devices = {
-    disk.disk1 = {
-      device = lib.mkDefault "/dev/disk/by-id/nvme-eui.335a47304d2004040025385800000001";
+    disk.nvme = {
+      device = lib.mkDefault "/dev/disk/by-id/nvme-eui.2c3ebffff0002924";
       type = "disk";
       content = {
         type = "gpt";
@@ -24,6 +24,29 @@
               type = "filesystem";
               format = "ext4";
               mountpoint = "/";
+            };
+          };
+        };
+      };
+    };
+
+    disk.data = {
+      device = lib.mkDefault "/dev/disk/by-id/wwn-0x5000c500c96ed8a1";
+      type = "disk";
+      content = {
+        type = "gpt";
+        partitions = {
+          data = {
+            name = "data";
+            size = "100%";
+            content = {
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/srv/data";
+              mountOptions = [
+                "noatime"
+                "nofail"
+              ];
             };
           };
         };

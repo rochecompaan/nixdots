@@ -1,20 +1,4 @@
-# { config, lib, ... }:
-# let
-#   kubeVipRbac = builtins.fetchurl {
-#     url = "https://kube-vip.io/manifests/rbac.yaml";
-#     sha256 = ""; # sha256sum of the file can change due to updates to the rbac
-#   };
-#
-#   kubeVipCloudController = builtins.fetchurl {
-#     url = "https://raw.githubusercontent.com/kube-vip/kube-vip-cloud-provider/main/manifest/kube-vip-cloud-controller.yaml";
-#     sha256 = ""; # sha256sum of the file can change due to updates to the cloud-controller
-#   };
-#
-#   kubeVipConfigmap = ./kube-vip-configmap.yaml;
-#
-#   kubeVipManifest = ./kube-vip-manifest.yaml;
-#
-# in
+{ config, lib, ... }:
 {
   imports = [
     ./disko.nix
@@ -72,41 +56,43 @@
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
 
-  # services.k3s = {
-  #   enable = true;
-  #   clusterInit = true;
-  #   role = "server";
-  #   tokenFile = config.sops.secrets."cluster-token".path;
-  #
-  #   extraFlags = lib.concatStringsSep " " [
-  #     "--node-ip=192.168.1.100"
-  #     "--disable=traefik"
-  #     "--tls-san=192.168.1.100"
-  #     "--tls-san=192.168.1.200" # kube-vip VIP
-  #     "--write-kubeconfig-mode=0644"
-  #   ];
-  #
-  #   manifests = {
-  #     argocd.content = {
-  #       apiVersion = "helm.cattle.io/v1";
-  #       kind = "HelmChart";
-  #       metadata = {
-  #         name = "argocd";
-  #         namespace = "kube-system";
-  #       };
-  #       spec = {
-  #         targetNamespace = "argocd";
-  #         createNamespace = true;
-  #         repo = "https://argoproj.github.io/argo-helm";
-  #         chart = "argo-cd";
-  #         version = "7.7.16";
-  #         valuesContent = ''
-  #           configs:
-  #             params:
-  #               server.insecure: true
-  #         '';
-  #       };
-  #     };
-  #   };
-  # };
+  services.k3s = {
+    enable = true;
+    clusterInit = true;
+    role = "server";
+    tokenFile = config.sops.secrets."cluster-token".path;
+
+    extraFlags = lib.concatStringsSep " " [
+      "--node-ip=192.168.1.100"
+      "--disable=traefik"
+      "--disable=servicelb"
+      "--tls-san=192.168.1.100"
+      "--tls-san=192.168.1.200" # kube-vip VIP
+      "--tls-san=kubernetes.compaan.cloud"
+      "--write-kubeconfig-mode=0644"
+    ];
+
+    manifests = {
+      argocd.content = {
+        apiVersion = "helm.cattle.io/v1";
+        kind = "HelmChart";
+        metadata = {
+          name = "argocd";
+          namespace = "kube-system";
+        };
+        spec = {
+          targetNamespace = "argocd";
+          createNamespace = true;
+          repo = "https://argoproj.github.io/argo-helm";
+          chart = "argo-cd";
+          version = "9.1.4";
+          valuesContent = ''
+            configs:
+              params:
+                server.insecure: true
+          '';
+        };
+      };
+    };
+  };
 }

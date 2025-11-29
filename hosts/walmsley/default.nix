@@ -1,5 +1,11 @@
 {
+  config,
+  lib,
+  ...
+}:
+{
   imports = [
+    ./disko.nix
     ./hardware-configuration.nix
   ];
 
@@ -25,11 +31,25 @@
     nameservers = [ "192.168.1.1" ];
   };
 
-  # Swap configuration
   swapDevices = [
     {
       device = "/swapfile";
-      size = 8196; # Size in MB (8GB)
+      size = 8196;
     }
   ];
+
+  services.k3s = {
+    enable = true;
+    role = "server";
+    serverAddr = "https://192.168.1.100:6443"; # XXX: Change to load balancer address
+    tokenFile = config.sops.secrets."cluster-token".path;
+
+    extraFlags = lib.concatStringsSep " " [
+      "--node-ip=192.168.1.103"
+      "--disable=traefik"
+      "--disable=service-lb"
+      "--tls-san=kubernetes.compaan.cloud"
+      "--write-kubeconfig-mode=0644"
+    ];
+  };
 }

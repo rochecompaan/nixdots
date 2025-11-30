@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: victoria-logs
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+spec:
+  project: default
+  source:
+    chart: victoria-logs-single
+    repoURL: https://victoriametrics.github.io/helm-charts/
+    targetRevision: 0.11.2
+    helm:
+      releaseName: victoria-logs
+      valuesObject:
+        server:
+          enabled: true
+          serviceMonitor:
+            enabled: true
+        vector:
+          enabled: true
+        dashboards:
+          enabled: true
+          namespace: "monitoring"
+          labels:
+            grafana_dashboard: "1"
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: victoria-logs
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true

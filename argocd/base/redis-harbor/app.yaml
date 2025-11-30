@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis-harbor
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '3'
+spec:
+  project: default
+  source:
+    chart: redis-ha
+    repoURL: https://dandydeveloper.github.io/charts
+    targetRevision: 4.28.0
+    helm:
+      releaseName: harbor-redis
+      valuesObject:
+        replicas: 2
+        persistentVolume:
+          enabled: true
+          accessModes:
+            - ReadWriteOnce
+          size: 2Gi
+          storageClass: longhorn
+        redis:
+          resources: {}
+          masterGroupName: mymaster
+        hardAntiAffinity: true
+        rbac:
+          create: true
+        usePassword: false
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: harbor
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true

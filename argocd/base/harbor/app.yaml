@@ -1,0 +1,83 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '4'
+spec:
+  project: default
+  source:
+    chart: harbor
+    repoURL: https://helm.goharbor.io
+    targetRevision: 1.16.0
+    helm:
+      releaseName: harbor
+      valuesObject:
+        externalURL: https://harbor.rochecompaan
+        expose:
+          type: clusterIP
+          tls:
+            enabled: true
+            certSource: secret
+            secret:
+              secretName: harbor-tls
+          ingress: {}
+        portal:
+          replicas: 2
+        core:
+          replicas: 2
+        jobservice:
+          replicas: 2
+        registry:
+          replicas: 2
+        trivy:
+          replicas: 2
+        persistence:
+          enabled: true
+          persistentVolumeClaim:
+            registry:
+              existingClaim: harbor-registry
+        redis:
+          type: external
+          external:
+            # For sentinel, addr is a comma-separated list of sentinels
+            # DandyDeveloper/redis-ha sentinel endpoints (releaseName: harbor-redis)
+            # Use per-sentinel Service names in the same namespace
+            addr: "harbor-redis-redis-ha-announce-0:26379,harbor-redis-redis-ha-announce-1:26379"
+            sentinelMasterSet: "mymaster"
+            tlsOptions:
+              enable: false
+            coreDatabaseIndex: "0"
+            jobserviceDatabaseIndex: "1"
+            registryDatabaseIndex: "2"
+            trivyAdapterIndex: "5"
+            username: ""
+            password: ""
+            existingSecret: ""
+        database:
+          type: external
+          external:
+            host: harbor-rw
+            port: "5432"
+            username: harbor
+            coreDatabase: harbor
+            existingSecret: harbor-app
+            sslmode: disable
+        notary:
+          enabled: false
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: harbor
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+    - CreateNamespace=true

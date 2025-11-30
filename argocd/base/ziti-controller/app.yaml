@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ziti-controller
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  source:
+    chart: ziti-controller
+    repoURL: https://openziti.io/helm-charts
+    targetRevision: 2.1.0
+    helm:
+      releaseName: openziti
+      valuesObject:
+        clientApi:
+          advertisedHost: "ctrl.compaan.cloud"
+          advertisedPort: 443
+          ingress:
+            enabled: false
+          service:
+            type: ClusterIP
+          traefikTcpRoute:
+            enabled: true
+        webBindingPki:
+          enabled: false
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: openziti
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true

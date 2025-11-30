@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: ziti-router
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    chart: ziti-router
+    repoURL: https://openziti.io/helm-charts
+    targetRevision: 1.6.0
+    helm:
+      releaseName: openziti
+      valuesObject:
+        edge:
+          advertisedHost: "rtr.compaan.cloud"
+          advertisedPort: 443
+        ctrl:
+          endpoint: "ctrl.compaan.cloud:443"
+        enrollmentJwtFromSecret: true
+        enrollmentJwtSecretName: ziti-router-jwt
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: openziti
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true

@@ -1,0 +1,86 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '1'
+spec:
+  project: default
+  source:
+    chart: kube-prometheus-stack
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 75.3.6
+    helm:
+      releaseName: kube-prometheus-stack
+      valuesObject:
+        grafana:
+          persistence:
+            type: pvc
+            enabled: true
+            accessModes:
+              - ReadWriteOnce
+            size: 10Gi
+          sidecar:
+            alerts:
+              enabled: true
+          plugins:
+            - victoriametrics-logs-datasource
+          grafana.ini:
+            server:
+              domain: 'grafana.rochecompaan'
+              root_url: 'https://%(domain)s'
+            database:
+              wal: true
+          additionalDataSources:
+            - name: VictoriaLogs
+              type: victoriametrics-logs-datasource
+              uid: victorialogs_ds
+              access: proxy
+              url: http://victoria-logs-victoria-logs-single-server.victoria-logs.svc.cluster.local:9428
+              isDefault: false
+        prometheusOperator:
+          resources:
+            limits:
+              cpu: 100m
+              memory: 200Mi
+            requests:
+              cpu: 50m
+              memory: 100Mi
+        prometheus:
+          server:
+            persistentVolume:
+              enabled: true
+          prometheusSpec:
+            podMonitorSelectorNilUsesHelmValues: false
+            ruleSelectorNilUsesHelmValues: false
+            serviceMonitorSelectorNilUsesHelmValues: false
+            probeSelectorNilUsesHelmValues: false
+            # Add retention configuration for Prometheus
+            retention: 90d
+            retentionSize: 9GB
+            storageSpec:
+              volumeClaimTemplate:
+                spec:
+                  storageClassName: longhorn
+                  accessModes: ['ReadWriteOnce']
+                  resources:
+                    requests:
+                      storage: 10Gi
+  destination:
+    server: 'https://kubernetes.default.svc'
+    namespace: monitoring
+  syncPolicy:
+    automated: {}
+    # automated:
+    #   prune: true
+    #   selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

@@ -196,6 +196,7 @@ in
         //
         // For example, with 2 workspaces + 1 empty, indices 3, 4, 5 and so on
         // will all refer to the 3rd workspace.
+        // Bind by index so Waybar ordering 1..10 matches keybinds
         Mod+1 { focus-workspace 1; }
         Mod+2 { focus-workspace 2; }
         Mod+3 { focus-workspace 3; }
@@ -205,6 +206,7 @@ in
         Mod+7 { focus-workspace 7; }
         Mod+8 { focus-workspace 8; }
         Mod+9 { focus-workspace 9; }
+        Mod+0 { focus-workspace 10; }
         Mod+Ctrl+1 { move-column-to-workspace 1; }
         Mod+Ctrl+2 { move-column-to-workspace 2; }
         Mod+Ctrl+3 { move-column-to-workspace 3; }
@@ -214,6 +216,7 @@ in
         Mod+Ctrl+7 { move-column-to-workspace 7; }
         Mod+Ctrl+8 { move-column-to-workspace 8; }
         Mod+Ctrl+9 { move-column-to-workspace 9; }
+        Mod+Ctrl+0 { move-column-to-workspace 10; }
 
         // Alternatively, there are commands to move just a single window:
         // Mod+Ctrl+1 { move-window-to-workspace 1; }

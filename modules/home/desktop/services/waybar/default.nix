@@ -21,6 +21,7 @@ let
   default-modules = import ./modules/default-modules.nix { inherit config lib pkgs; };
   group-modules = import ./modules/group-modules.nix;
   hyprland-modules = import ./modules/hyprland-modules.nix { inherit config lib; };
+  niri-modules = import ./modules/niri-modules.nix { inherit lib; };
 
   commonAttributes = {
     layer = "top";
@@ -37,6 +38,7 @@ let
         ]
       else
         [
+          "niri/workspaces"
           "custom/separator-left"
         ];
   };
@@ -48,11 +50,11 @@ let
       "group/stats"
       "custom/separator-right"
       "group/control-center"
-      "hyprland/submap"
       "battery"
       "clock"
       "custom/power"
-    ];
+    ]
+    ++ lib.optionals (config.default.de == "hyprland") [ "hyprland/submap" ];
   };
 
   mkBarSettings = mkMerge (
@@ -64,6 +66,7 @@ let
       group-modules
     ]
     ++ lib.optionals (config.default.de == "hyprland") [ hyprland-modules ]
+    ++ lib.optionals (config.default.de == "niri") [ niri-modules ]
   );
 
   generateOutputSettings =

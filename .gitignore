@@ -4,3 +4,4 @@
 .env
 result
 /.crush/
+kubeconfig

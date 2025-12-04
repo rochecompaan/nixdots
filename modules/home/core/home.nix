@@ -93,7 +93,7 @@
       pavucontrol
       pfetch
       picom
-      pinentry
+      pinentry-gtk2
       playerctl
       pre-commit
       presenterm
@@ -117,10 +117,8 @@
       tldr
       tuba
       update-nix-fetchgit
-      ventoy
       vhs
       viddy
-      watershot
       wireplumber
       xdotool
       xwayland

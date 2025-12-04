@@ -98,7 +98,6 @@ in
         glib
         grim
         gtk3
-        kdePackages.xwaylandvideobridge
         libcanberra-gtk3
         libnotify
         pamixer

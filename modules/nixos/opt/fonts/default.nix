@@ -9,7 +9,7 @@
     fonts.packages = with pkgs; [
       # icon fonts
       material-design-icons
-      noto-fonts-emoji
+      noto-fonts-color-emoji
 
       # normal fonts
       rubik

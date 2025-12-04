@@ -45,9 +45,11 @@
   # Disable suspend on lid close
   services.logind = {
     lidSwitch = "ignore";
-    extraConfig = ''
-      HandleLidSwitch=ignore
-    '';
+    settings = {
+      Login = {
+        HandleLidSwitch = "ignore";
+      };
+    };
   };
 
   # disable sleep

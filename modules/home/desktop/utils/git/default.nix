@@ -3,8 +3,6 @@
   programs = {
     git = {
       enable = true;
-      userEmail = "roche@upfrontsoftware.co.za";
-      userName = "rochecompaan";
 
       signing = {
         signByDefault = true;
@@ -17,61 +15,69 @@
         "shell.nix"
       ];
 
-      extraConfig = {
-        core = {
-          editor = "nvim";
-          excludesfile = "~/.config/git/ignore";
+      settings = {
+        user = {
+          email = "roche@upfrontsoftware.co.za";
+          name = "rochecompaan";
+        };
+        aliases = {
+          st = " status ";
+          ci = "\n        commit ";
+          br = "\n        branch ";
+          co = "\n        checkout ";
+          df = "\n        diff ";
+          dc = "\n        diff - -cached ";
+          lg = "\n        log - p ";
+          pr = "\n        pull - -rebase ";
+          p = "\n        push ";
+          ppr = "\n        push - -set-upstream origin ";
+          lol = "\n        log - -graph - -decorate - -pretty=oneline --abbrev-commit";
+          lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
+          latest = "for-each-ref --sort=-taggerdate --format='%(refname:short)' --count=1";
+          undo = "git reset --soft HEAD^";
+          brd = "branch -D";
         };
 
-        credential = {
-          helper = "store";
-        };
-
-        pull = {
-          rebase = true;
-        };
-
-        color = {
-          ui = true;
-          pager = true;
-          diff = "auto";
-          branch = {
-            current = "green bold";
-            local = "yellow dim";
-            remove = "blue";
+        extraConfig = {
+          core = {
+            editor = "nvim";
+            excludesfile = "~/.config/git/ignore";
           };
 
-          showBranch = "auto";
-          interactive = "auto";
-          grep = "auto";
-          status = {
-            added = "green";
-            changed = "yellow";
-            untracked = "red dim";
-            branch = "cyan";
-            header = "dim white";
-            nobranch = "white";
+          credential = {
+            helper = "store";
+          };
+
+          pull = {
+            rebase = true;
+          };
+
+          color = {
+            ui = true;
+            pager = true;
+            diff = "auto";
+            branch = true;
+            # branch = {
+            #   current = "green bold";
+            #   local = "yellow dim";
+            #   remove = "blue";
+            # };
+
+            showBranch = "auto";
+            interactive = "auto";
+            grep = "auto";
+            status = true;
+            # status = {
+            #   added = "green";
+            #   changed = "yellow";
+            #   untracked = "red dim";
+            #   branch = "cyan";
+            #   header = "dim white";
+            #   nobranch = "white";
+            # };
           };
         };
 
-      };
-
-      aliases = {
-        st = " status ";
-        ci = "\n        commit ";
-        br = "\n        branch ";
-        co = "\n        checkout ";
-        df = "\n        diff ";
-        dc = "\n        diff - -cached ";
-        lg = "\n        log - p ";
-        pr = "\n        pull - -rebase ";
-        p = "\n        push ";
-        ppr = "\n        push - -set-upstream origin ";
-        lol = "\n        log - -graph - -decorate - -pretty=oneline --abbrev-commit";
-        lola = "log --graph --decorate --pretty=oneline --abbrev-commit --all";
-        latest = "for-each-ref --sort=-taggerdate --format='%(refname:short)' --count=1";
-        undo = "git reset --soft HEAD^";
-        brd = "branch -D";
       };
     };
 

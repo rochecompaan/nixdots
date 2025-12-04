@@ -21,7 +21,7 @@ let
   default-modules = import ./modules/default-modules.nix { inherit config lib pkgs; };
   group-modules = import ./modules/group-modules.nix;
   hyprland-modules = import ./modules/hyprland-modules.nix { inherit config lib; };
-  niri-modules = import ./modules/niri-modules.nix { inherit lib; };
+  niri-modules = import ./modules/niri-modules.nix;
 
   commonAttributes = {
     layer = "top";

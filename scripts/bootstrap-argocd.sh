@@ -16,7 +16,7 @@ NIX_SECRETS_PATH="${HOME}/projects/nix-secrets/"
 # Get the private key from sops-encrypted file
 PRIVATE_KEY=$(sops --config $NIX_SECRETS_PATH/.sops.yaml -d $NIX_SECRETS_PATH/secrets.yaml | yq -r '."ssh-keys".argocd.private')
 
-Create the repository secret
+# Create the repository secret
 kubectl apply -f - << EOF
 apiVersion: v1
 kind: Secret

@@ -5,13 +5,13 @@ resources:
   - ../../base/cert-manager
   - ../../base/cloudnative-pg
   - ../../base/infra
-  # - ../../base/kube-prometheus-stack
+  - ../../base/kube-prometheus-stack
   - ../../base/longhorn
   - ../../base/reflector
   - ../../base/sealed-secrets
   - ../../base/traefik
   - ../../base/trust-manager
   - ../../base/victoria-logs
-  # - ../../base/ziti-controller
+  - ../../base/ziti-controller
   # - ../../base/ziti-router
 kind: Kustomization

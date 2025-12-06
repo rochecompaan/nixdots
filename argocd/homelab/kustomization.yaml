@@ -13,7 +13,7 @@ resources:
   - ../base/victoria-logs
   - ../base/ziti-controller
   - ../base/ziti-router
-  - cert-manager-issuer.yaml
-  - ziti-router-ingress.yaml
-  - private-ca.yaml
+  # - cert-manager-issuer.yaml
+  # - ziti-router-ingress.yaml
+  # - private-ca.yaml
 kind: Kustomization

@@ -2,8 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 namespace: argocd
 resources:
   - cert-manager-issuer.yaml
-  - ziti-router-ingress.yaml
   - private-ca.yaml
+  - storageclass.yaml
+  - ziti-router-ingress.yaml
   - github.com/rancher/local-path-provisioner/deploy?ref=v0.0.32
 kind: Kustomization
 patches:
@@ -42,23 +43,6 @@ patches:
         name: local-path
         annotations:
           storageclass.kubernetes.io/is-default-class: "true"
-      provisioner: rancher.io/local-path
-      parameters:
-        nodePath: /opt/local-path-provisioner
-        pathPattern: "{{ .PVC.Namespace }}/{{ .PVC.Name }}"
-      volumeBindingMode: WaitForFirstConsumer
-      reclaimPolicy: Delete
-  - patch: |-
-      apiVersion: storage.k8s.io/v1
-      kind: StorageClass
-      metadata:
-        name: sata-local-path
-      provisioner: rancher.io/local-path
-      parameters:
-        nodePath: /srv/data
-        pathPattern: "{{ .PVC.Namespace }}/{{ .PVC.Name }}"
-      volumeBindingMode: WaitForFirstConsumer
-      reclaimPolicy: Retain
   - patch: |-
       apiVersion: v1
       kind: Namespace

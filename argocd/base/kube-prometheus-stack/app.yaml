@@ -19,7 +19,8 @@ spec:
             type: pvc
             enabled: true
             accessModes:
-              - ReadWriteOnce
+              - ReadWriteMany
+            storageClassName: longhorn
             size: 10Gi
           sidecar:
             alerts:

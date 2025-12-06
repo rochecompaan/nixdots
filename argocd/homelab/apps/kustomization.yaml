@@ -6,7 +6,9 @@ resources:
   - ../../base/cloudnative-pg
   - ../../base/infra
   - ../../base/kube-prometheus-stack
+  - ../../base/kyverno
   - ../../base/longhorn
+  - ../../base/longhorn-admission-hooks
   - ../../base/reflector
   - ../../base/sealed-secrets
   - ../../base/traefik

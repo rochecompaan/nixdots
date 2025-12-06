@@ -10,7 +10,7 @@ spec:
   source:
     chart: redis-ha
     repoURL: https://dandydeveloper.github.io/charts
-    targetRevision: 4.28.0
+    targetRevision: 4.35.3
     helm:
       releaseName: harbor-redis
       valuesObject:
@@ -29,7 +29,7 @@ spec:
           create: true
         usePassword: false
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: harbor
   syncPolicy:
     automated:

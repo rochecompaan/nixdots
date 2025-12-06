@@ -10,14 +10,14 @@ spec:
   source:
     chart: cloudnative-pg
     repoURL: https://cloudnative-pg.github.io/charts
-    targetRevision: v0.23.2
+    targetRevision: 0.26.1
     helm:
       releaseName: cloudnative-pg
       parameters:
-        - name: 'fullnameOverride'
-          value: 'cnpg-controller-manager'
+        - name: fullnameOverride
+          value: cnpg-controller-manager
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: cnpg-system
   syncPolicy:
     automated:

@@ -4,22 +4,21 @@ metadata:
   name: argocd
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: '0'
 spec:
   project: default
   source:
     chart: argo-cd
     repoURL: https://argoproj.github.io/argo-helm
-    targetRevision: 9.1.4
+    targetRevision: 9.1.6
     helm:
       releaseName: argocd
-      # https://argo-cd.readthedocs.io/en/stable/operator-manual/ingress/#traefik-v22
       valuesObject:
         configs:
           params:
             server.insecure: true
   destination:
-    server: "https://kubernetes.default.svc"
+    server: https://kubernetes.default.svc
     namespace: argocd
   syncPolicy:
     automated:

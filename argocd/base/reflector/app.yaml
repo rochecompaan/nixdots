@@ -4,17 +4,17 @@ metadata:
   name: reflector
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "0"
+    argocd.argoproj.io/sync-wave: '0'
 spec:
   project: default
   source:
     chart: reflector
     repoURL: https://emberstack.github.io/helm-charts
-    targetRevision: 7.1.262
+    targetRevision: 9.1.44
     helm:
       releaseName: reflector
   destination:
-    server: "https://kubernetes.default.svc"
+    server: https://kubernetes.default.svc
     namespace: kube-system
   syncPolicy:
     automated:

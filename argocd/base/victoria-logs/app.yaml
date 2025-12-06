@@ -10,7 +10,7 @@ spec:
   source:
     chart: victoria-logs-single
     repoURL: https://victoriametrics.github.io/helm-charts/
-    targetRevision: 0.11.2
+    targetRevision: 0.11.18
     helm:
       releaseName: victoria-logs
       valuesObject:
@@ -22,11 +22,11 @@ spec:
           enabled: true
         dashboards:
           enabled: true
-          namespace: "monitoring"
+          namespace: monitoring
           labels:
-            grafana_dashboard: "1"
+            grafana_dashboard: '1'
   destination:
-    server: 'https://kubernetes.default.svc'
+    server: https://kubernetes.default.svc
     namespace: victoria-logs
   syncPolicy:
     automated:

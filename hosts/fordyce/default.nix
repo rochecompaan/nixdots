@@ -34,6 +34,15 @@
     }
   ];
 
+  services.openiscsi = {
+    enable = true;
+    name = "iqn.2025-12.compaan.cloud:homelab";
+  };
+  systemd.services.iscsid.serviceConfig = {
+    PrivateMounts = "yes";
+    BindPaths = "/run/current-system/sw/bin:/bin";
+  };
+
   services.k3s = {
     enable = true;
     role = "server";

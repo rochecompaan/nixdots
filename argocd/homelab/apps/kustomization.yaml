@@ -10,6 +10,7 @@ resources:
   - ../../base/reflector
   - ../../base/sealed-secrets
   - ../../base/traefik
+  - ../../base/trust-manager
   - ../../base/victoria-logs
   - ../../base/ziti-controller
   - ../../base/ziti-router

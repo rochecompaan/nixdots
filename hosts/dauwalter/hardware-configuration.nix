@@ -25,6 +25,7 @@
   boot.initrd.kernelModules = [ ];
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
+  boot.supportedFilesystems = [ "nfs" ];
 
   networking.useDHCP = lib.mkDefault false;
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";

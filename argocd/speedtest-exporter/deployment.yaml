@@ -28,6 +28,10 @@ spec:
               value: "3600"
             - name: PORT
               value: "8000"
+            - name: HOME
+              value: "/tmp"
+            - name: PYTHONUSERBASE
+              value: "/tmp"
           ports:
             - name: http
               containerPort: 8000
@@ -45,11 +49,10 @@ spec:
             - /bin/sh
             - -ceu
             - |
-              pip install --no-cache-dir speedtest-cli
+              pip install --no-cache-dir --user speedtest-cli
               exec python /app/exporter.py
       volumes:
         - name: app
           configMap:
             name: speedtest-exporter
             defaultMode: 0444
-

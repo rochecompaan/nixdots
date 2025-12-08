@@ -11,11 +11,6 @@ ENV="${1:-homelab}"
 REPO_URL="${2:-$(git config --get remote.origin.url)}"
 BRANCH="${3:-main}"
 
-NIX_SECRETS_PATH="${HOME}/projects/nix-secrets/"
-
-# Get the private key from sops-encrypted file
-PRIVATE_KEY=$(sops --config $NIX_SECRETS_PATH/.sops.yaml -d $NIX_SECRETS_PATH/secrets.yaml | yq -r '."ssh-keys".argocd.private')
-
 # Create the repository secret
 kubectl apply -f - << EOF
 apiVersion: v1
@@ -28,8 +23,6 @@ metadata:
 stringData:
   type: git
   url: ${REPO_URL}
-  sshPrivateKey: |-
-    ${PRIVATE_KEY//$'\n'/$'\n    '}
 EOF
 
 # Create the root application

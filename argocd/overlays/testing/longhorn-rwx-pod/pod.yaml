@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: longhorn-rwx-test-pod
+spec:
+  restartPolicy: Always
+  containers:
+    - name: tester
+      image: alpine:3.20
+      command: ["sh", "-c"]
+      args:
+        - |
+          echo "$(date) hello from $(hostname)" >> /data/out.txt;
+          tail -f /dev/null
+      volumeMounts:
+        - name: data
+          mountPath: /data
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: longhorn-rwx-test-pvc

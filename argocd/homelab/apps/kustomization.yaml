@@ -11,6 +11,7 @@ resources:
   - ../../base/longhorn-admission-hooks
   - ../../base/reflector
   - ../../base/sealed-secrets
+  - ../../base/speedtest-exporter
   - ../../base/traefik
   - ../../base/trust-manager
   - ../../base/victoria-logs

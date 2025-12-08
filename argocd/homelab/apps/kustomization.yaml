@@ -7,9 +7,9 @@ resources:
   - ../../base/infra
   - ../../base/kube-prometheus-stack
   - ../../base/local-path-provisioner
-  # - ../../base/kyverno
+  - ../../base/kyverno
   - ../../base/longhorn
-  # - ../../base/longhorn-admission-hooks
+  - ../../base/longhorn-admission-hooks
   - ../../base/reflector
   - ../../base/sealed-secrets
   - ../../base/speedtest-exporter

@@ -6,6 +6,7 @@ resources:
   - ../../base/cloudnative-pg
   - ../../base/infra
   - ../../base/kube-prometheus-stack
+  - ../../base/local-path-provisioner
   # - ../../base/kyverno
   - ../../base/longhorn
   # - ../../base/longhorn-admission-hooks

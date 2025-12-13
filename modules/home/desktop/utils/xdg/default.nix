@@ -106,7 +106,6 @@ in
       ]
       ++ lib.optionals (config.default.de == "hyprland") [
         pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-wlr
       ]
       ++ lib.optionals (config.default.de == "niri") [
         pkgs.xdg-desktop-portal-gnome

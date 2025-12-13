@@ -33,10 +33,11 @@ in
             };
           };
 
+          # Use a single backend for Hyprland to avoid portal deadlocks.
+          # Hyprland recommends its portal; GTK stays for common dialogs.
           extraPortals = [
-            pkgs.xdg-desktop-portal-hyprland # Ensure hyprland portal is installed
+            pkgs.xdg-desktop-portal-hyprland
             pkgs.xdg-desktop-portal-gtk
-            pkgs.xdg-desktop-portal-wlr
           ];
         };
       })

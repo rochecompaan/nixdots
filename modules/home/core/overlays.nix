@@ -3,19 +3,19 @@
   nixpkgs.overlays = [
     inputs.nur.overlays.default
     # Use unstable version of OBS Studio with Qt fix
-    (final: prev: {
-      obs-studio =
-        inputs.nixpkgs-unstable.legacyPackages.${prev.system}.obs-studio.overrideAttrs
-          (oldAttrs: {
-            # Create a proper wrapper script to ensure correct Qt libraries are used
-            postFixup = (oldAttrs.postFixup or "") + ''
-              wrapProgram $out/bin/obs \
-                --set LD_LIBRARY_PATH "${final.qt6.qtbase.out}/lib:${final.qt6.qtwayland.out}/lib:${final.qt6.qtdeclarative.out}/lib" \
-                --unset QT_STYLE_OVERRIDE \
-                --unset QT_QPA_PLATFORMTHEME
-            '';
-          });
-    })
+    # (final: prev: {
+    #   obs-studio =
+    #     inputs.nixpkgs-unstable.legacyPackages.${prev.system}.obs-studio.overrideAttrs
+    #       (oldAttrs: {
+    #         # Create a proper wrapper script to ensure correct Qt libraries are used
+    #         postFixup = (oldAttrs.postFixup or "") + ''
+    #           wrapProgram $out/bin/obs \
+    #             --set LD_LIBRARY_PATH "${final.qt6.qtbase.out}/lib:${final.qt6.qtwayland.out}/lib:${final.qt6.qtdeclarative.out}/lib" \
+    #             --unset QT_STYLE_OVERRIDE \
+    #             --unset QT_QPA_PLATFORMTHEME
+    #         '';
+    #       });
+    # })
     (_: prev: {
       zellij =
         let

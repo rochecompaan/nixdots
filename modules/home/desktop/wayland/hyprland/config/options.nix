@@ -82,11 +82,6 @@
       allow_tearing = false;
     };
 
-    gestures = {
-      workspace_swipe = true;
-      workspace_swipe_forever = true;
-    };
-
     group = {
       groupbar = {
         font_size = 16;

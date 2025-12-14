@@ -22,6 +22,7 @@ in
       brightnessctl
       dosis
       discord
+      dconf
       grim
       gtk3
       (lib.mkIf (config.desktop.de == "hyprland") hyprland)

@@ -16,7 +16,10 @@ in
         enableUserService = true;
       };
       blueman.enable = true;
-      dbus.enable = true;
+      dbus = {
+        enable = true;
+        packages = [ pkgs.dconf ];
+      };
       upower.enable = true;
       devmon.enable = true;
       gvfs.enable = true;

@@ -63,4 +63,16 @@
       "--write-kubeconfig-mode=0644"
     ];
   };
+
+  services.nfs.server = {
+    enable = true;
+    exports = ''
+      /srv/data/kipchoge 192.168.1.4(rw,async,insecure,no_subtree_check,fsid=0)
+    '';
+  };
+
+  systemd.tmpfiles.rules = [
+    "d /srv/data/kipchoge 0775 roche users -"
+  ];
+
 }

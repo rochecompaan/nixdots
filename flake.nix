@@ -74,6 +74,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    flox = {
+      url = "github:flox/flox/latest";
+    };
+
     disko.url = "github:nix-community/disko";
 
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";

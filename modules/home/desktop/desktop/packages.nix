@@ -31,6 +31,7 @@ in
         yazi
         ydotool
       ]
+      ++ [ inputs.flox.packages.${pkgs.system}.default ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
         codex
         claude-code

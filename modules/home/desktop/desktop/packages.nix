@@ -15,6 +15,7 @@ in
       [
         android-tools
         keymapp
+        gimp
         libreoffice
         obs-studio
         qbittorrent-cli

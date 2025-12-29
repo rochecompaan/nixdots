@@ -15,7 +15,83 @@ let
   controlCenterStyle = builtins.readFile ./styles/control-center.css;
   powerStyle = builtins.readFile ./styles/power.css;
   statsStyle = builtins.readFile ./styles/stats.css;
-  workspacesStyle = builtins.readFile ./styles/workspaces.css;
+  # Use a Niri-specific workspace stylesheet (inlined) to hide the trailing
+  # dynamic empty workspace (so only 1..10 show in Waybar). Inlining avoids
+  # requiring a committed extra file when building via flakes.
+  workspacesStyle =
+    if config.default.de == "niri" then
+      ''
+        #workspaces {
+          margin-left: 0;
+          padding: 0;
+          color: @peach;
+          font-weight: bold;
+          background-color: @theme_base_color;
+          border: none;
+        }
+
+        #workspaces button {
+          padding: 0 0.25em;
+          min-width: 2.5em;
+          margin: 0;
+          background-color: @theme_base_color;
+          color: @text;
+          font-weight: normal;
+        }
+
+        #workspaces button label {
+          padding: 0;
+          margin: 0;
+        }
+
+        #workspaces button.empty {
+          color: @overlay0;
+          opacity: 0.7;
+        }
+
+        #workspaces button.active {
+          color: @green;
+          font-weight: bold;
+          border-bottom: 2px solid @green;
+        }
+
+        #workspaces button.visible {
+          color: @blue;
+          border-bottom: 2px solid @blue;
+        }
+
+        #workspaces button.urgent {
+          color: @red;
+          font-weight: bold;
+          animation: blink 1s infinite;
+          border: 1px solid @red;
+        }
+
+        /* Niri exposes an extra empty workspace at the end. */
+        /* Visually collapse the last empty workspace to keep it at 10. */
+        #workspaces button:last-child.empty {
+          /* Keep to GTK-supported properties */
+          min-width: 0;
+          padding: 0;
+          margin: 0;
+          border: none;
+          color: transparent;
+          background: transparent;
+          font-size: 0;
+          opacity: 0; /* visually hide */
+          box-shadow: none;
+          outline: 0;
+        }
+
+        @keyframes blink {
+          50% {
+            background-color: @red;
+            color: @surface0;
+          }
+        }
+      ''
+    else
+      builtins.readFile ./styles/workspaces.css;
 
   custom-modules = import ./modules/custom-modules.nix { inherit config lib pkgs; };
   default-modules = import ./modules/default-modules.nix { inherit config lib pkgs; };

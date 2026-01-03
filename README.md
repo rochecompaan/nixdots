@@ -21,6 +21,20 @@ Welcome to my Nix config!
   - `desktop/`: Desktop stack (WM, services, shell/term, utilities, options).
 - `scripts/`: Helper scripts (e.g. `scripts/deploy-nixos.sh`).
 
+## Homelab Kubernetes (ArgoCD)
+
+- ArgoCD is the deployment controller for the homelab cluster.
+- `argocd/homelab/apps/kustomization.yaml` is the bootstrap bundle of ArgoCD
+  Applications; it installs ArgoCD itself and registers the rest of the apps.
+- Each app is defined under `argocd/base/<app>/app.yaml` as an ArgoCD
+  Application, sourcing either Helm charts (external repos) or Kustomize paths
+  from this repo.
+- Cluster-specific manifests live under `argocd/homelab/infra` and
+  `argocd/homelab/local-path-provisioner`, referenced by their Application
+  definitions.
+- Sync order is controlled with `argocd.argoproj.io/sync-wave` annotations, and
+  apps are configured for automated sync with prune/self-heal.
+
 ## NixOS Composition
 
 - All hosts import a shared base defined by `modules/nixos/default.nix`, which

@@ -4,6 +4,7 @@ resources:
   - ../../base/argocd
   - ../../base/cert-manager
   - ../../base/cloudnative-pg
+  - ../../base/garage
   - ../../base/infra
   - ../../base/kube-prometheus-stack
   - ../../base/local-path-provisioner

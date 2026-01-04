@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  inputs,
   ...
 }:
 {
@@ -74,5 +75,24 @@
   systemd.tmpfiles.rules = [
     "d /srv/data/kipchoge 0775 roche users -"
   ];
+
+  programs.ziti-edge-tunnel = {
+    enable = true;
+    service.enable = true;
+    enrollment = {
+      enable = true;
+      jwtFile = config.sops.secrets."ziti-token".path;
+      identityFile = "/opt/openziti/etc/identities/host-identity.json";
+    };
+  };
+
+  sops = {
+    secrets = {
+      "ziti-token" = {
+        key = "ziti-${config.networking.hostName}";
+        sopsFile = "${inputs.nix-secrets}/secrets.yaml";
+      };
+    };
+  };
 
 }

@@ -1,4 +1,9 @@
-{ config, lib, ... }:
+{
+  config,
+  lib,
+  inputs,
+  ...
+}:
 {
   imports = [
     ./disko.nix
@@ -58,5 +63,24 @@
       "--tls-san=kubernetes.compaan.cloud"
       "--write-kubeconfig-mode=0644"
     ];
+  };
+
+  programs.ziti-edge-tunnel = {
+    enable = true;
+    service.enable = true;
+    enrollment = {
+      enable = true;
+      jwtFile = config.sops.secrets."ziti-token".path;
+      identityFile = "/opt/openziti/etc/identities/host-identity.json";
+    };
+  };
+
+  sops = {
+    secrets = {
+      "ziti-token" = {
+        key = "ziti-${config.networking.hostName}";
+        sopsFile = "${inputs.nix-secrets}/secrets.yaml";
+      };
+    };
   };
 }

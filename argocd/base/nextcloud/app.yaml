@@ -27,15 +27,15 @@ spec:
             usernameKey: username
             passwordKey: password
         nextcloud:
-          host: nextcloud.compaan
+          # host: nextcloud.compaan
           existingSecret:
             enabled: true
             secretName: nextcloud-admin
             usernameKey: nextcloud-username
             passwordKey: nextcloud-password
-          extraEnv:
-            - name: APACHE_SERVER_NAME
-              value: nextcloud.compaan
+          # extraEnv:
+          #   - name: APACHE_SERVER_NAME
+          #     value: nextcloud.compaan
           objectStore:
             s3:
               enabled: true

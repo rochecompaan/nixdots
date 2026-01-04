@@ -1,0 +1,72 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nextcloud
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '2'
+spec:
+  project: default
+  source:
+    chart: nextcloud
+    repoURL: https://nextcloud.github.io/helm/
+    targetRevision: 8.7.0
+    helm:
+      releaseName: nextcloud
+      valuesObject:
+        internalDatabase:
+          enabled: false
+        externalDatabase:
+          enabled: true
+          type: postgresql
+          host: postgres-rw
+          database: nextcloud
+          existingSecret:
+            enabled: true
+            secretName: postgres-app
+            usernameKey: username
+            passwordKey: password
+        nextcloud:
+          host: nextcloud.compaan
+          existingSecret:
+            enabled: true
+            secretName: nextcloud-admin
+            usernameKey: nextcloud-username
+            passwordKey: nextcloud-password
+          extraEnv:
+            - name: APACHE_SERVER_NAME
+              value: nextcloud.compaan
+          objectStore:
+            s3:
+              enabled: true
+              host: garage.garage.svc.cluster.local
+              ssl: false
+              port: "3900"
+              region: garage
+              bucket: nextcloud-bucket
+              usePathStyle: true
+              existingSecret: nextcloud-s3
+              secretKeys:
+                host: host
+                accessKey: accessKey
+                secretKey: secretKey
+                bucket: bucket
+        persistence:
+          enabled: true
+          storageClass: local-path
+          size: 10Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nextcloud
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true

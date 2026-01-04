@@ -4,6 +4,8 @@ resources:
   - ../../base/argocd
   - ../../base/cert-manager
   - ../../base/cloudnative-pg
+  - ../../base/nextcloud-db
+  - ../../base/nextcloud
   - ../../base/garage
   - ../../base/infra
   - ../../base/kube-prometheus-stack

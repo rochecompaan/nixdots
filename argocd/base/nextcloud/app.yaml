@@ -33,9 +33,11 @@ spec:
             secretName: nextcloud-admin
             usernameKey: nextcloud-username
             passwordKey: nextcloud-password
-          # extraEnv:
-          #   - name: APACHE_SERVER_NAME
-          #     value: nextcloud.compaan
+          extraEnv:
+            - name: NEXTCLOUD_TRUSTED_DOMAINS
+              value: nextcloud.compaan
+            - name: NEXTCLOUD_OVERWRITEHOST
+              value: nextcloud.compaan
           objectStore:
             s3:
               enabled: true

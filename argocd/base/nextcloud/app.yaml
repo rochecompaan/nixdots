@@ -27,7 +27,7 @@ spec:
             usernameKey: username
             passwordKey: password
         nextcloud:
-          # host: nextcloud.compaan
+          host: nextcloud.compaan
           existingSecret:
             enabled: true
             secretName: nextcloud-admin

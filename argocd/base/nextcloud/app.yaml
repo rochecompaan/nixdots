@@ -28,16 +28,25 @@ spec:
             passwordKey: password
         nextcloud:
           host: nextcloud.compaan
+          trustedDomains:
+            - nextcloud.compaan
           existingSecret:
             enabled: true
             secretName: nextcloud-admin
             usernameKey: nextcloud-username
             passwordKey: nextcloud-password
           extraEnv:
-            - name: NEXTCLOUD_TRUSTED_DOMAINS
+            - name: APACHE_SERVER_NAME
               value: nextcloud.compaan
-            - name: NEXTCLOUD_OVERWRITEHOST
-              value: nextcloud.compaan
+          configs:
+            trusted-domains.config.php: |-
+              <?php
+              $CONFIG = array (
+                'trusted_domains' =>
+                array (
+                  0 => 'nextcloud.compaan',
+                ),
+              );
           objectStore:
             s3:
               enabled: true

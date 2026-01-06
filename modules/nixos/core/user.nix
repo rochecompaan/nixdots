@@ -19,6 +19,7 @@
         "docker"
         "uinput"
         "adbusers"
+        "plugdev"
         "scanner"
         "lp"
         "ziti"

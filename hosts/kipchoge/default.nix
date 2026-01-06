@@ -121,6 +121,8 @@
     service.enable = true;
   };
 
+  programs.adb.enable = true;
+
   fileSystems."/mnt/kipsang-data" = {
     device = "192.168.1.101:/";
     fsType = "nfs";

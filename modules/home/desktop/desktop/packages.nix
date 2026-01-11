@@ -14,8 +14,8 @@ in
       with pkgs;
       [
         android-tools
-        keymapp
         gimp
+        keymapp
         libreoffice
         obs-studio
         qbittorrent-cli
@@ -26,11 +26,13 @@ in
         stremio
         stretchly
         transmission_4
+        vesktop
         wdisplays
         wlprop
         xorg.xprop
         yazi
         ydotool
+        zoom-us
       ]
       ++ [ inputs.flox.packages.${pkgs.system}.default ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [

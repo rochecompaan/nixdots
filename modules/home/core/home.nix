@@ -70,6 +70,7 @@
       kubecolor
       kubectl
       kubectx
+      kubeseal
       kubernetes-helm
       lapce
       light

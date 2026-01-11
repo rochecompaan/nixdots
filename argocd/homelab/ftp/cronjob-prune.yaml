@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: ftp-prune-old-videos
+spec:
+  schedule: "0 2 */3 * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: prune
+              image: busybox:1.36
+              imagePullPolicy: IfNotPresent
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+                  find /data -type f -mtime +3 -delete
+              volumeMounts:
+                - name: ftp-data
+                  mountPath: /data
+          volumes:
+            - name: ftp-data
+              persistentVolumeClaim:
+                claimName: ftp-data

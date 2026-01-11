@@ -7,4 +7,5 @@ resources:
   - pvc.yaml
   - deployment.yaml
   - service.yaml
+  - cronjob-prune.yaml
 kind: Kustomization

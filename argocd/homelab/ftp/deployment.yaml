@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ftp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ftp
+  template:
+    metadata:
+      labels:
+        app: ftp
+    spec:
+      containers:
+        - name: ftp
+          image: stilliard/pure-ftpd:hardened
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: ftp-config
+            - secretRef:
+                name: ftp-credentials
+          ports:
+            - containerPort: 21
+              name: ftp
+            - containerPort: 30000
+              name: pasv-30000
+            - containerPort: 30001
+              name: pasv-30001
+            - containerPort: 30002
+              name: pasv-30002
+            - containerPort: 30003
+              name: pasv-30003
+            - containerPort: 30004
+              name: pasv-30004
+            - containerPort: 30005
+              name: pasv-30005
+            - containerPort: 30006
+              name: pasv-30006
+            - containerPort: 30007
+              name: pasv-30007
+            - containerPort: 30008
+              name: pasv-30008
+            - containerPort: 30009
+              name: pasv-30009
+          volumeMounts:
+            - name: ftp-data
+              mountPath: /home/ftpusers/reolink
+      volumes:
+        - name: ftp-data
+          persistentVolumeClaim:
+            claimName: ftp-data

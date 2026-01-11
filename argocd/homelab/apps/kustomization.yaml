@@ -7,6 +7,7 @@ resources:
   - ../../base/nextcloud-db
   - ../../base/nextcloud
   - ../../base/garage
+  - ../../base/ftp
   - ../../base/infra
   - ../../base/kube-prometheus-stack
   - ../../base/local-path-provisioner

@@ -207,8 +207,8 @@ in
         Up: {bandwidthUpBits}
         Down: {bandwidthDownBits}
       '';
-      format-linked = "󰈁 {ifname}";
-      format-disconnected = " Disconnected";
+      format-linked = "󰈀 ";
+      format-disconnected = " ";
       format-alt = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
       on-click = "${nm-rofi}";
       on-click-right = "${nm-editor}";

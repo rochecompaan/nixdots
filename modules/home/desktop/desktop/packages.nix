@@ -27,6 +27,7 @@ in
         stretchly
         transmission_4
         vesktop
+        vlc
         wdisplays
         wlprop
         xorg.xprop

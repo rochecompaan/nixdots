@@ -200,14 +200,14 @@ in
     {
       interval = 1;
       format-wifi = "󰖩 {essid}"; # Icon + network name when connected
-      format-ethernet = "󰈀 "; # Ethernet icon + IP
+      format-ethernet = "󰈀 ";
       tooltip-format = ''
         {ifname}
         IP: {ipaddr}
         Up: {bandwidthUpBits}
         Down: {bandwidthDownBits}
       '';
-      format-linked = "󰈁{ifname} (No IP)";
+      format-linked = "󰈁 {ifname}";
       format-disconnected = " Disconnected";
       format-alt = "󰜷 {bandwidthUpBytes} 󰜮 {bandwidthDownBytes}";
       on-click = "${nm-rofi}";

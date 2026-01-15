@@ -33,7 +33,6 @@ in
         xorg.xprop
         yazi
         ydotool
-        zoom-us
       ]
       ++ [ inputs.flox.packages.${pkgs.system}.default ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [

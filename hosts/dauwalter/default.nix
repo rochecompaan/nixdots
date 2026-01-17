@@ -63,6 +63,11 @@
   systemd.targets.hibernate.enable = false;
   systemd.targets.hybrid-sleep.enable = false;
 
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+  };
+
   services.openiscsi = {
     enable = true;
     name = "iqn.2025-12.compaan.cloud:homelab";

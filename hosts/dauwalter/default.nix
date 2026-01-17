@@ -86,7 +86,7 @@
       "--disable=servicelb"
       "--tls-san=192.168.1.100"
       "--tls-san=192.168.1.200" # kube-vip VIP
-      "--tls-san=kubernetes.compaan.cloud"
+      "--tls-san=kubernetes.compaan"
       "--write-kubeconfig-mode=0644"
     ];
 

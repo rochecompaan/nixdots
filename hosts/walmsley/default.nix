@@ -60,7 +60,7 @@
       "--node-ip=192.168.1.103"
       "--disable=traefik"
       "--disable=service-lb"
-      "--tls-san=kubernetes.compaan.cloud"
+      "--tls-san=kubernetes.compaan"
       "--write-kubeconfig-mode=0644"
     ];
   };

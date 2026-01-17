@@ -31,6 +31,10 @@ spec:
           image: "ghcr.io/home-assistant/home-assistant:stable"
           securityContext:
             privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
           ports:
             - containerPort: 8123
           env:

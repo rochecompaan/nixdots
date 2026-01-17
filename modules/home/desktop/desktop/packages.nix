@@ -41,7 +41,6 @@ in
         claude-code-router
         opencode
         gemini-cli
-        goose-cli
       ]);
 
   };

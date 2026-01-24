@@ -23,6 +23,9 @@ spec:
             type: ClusterIP
           traefikTcpRoute:
             enabled: true
+        persistence:
+          storageClass: longhorn
+          size: 2Gi
         webBindingPki:
           enabled: false
   destination:

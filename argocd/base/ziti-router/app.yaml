@@ -19,6 +19,9 @@ spec:
           advertisedPort: 443
         ctrl:
           endpoint: "ctrl.compaan.cloud:443"
+        persistence:
+          storageClass: longhorn
+          size: 50Mi
         enrollmentJwtFromSecret: true
         enrollmentJwtSecretName: ziti-router-jwt
   destination:

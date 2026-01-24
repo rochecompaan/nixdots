@@ -64,7 +64,7 @@ spec:
                 bucket: bucket
         persistence:
           enabled: true
-          storageClass: local-path
+          storageClass: longhorn
           size: 10Gi
   destination:
     server: https://kubernetes.default.svc

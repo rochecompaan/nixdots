@@ -22,6 +22,7 @@
       inputs.zjstatus.packages.${system}.default
       _1password-cli
       _1password-gui
+      argocd
       awscli
       bemoji
       bore-cli

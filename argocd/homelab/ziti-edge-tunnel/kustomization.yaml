@@ -8,6 +8,10 @@ helmCharts:
     releaseName: ziti-edge-tunnel
     namespace: openziti
     valuesInline:
+      image:
+        args:
+          - -u
+          - 10.43.0.10
       zitiEnrollToken: "__SET_VIA_SECRET__"
       pvc:
         accessMode: ReadWriteMany

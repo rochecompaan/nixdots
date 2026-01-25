@@ -57,6 +57,40 @@
     };
   };
 
+  # Turn off screen backlight when lid closes
+  services.acpid = {
+    enable = true;
+    lidEventCommands = ''
+      if grep -q closed /proc/acpi/button/lid/*/state; then
+        for backlight in /sys/class/backlight/*; do
+          [ -d "$backlight" ] && echo 0 > "$backlight/brightness"
+        done
+      else
+        for backlight in /sys/class/backlight/*; do
+          [ -d "$backlight" ] && cat "$backlight/max_brightness" > "$backlight/brightness"
+        done
+      fi
+    '';
+  };
+
+  # Check lid state on boot and turn off backlight if closed
+  systemd.services.lid-backlight-boot = {
+    description = "Turn off backlight on boot if lid is closed";
+    after = [ "multi-user.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = ''
+      if grep -q closed /proc/acpi/button/lid/*/state 2>/dev/null; then
+        for backlight in /sys/class/backlight/*; do
+          [ -d "$backlight" ] && echo 0 > "$backlight/brightness"
+        done
+      fi
+    '';
+  };
+
   # disable sleep
   systemd.targets.sleep.enable = false;
   systemd.targets.suspend.enable = false;

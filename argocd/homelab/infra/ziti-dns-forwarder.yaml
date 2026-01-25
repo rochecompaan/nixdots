@@ -27,6 +27,8 @@ data:
   Corefile: |
     compaan:53 {
         errors
+        health :8080
+        ready :8181
         cache 30
         reload
         loop

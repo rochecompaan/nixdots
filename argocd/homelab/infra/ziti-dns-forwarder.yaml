@@ -25,7 +25,7 @@ metadata:
   namespace: kube-system
 data:
   Corefile: |
-    compaan:53 {
+    compaan:1053 {
         errors
         health :8080
         ready :8181

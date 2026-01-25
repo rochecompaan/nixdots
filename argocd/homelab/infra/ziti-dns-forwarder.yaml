@@ -8,13 +8,13 @@ metadata:
 spec:
   ports:
     - name: dns
-      port: 53
+      port: 1053
       protocol: UDP
-      targetPort: 53
+      targetPort: 1053
     - name: dns-tcp
-      port: 53
+      port: 1053
       protocol: TCP
-      targetPort: 53
+      targetPort: 1053
   selector:
     k8s-app: ziti-dns-forwarder
 ---
@@ -70,10 +70,10 @@ spec:
             - -conf
             - /etc/coredns/Corefile
           ports:
-            - containerPort: 53
+            - containerPort: 1053
               name: dns
               protocol: UDP
-            - containerPort: 53
+            - containerPort: 1053
               name: dns-tcp
               protocol: TCP
             - containerPort: 9254

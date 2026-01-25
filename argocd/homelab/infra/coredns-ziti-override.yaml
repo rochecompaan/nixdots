@@ -4,7 +4,7 @@ metadata:
   name: coredns-custom
   namespace: kube-system
 data:
-  ziti.override: |
+  ziti.server: |
     compaan:53 {
         errors
         cache 30

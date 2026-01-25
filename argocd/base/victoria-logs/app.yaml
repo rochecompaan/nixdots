@@ -16,6 +16,8 @@ spec:
       valuesObject:
         server:
           enabled: true
+          persistentVolume:
+            storageClassName: longhorn
           serviceMonitor:
             enabled: true
         vector:

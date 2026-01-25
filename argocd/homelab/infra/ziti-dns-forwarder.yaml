@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ziti-dns-forwarder
+  namespace: kube-system
+  labels:
+    k8s-app: ziti-dns-forwarder
+spec:
+  ports:
+    - name: dns
+      port: 53
+      protocol: UDP
+      targetPort: 53
+    - name: dns-tcp
+      port: 53
+      protocol: TCP
+      targetPort: 53
+  selector:
+    k8s-app: ziti-dns-forwarder
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ziti-dns-forwarder
+  namespace: kube-system
+data:
+  Corefile: |
+    compaan:53 {
+        errors
+        cache 30
+        reload
+        loop
+        forward . 100.64.0.2
+        prometheus :9254
+    }
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ziti-dns-forwarder
+  namespace: kube-system
+  labels:
+    k8s-app: ziti-dns-forwarder
+spec:
+  updateStrategy:
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      k8s-app: ziti-dns-forwarder
+  template:
+    metadata:
+      labels:
+        k8s-app: ziti-dns-forwarder
+    spec:
+      hostNetwork: true
+      dnsPolicy: Default
+      priorityClassName: system-cluster-critical
+      tolerations:
+        - key: CriticalAddonsOnly
+          operator: Exists
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
+      containers:
+        - name: coredns
+          image: coredns/coredns:1.12.3
+          args:
+            - -conf
+            - /etc/coredns/Corefile
+          ports:
+            - containerPort: 53
+              name: dns
+              protocol: UDP
+            - containerPort: 53
+              name: dns-tcp
+              protocol: TCP
+            - containerPort: 9254
+              name: metrics
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 60
+            timeoutSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: 8181
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/coredns
+      volumes:
+        - name: config
+          configMap:
+            name: ziti-dns-forwarder
+            items:
+              - key: Corefile
+                path: Corefile

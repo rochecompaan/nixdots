@@ -21,6 +21,5 @@ resources:
   - ../../base/trust-manager
   - ../../base/victoria-logs
   - ../../base/ziti-controller
-  - ../../base/ziti-edge-tunnel
   - ../../base/ziti-router
 kind: Kustomization

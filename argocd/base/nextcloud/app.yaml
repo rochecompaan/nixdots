@@ -38,15 +38,6 @@ spec:
           extraEnv:
             - name: APACHE_SERVER_NAME
               value: nextcloud.compaan
-          configs:
-            trusted-domains.config.php: |-
-              <?php
-              $CONFIG = array (
-                'trusted_domains' =>
-                array (
-                  0 => 'nextcloud.compaan',
-                ),
-              );
           objectStore:
             s3:
               enabled: true

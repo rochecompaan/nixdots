@@ -121,6 +121,7 @@
 
     extraFlags = lib.concatStringsSep " " [
       "--node-ip=192.168.1.100"
+      "--disable=local-storage"
       "--disable=traefik"
       "--disable=servicelb"
       "--tls-san=192.168.1.100"

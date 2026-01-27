@@ -58,6 +58,7 @@
 
     extraFlags = lib.concatStringsSep " " [
       "--node-ip=192.168.1.101"
+      "--disable=local-storage"
       "--disable=traefik"
       "--disable=service-lb"
       "--tls-san=kubernetes.compaan"

@@ -1,5 +1,6 @@
 {
   imports = [
+    ./codex-sessions
     ./git
     ./gpg-agent
     ./k9s

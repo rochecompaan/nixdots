@@ -35,6 +35,7 @@ in
         ydotool
       ]
       ++ [ inputs.flox.packages.${pkgs.system}.default ]
+      ++ [ inputs.kimi-cli.packages.${pkgs.system}.kimi-cli ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
         codex
         claude-code

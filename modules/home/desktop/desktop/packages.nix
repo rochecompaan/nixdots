@@ -17,6 +17,7 @@ in
         gimp
         keymapp
         libreoffice
+        nextcloud-client
         obs-studio
         qbittorrent-cli
         qbittorrent-enhanced

@@ -5,7 +5,6 @@
     ./hypridle
     ./hyprpaper
     ./notes
-    ./onedrive
     ./swaync
     ./waybar
   ];

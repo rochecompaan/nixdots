@@ -43,7 +43,7 @@ in
       yaml-language-server
 
       # Security/Hardware GUI
-      pass
+      (pass.withExtensions (exts: [ exts.pass-otp ]))
       yubico-piv-tool
       yubikey-manager
       yubikey-personalization

@@ -18,6 +18,18 @@ let
   };
   envStr = concatStringsSep " " (mapAttrsToList (n: v: "${n}=${escapeShellArg v}") env);
 
+  passWithOtp = pkgs.pass.withExtensions (exts: with exts; [ pass-otp ]);
+  passffHostWithOtp = pkgs.passff-host.overrideAttrs (old: {
+    dontStrip = true;
+    patchPhase = (old.patchPhase or "") + ''
+      sed -i 's#COMMAND = "pass"#COMMAND = "${passWithOtp}/bin/pass"#' src/passff.py
+    '';
+  });
+
+  firefoxWithPassff = pkgs.firefox.override {
+    nativeMessagingHosts = [ passffHostWithOtp ];
+  };
+
   betterfox = pkgs.fetchFromGitHub {
     owner = "yokoffing";
     repo = "Betterfox";
@@ -28,7 +40,7 @@ in
 {
   programs.firefox = {
     enable = true;
-    package = pkgs.firefox.overrideAttrs (old: {
+    package = firefoxWithPassff.overrideAttrs (old: {
       buildCommand = old.buildCommand + ''
         substituteInPlace $out/bin/firefox \
           --replace "exec -a" ${escapeShellArg envStr}" exec -a"

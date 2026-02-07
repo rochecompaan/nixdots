@@ -168,7 +168,6 @@ in
         github-file-icons
         reddit-enhancement-suite
 
-        onepassword-password-manager
         sidebery
         vimium
         languagetool

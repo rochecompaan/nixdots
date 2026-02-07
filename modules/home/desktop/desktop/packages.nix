@@ -25,7 +25,6 @@ in
         signal-desktop
         ssh-to-age
         stremio
-        stretchly
         transmission_4
         vesktop
         vlc

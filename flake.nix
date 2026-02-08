@@ -74,10 +74,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    flox = {
-      url = "github:flox/flox/latest";
-    };
-
     kimi-cli = {
       url = "github:MoonshotAI/kimi-cli";
     };

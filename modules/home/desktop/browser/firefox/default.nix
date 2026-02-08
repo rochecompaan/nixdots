@@ -19,9 +19,9 @@ let
   envStr = concatStringsSep " " (mapAttrsToList (n: v: "${n}=${escapeShellArg v}") env);
 
   passWithOtp = pkgs.pass.withExtensions (exts: with exts; [ pass-otp ]);
-  passffHostWithOtp = pkgs.passff-host.overrideAttrs (old: {
+  passffHostWithOtp = pkgs.passff-host.overrideAttrs (_: {
     dontStrip = true;
-    patchPhase = (old.patchPhase or "") + ''
+    patchPhase = ''
       sed -i 's#COMMAND = "pass"#COMMAND = "${passWithOtp}/bin/pass"#' src/passff.py
     '';
   });
@@ -158,19 +158,15 @@ in
         "signon.management.page.breach-alerts.enabled" = false;
       };
       extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-        ublock-origin
-
-        sponsorblock
-        return-youtube-dislikes
-
         enhanced-github
-        refined-github
         github-file-icons
+        passff
         reddit-enhancement-suite
-
-        sidebery
+        refined-github
+        return-youtube-dislikes
+        sponsorblock
+        ublock-origin
         vimium
-        languagetool
       ];
 
       search = {

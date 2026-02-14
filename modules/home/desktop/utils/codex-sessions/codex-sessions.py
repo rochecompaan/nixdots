@@ -1,5 +1,6 @@
 import argparse
 import json
+import os
 import pathlib
 import subprocess
 import sys
@@ -59,14 +60,34 @@ def load_session_index(root):
     return out
 
 
+def codex_roots():
+    roots = []
+    env_root = os.environ.get("CODEX_HOME")
+    if env_root:
+        roots.append(pathlib.Path(env_root).expanduser())
+
+    default_root = pathlib.Path.home() / ".codex"
+    if default_root not in roots:
+        roots.append(default_root)
+
+    return roots
+
+
 def build_sessions():
     sessions = {}
-    history = pathlib.Path.home() / ".codex" / "history.jsonl"
-    sessions_root = pathlib.Path.home() / ".codex" / "sessions"
+    roots = codex_roots()
+    history_paths = [root / "history.jsonl" for root in roots]
+    sessions_roots = [root / "sessions" for root in roots]
 
-    session_index = load_session_index(sessions_root)
+    session_index = {}
+    for sessions_root in sessions_roots:
+        for sid, data in load_session_index(sessions_root).items():
+            if sid not in session_index:
+                session_index[sid] = data
 
-    if history.exists():
+    for history in history_paths:
+        if not history.exists():
+            continue
         with history.open() as f:
             for line in f:
                 if not line.strip():
@@ -91,7 +112,7 @@ def build_sessions():
         meta = session_index.get(sid, {})
         rows.append((ts, title, sid, meta.get("cwd", ""), meta.get("path")))
     rows.sort(key=lambda x: x[0], reverse=True)
-    return rows, sessions_root
+    return rows, sessions_roots
 
 
 def print_list(rows, limit):
@@ -207,13 +228,16 @@ def follow_session(path):
         return
 
 
-def find_session_path(sessions_root, sid, known):
+def find_session_path(sessions_roots, sid, known):
     if known:
         return known
-    if not sessions_root.exists():
-        return None
-    matches = list(sessions_root.rglob(f"*{sid}*.jsonl"))
-    return matches[0] if matches else None
+    for sessions_root in sessions_roots:
+        if not sessions_root.exists():
+            continue
+        matches = list(sessions_root.rglob(f"*{sid}*.jsonl"))
+        if matches:
+            return matches[0]
+    return None
 
 
 def main():
@@ -222,7 +246,7 @@ def main():
     parser.add_argument("--limit", type=int, default=10, help="Number of sessions to list.")
     args = parser.parse_args()
 
-    rows, sessions_root = build_sessions()
+    rows, sessions_roots = build_sessions()
 
     try:
         if args.list or not sys.stdout.isatty():
@@ -234,7 +258,7 @@ def main():
             return 1
         index = {row[2]: row for row in rows}
         row = index.get(sid)
-        path = find_session_path(sessions_root, sid, row[4] if row else None)
+        path = find_session_path(sessions_roots, sid, row[4] if row else None)
         if not path:
             print("Selected session file not found.", file=sys.stderr)
             return 1

@@ -5,3 +5,4 @@
 result
 /.crush/
 kubeconfig
+modules/home/desktop/utils/codex-sessions/__pycache__

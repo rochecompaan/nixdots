@@ -34,7 +34,6 @@ in
         yazi
         ydotool
       ]
-      ++ [ inputs.kimi-cli.packages.${pkgs.system}.kimi-cli ]
       ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
         codex
         claude-code

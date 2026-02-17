@@ -74,10 +74,6 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    kimi-cli = {
-      url = "github:MoonshotAI/kimi-cli";
-    };
-
     disko.url = "github:nix-community/disko";
 
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";

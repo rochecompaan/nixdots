@@ -14,11 +14,14 @@ in
       with pkgs;
       [
         android-tools
+        copier
         gimp
         keymapp
         libreoffice
         nextcloud-client
         obs-studio
+        playwright-test
+        playwright-mcp
         qbittorrent-cli
         qbittorrent-enhanced
         scrcpy

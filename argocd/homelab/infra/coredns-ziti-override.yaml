@@ -8,5 +8,5 @@ data:
     compaan:53 {
         errors
         cache 30
-        forward . ziti-dns-forwarder.kube-system.svc.cluster.local:1053
+        forward . 192.168.1.100:1053 192.168.1.101:1053 192.168.1.102:1053 192.168.1.103:1053
     }

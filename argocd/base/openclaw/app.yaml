@@ -128,6 +128,9 @@ spec:
                     //   }
                     // }
                   }
+          persistence:
+            data:
+              storageClass: longhorn
   destination:
     server: https://kubernetes.default.svc
     namespace: openclaw

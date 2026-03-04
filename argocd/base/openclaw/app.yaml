@@ -6,6 +6,12 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: '4'
 spec:
+  ignoreDifferences:
+    - group: ""
+      kind: ConfigMap
+      name: openclaw
+      jsonPointers:
+        - /data
   project: default
   source:
     chart: openclaw
@@ -15,6 +21,7 @@ spec:
       releaseName: openclaw
       valuesObject:
         app-template:
+          configMode: merge
           controllers:
             main:
               containers:
@@ -37,6 +44,9 @@ spec:
                     "gateway": {
                       "port": 18789,
                       "mode": "local",
+                      "controlUi": {
+                        "dangerouslyAllowHostHeaderOriginFallback": true
+                      },
                       // IMPORTANT: trustedProxies uses exact IP matching only
                       // - CIDR notation is NOT supported - list each proxy IP individually
                       // - IPv6 exact addresses may work but are untested

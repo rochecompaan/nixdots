@@ -6,6 +6,7 @@ resources:
   - ../../base/cloudnative-pg
   - ../../base/nextcloud-db
   - ../../base/nextcloud
+  - ../../base/openclaw
   - ../../base/garage
   - ../../base/ftp
   - ../../base/infra

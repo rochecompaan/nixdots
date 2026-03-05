@@ -113,6 +113,8 @@ in
 
         # ESNI is deprecated ECH is recommended
         "network.dns.echconfig.enabled" = true;
+        # Trust system/NixOS certificate store (includes private CA)
+        "security.enterprise_roots.enabled" = true;
 
         # Disable telemetry for privacy reasons
         "toolkit.telemetry.archive.enabled" = false;
@@ -400,6 +402,8 @@ in
 
         # ESNI is deprecated ECH is recommended
         "network.dns.echconfig.enabled" = true;
+        # Trust system/NixOS certificate store (includes private CA)
+        "security.enterprise_roots.enabled" = true;
 
         # Disable telemetry for privacy reasons
         "toolkit.telemetry.archive.enabled" = false;

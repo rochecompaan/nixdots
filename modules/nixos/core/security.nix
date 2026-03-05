@@ -1,5 +1,9 @@
 {
   security = {
+    pki.certificateFiles = [
+      ./certs/compaan-ca.crt
+    ];
+
     rtkit.enable = true;
     pam.services = {
       greetd = {

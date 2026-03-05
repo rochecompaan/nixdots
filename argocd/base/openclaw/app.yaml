@@ -141,6 +141,24 @@ spec:
           persistence:
             data:
               storageClass: longhorn
+          ingress:
+            main:
+              enabled: true
+              className: traefik
+              annotations:
+                cert-manager.io/cluster-issuer: compaan-ca
+              tls:
+                - secretName: openclaw-compaan-tls
+                  hosts:
+                    - openclaw.compaan
+              hosts:
+                - host: openclaw.compaan
+                  paths:
+                    - path: /
+                      pathType: Prefix
+                      service:
+                        identifier: main
+                        port: http
   destination:
     server: https://kubernetes.default.svc
     namespace: openclaw

@@ -1,8 +1,7 @@
 apiVersion: cert-manager.io/v1
-kind: Issuer
+kind: ClusterIssuer
 metadata:
   name: compaan-selfsigned
-  namespace: cert-manager
   annotations:
     argocd.argoproj.io/sync-wave: "0"
 spec:
@@ -24,7 +23,7 @@ spec:
     size: 4096
   issuerRef:
     name: compaan-selfsigned
-    kind: Issuer
+    kind: ClusterIssuer
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -35,4 +34,3 @@ metadata:
 spec:
   ca:
     secretName: compaan-ca
-

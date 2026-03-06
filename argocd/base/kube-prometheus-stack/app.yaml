@@ -19,7 +19,7 @@ spec:
             enabled: true
             ingressClassName: traefik
             annotations:
-              cert-manager.io/cluster-issuer: compaan-selfsigned
+              cert-manager.io/cluster-issuer: compaan-ca
             hosts:
               - grafana.compaan
             path: /

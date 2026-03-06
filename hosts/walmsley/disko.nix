@@ -45,7 +45,6 @@
               mountpoint = "/srv/data";
               mountOptions = [
                 "noatime"
-                "nofail"
               ];
             };
           };

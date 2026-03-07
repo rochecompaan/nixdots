@@ -149,7 +149,7 @@ spec:
               annotations:
                 cert-manager.io/cluster-issuer: compaan-ca
               tls:
-                - secretName: openclaw-compaan-tls
+                - secretName: openclaw-compaan-tls-v2
                   hosts:
                     - openclaw.compaan
               hosts:

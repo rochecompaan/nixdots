@@ -11,17 +11,18 @@
       hashedPasswordFile = config.sops.secrets.roche-password.path;
       isNormalUser = true;
       extraGroups = [
-        "wheel"
-        "networkmanager"
-        "audio"
-        "video"
-        "libvirtd"
-        "docker"
-        "uinput"
         "adbusers"
+        "audio"
+        "dialout"
+        "docker"
+        "libvirtd"
+        "lp"
+        "networkmanager"
         "plugdev"
         "scanner"
-        "lp"
+        "uinput"
+        "video"
+        "wheel"
         "ziti"
       ];
       openssh = {

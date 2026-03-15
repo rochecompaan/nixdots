@@ -2,6 +2,7 @@
   security = {
     pki.certificateFiles = [
       ./certs/compaan-ca.crt
+      ./certs/ctrl-siyavula-com.crt
     ];
 
     rtkit.enable = true;

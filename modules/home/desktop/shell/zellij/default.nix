@@ -32,6 +32,10 @@ let
     	zellij attach -c "$SESSION_TITLE"
     fi
   '';
+  zellijFavs = pkgs.fetchurl {
+    url = "https://github.com/JoseMM2002/zellij-favs/releases/download/v1.0.4/zellij-favs.wasm";
+    hash = "sha256-Bc4nsAbPIdbI5xqPC2bnTSqV8Jzf6EDKNTFbRqXq92Y=";
+  };
 in
 {
   home.packages = [
@@ -44,6 +48,7 @@ in
     enableZshIntegration = false;
   };
 
+  xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijFavs;
   xdg.configFile."zellij/config.kdl".text = ''
     // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
     ui {
@@ -199,6 +204,14 @@ in
       shared_except "locked" {
         bind "Ctrl l" { SwitchToMode "Locked"; }
         bind "Alt n" { NewPane; }
+        bind "Alt f" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij-favs.wasm" {
+              floating true
+              display_tab_panes true
+              cache_dir "${config.xdg.stateHome}/zellij-favs"
+            };
+            SwitchToMode "Normal"
+        }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }

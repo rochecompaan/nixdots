@@ -28,22 +28,13 @@ spec:
             passwordKey: password
         nextcloud:
           host: nextcloud.compaan
+          overwriteProtocol: https
           trustedDomains:
             - nextcloud.compaan
-          configs:
-            proxy.config.php: |-
-              <?php
-              $CONFIG = array (
-                'overwriteprotocol' => 'https',
-                'overwritehost' => 'nextcloud.compaan',
-                'overwrite.cli.url' => 'https://nextcloud.compaan',
-                'trusted_proxies' =>
-                array (
-                  0 => '10.0.0.0/8',
-                  1 => '172.16.0.0/12',
-                  2 => '192.168.0.0/16',
-                ),
-              );
+          trustedProxies:
+            - 10.0.0.0/8
+            - 172.16.0.0/12
+            - 192.168.0.0/16
           existingSecret:
             enabled: true
             secretName: nextcloud-admin
@@ -52,10 +43,6 @@ spec:
           extraEnv:
             - name: APACHE_SERVER_NAME
               value: nextcloud.compaan
-            - name: OVERWRITEPROTOCOL
-              value: https
-            - name: OVERWRITECLIURL
-              value: https://nextcloud.compaan
           objectStore:
             s3:
               enabled: true
@@ -71,6 +58,8 @@ spec:
                 accessKey: accessKey
                 secretKey: secretKey
                 bucket: bucket
+        phpClientHttpsFix:
+          enabled: true
         persistence:
           enabled: true
           storageClass: longhorn

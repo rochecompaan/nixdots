@@ -15,6 +15,7 @@
     de = "niri";
     terminal = "kitty";
   };
+  lowBatteryAlert.enable = true;
 
   # Idle suspend after 30 minutes
   services.hypridle.settings.listener = [

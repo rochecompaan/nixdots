@@ -19,6 +19,18 @@ spec:
             kustomize.buildOptions: --enable-helm
           params:
             server.insecure: true
+        server:
+          ingress:
+            enabled: true
+            ingressClassName: traefik
+            hostname: argocd.compaan
+            annotations:
+              cert-manager.io/cluster-issuer: compaan-ca
+            tls: true
+            extraTls:
+              - hosts:
+                  - argocd.compaan
+                secretName: argocd-compaan-tls
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd

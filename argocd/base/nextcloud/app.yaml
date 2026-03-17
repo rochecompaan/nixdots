@@ -38,6 +38,10 @@ spec:
           extraEnv:
             - name: APACHE_SERVER_NAME
               value: nextcloud.compaan
+            - name: OVERWRITEPROTOCOL
+              value: https
+            - name: OVERWRITECLIURL
+              value: https://nextcloud.compaan
           objectStore:
             s3:
               enabled: true

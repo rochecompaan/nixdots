@@ -30,6 +30,20 @@ spec:
           host: nextcloud.compaan
           trustedDomains:
             - nextcloud.compaan
+          configs:
+            proxy.config.php: |-
+              <?php
+              $CONFIG = array (
+                'overwriteprotocol' => 'https',
+                'overwritehost' => 'nextcloud.compaan',
+                'overwrite.cli.url' => 'https://nextcloud.compaan',
+                'trusted_proxies' =>
+                array (
+                  0 => '10.0.0.0/8',
+                  1 => '172.16.0.0/12',
+                  2 => '192.168.0.0/16',
+                ),
+              );
           existingSecret:
             enabled: true
             secretName: nextcloud-admin

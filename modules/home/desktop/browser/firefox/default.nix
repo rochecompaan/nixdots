@@ -154,6 +154,7 @@ in
         "dom.push.connection.enabled" = false;
         "dom.battery.enabled" = false; # you don't need to see my battery...
 
+        "signon.rememberSignons" = false;
         "signon.autofillForms" = false;
         "signon.firefoxRelay.feature" = "disabled";
         "signon.generation.enabled" = false;
@@ -442,6 +443,11 @@ in
         "dom.push.enabled" = false; # no notifications, really...
         "dom.push.connection.enabled" = false;
         "dom.battery.enabled" = false; # you don't need to see my battery...
+        "signon.rememberSignons" = false;
+        "signon.autofillForms" = false;
+        "signon.firefoxRelay.feature" = "disabled";
+        "signon.generation.enabled" = false;
+        "signon.management.page.breach-alerts.enabled" = false;
 
         "network.proxy.socks" = "127.0.0.1";
         "network.proxy.socks_port" = 3128;

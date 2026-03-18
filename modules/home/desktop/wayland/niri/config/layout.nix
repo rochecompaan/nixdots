@@ -124,6 +124,9 @@
 
       // Input configuration (see default-config.kdl for full options)
       input {
+        // Focus window under pointer when moving the mouse.
+        focus-follows-mouse max-scroll-amount="100%"
+
         keyboard {
           xkb {
             layout "us"

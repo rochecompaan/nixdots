@@ -57,20 +57,17 @@
     // Keybinds are defined in a single global `binds { ... }` node supplied by
     // modules/home/desktop/wayland/niri/config/binds.nix to avoid duplicates.
 
-    // Named workspaces 1..10 so they always exist.
-    // Declare in reverse order to account for live-reload behavior where
-    // newly declared workspaces are inserted at the top; this results in
-    // 1..10 top-to-bottom and left-to-right in Waybar.
-    workspace "10"
-    workspace "9"
-    workspace "8"
-    workspace "7"
-    workspace "6"
-    workspace "5"
-    workspace "4"
-    workspace "3"
-    workspace "2"
-    workspace "1"
+    // Named persistent workspaces pinned to outputs.
+    workspace "1" { open-on-output "HDMI-A-1"; }
+    workspace "2" { open-on-output "HDMI-A-1"; }
+    workspace "3" { open-on-output "HDMI-A-1"; }
+    workspace "4" { open-on-output "HDMI-A-1"; }
+    workspace "5" { open-on-output "HDMI-A-1"; }
+    workspace "6" { open-on-output "HDMI-A-1"; }
+    workspace "7" { open-on-output "HDMI-A-1"; }
+    workspace "8" { open-on-output "eDP-1"; }
+    workspace "9" { open-on-output "eDP-1"; }
+    workspace "10" { open-on-output "eDP-1"; }
   '';
 
 }

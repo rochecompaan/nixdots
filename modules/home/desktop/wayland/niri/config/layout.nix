@@ -145,6 +145,12 @@
         }
       }
 
+      // Allow focus activation for apps that send invalid xdg-activation serials
+      // (common for links opened from some terminal/Electron apps).
+      debug {
+        honor-xdg-activation-with-invalid-serial
+      }
+
       // Ask clients to omit client-side decorations when possible
       prefer-no-csd
     '';

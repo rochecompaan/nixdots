@@ -27,7 +27,9 @@ spec:
             main:
               initContainers:
                 init-skills:
-                  image: debian:stable-slim
+                  image:
+                    repository: debian
+                    tag: stable-slim
                   securityContext:
                     readOnlyRootFilesystem: false
                     runAsUser: 0

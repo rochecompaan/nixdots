@@ -26,14 +26,21 @@ spec:
               apt-get install -y --no-install-recommends ca-certificates isync
               rm -rf /var/lib/apt/lists/*
 
+              escape_mbsync() {
+                printf '%s' "$1" | sed 's/[\\"]/\\&/g'
+              }
+
               maildir_root="/mail/Maildir/${GMAIL_ADDRESS}"
+              gmail_address_escaped="$(escape_mbsync "${GMAIL_ADDRESS}")"
+              gmail_app_password_escaped="$(escape_mbsync "${GMAIL_APP_PASSWORD}")"
+              maildir_root_escaped="$(escape_mbsync "${maildir_root}")"
               mkdir -p /work "${maildir_root}"
 
               cat > /work/mbsyncrc <<EOF
               IMAPAccount gmail
               Host imap.gmail.com
-              User ${GMAIL_ADDRESS}
-              Pass ${GMAIL_APP_PASSWORD}
+              User "${gmail_address_escaped}"
+              Pass "${gmail_app_password_escaped}"
               Port 993
               TLSType IMAPS
               AuthMechs LOGIN
@@ -43,9 +50,9 @@ spec:
               Account gmail
 
               MaildirStore gmail-local
-              Path ${maildir_root}/
-              Inbox ${maildir_root}/INBOX
-              SubFolders Maildir++
+              Path "${maildir_root_escaped}/"
+              Inbox "${maildir_root_escaped}/INBOX"
+              SubFolders Verbatim
 
               Channel gmail
               Far :gmail-remote:

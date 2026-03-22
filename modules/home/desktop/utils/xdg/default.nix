@@ -78,36 +78,51 @@ in
   xdg.configFile = lib.mkIf (config.default.de == "niri") {
     # Prevent systemd-xdg-autostart services from launching/respawning these
     # during `nh home switch`; Niri starts the required ones explicitly.
-    "autostart/Nextcloud.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=Nextcloud
-      Hidden=true
-    '';
-    "autostart/blueman.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=Blueman Applet
-      Hidden=true
-    '';
-    "autostart/nm-applet.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=NetworkManager Applet
-      Hidden=true
-    '';
-    "autostart/keybase_autostart.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=Keybase
-      Hidden=true
-    '';
-    "autostart/picom.desktop".text = ''
-      [Desktop Entry]
-      Type=Application
-      Name=picom
-      Hidden=true
-    '';
+    "autostart/Nextcloud.desktop" = {
+      force = true;
+      text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=Nextcloud
+        Hidden=true
+      '';
+    };
+    "autostart/blueman.desktop" = {
+      force = true;
+      text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=Blueman Applet
+        Hidden=true
+      '';
+    };
+    "autostart/nm-applet.desktop" = {
+      force = true;
+      text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=NetworkManager Applet
+        Hidden=true
+      '';
+    };
+    "autostart/keybase_autostart.desktop" = {
+      force = true;
+      text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=Keybase
+        Hidden=true
+      '';
+    };
+    "autostart/picom.desktop" = {
+      force = true;
+      text = ''
+        [Desktop Entry]
+        Type=Application
+        Name=picom
+        Hidden=true
+      '';
+    };
   };
 
   xdg = {

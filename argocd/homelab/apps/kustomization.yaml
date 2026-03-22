@@ -6,6 +6,8 @@ resources:
   - ../../base/cloudnative-pg
   - ../../base/nextcloud-db
   - ../../base/nextcloud
+  - ../../base/webmutt
+  - ../../base/openclaw-mail-sync
   - ../../base/openclaw
   - ../../base/garage
   - ../../base/ftp

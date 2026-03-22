@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openclaw-mbsync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openclaw-mbsync
+  template:
+    metadata:
+      labels:
+        app: openclaw-mbsync
+    spec:
+      containers:
+        - name: mbsync
+          image: debian:stable-slim
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -lc
+            - |
+              set -eu
+              export DEBIAN_FRONTEND=noninteractive
+              apt-get update
+              apt-get install -y --no-install-recommends ca-certificates isync
+              rm -rf /var/lib/apt/lists/*
+
+              maildir_root="/mail/Maildir/${GMAIL_ADDRESS}"
+              mkdir -p /work "${maildir_root}"
+
+              cat > /work/mbsyncrc <<EOF_INNER
+              IMAPAccount gmail
+              Host imap.gmail.com
+              User ${GMAIL_ADDRESS}
+              Pass ${GMAIL_APP_PASSWORD}
+              Port 993
+              TLSType IMAPS
+              AuthMechs LOGIN
+              CertificateFile /etc/ssl/certs/ca-certificates.crt
+
+              IMAPStore gmail-remote
+              Account gmail
+
+              MaildirStore gmail-local
+              Path ${maildir_root}/
+              Inbox ${maildir_root}/INBOX
+              SubFolders Maildir++
+
+              Channel gmail
+              Far :gmail-remote:
+              Near :gmail-local:
+              Patterns ${OPENCLAW_MBSYNC_PATTERNS}
+              Create Both
+              Expunge Both
+              Remove Both
+              Sync All
+              SyncState *
+              EOF_INNER
+
+              while true; do
+                mbsync -V -c /work/mbsyncrc gmail || true
+                sleep "${MBSYNC_POLL_SECONDS:-300}"
+              done
+          envFrom:
+            - configMapRef:
+                name: openclaw-mail-sync-config
+            - secretRef:
+                name: webmutt-gmail-secret
+          volumeMounts:
+            - name: maildir
+              mountPath: /mail
+      volumes:
+        - name: maildir
+          persistentVolumeClaim:
+            claimName: openclaw-maildir

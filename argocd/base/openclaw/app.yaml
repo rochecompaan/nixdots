@@ -142,6 +142,13 @@ spec:
           persistence:
             data:
               storageClass: longhorn
+            mail:
+              enabled: true
+              type: persistentVolumeClaim
+              existingClaim: openclaw-maildir
+              globalMounts:
+                - path: /home/node/.openclaw/workspace/mail
+                  readOnly: true
           ingress:
             main:
               enabled: true

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: webmutt-config
+data:
+  MBSYNC_POLL_SECONDS: "300"
+  WEBMUTT_MBSYNC_PATTERNS: '*'

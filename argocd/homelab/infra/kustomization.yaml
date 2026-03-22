@@ -4,6 +4,7 @@ resources:
   - cert-manager-issuer.yaml
   - coredns-ziti-override.yaml
   - home-assistant.yaml
+  - longhorn-sata-storageclass.yaml
   - private-ca.yaml
   - ziti-dns-forwarder.yaml
   - ziti-router-ingress.yaml

@@ -96,6 +96,10 @@
       source <(kubectl completion zsh)
       eval "$(zoxide init zsh)"
 
+      kn() {
+        kubectl config set-context --namespace="$1" --current=true
+      }
+
       setopt completeinword NO_flowcontrol NO_listbeep NO_singlelinezle
       autoload -Uz compinit
       compinit

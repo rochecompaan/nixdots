@@ -29,7 +29,7 @@ spec:
                 init-runtime-deps:
                   image:
                     repository: debian
-                    tag: stable-slim
+                    tag: bookworm-slim
                   securityContext:
                     readOnlyRootFilesystem: false
                     runAsNonRoot: false
@@ -60,20 +60,34 @@ spec:
 
                       export DEBIAN_FRONTEND=noninteractive
                       apt-get update
-                      apt-get install -y --no-install-recommends ca-certificates poppler-utils qpdf
+                      apt-get install -y --no-install-recommends ca-certificates ghostscript mupdf-tools poppler-utils qpdf
                       rm -rf /var/lib/apt/lists/*
 
-                      rm -f "${lib_dir}"/*
+                      rm -f \
+                        "${bin_dir}/pdfimages" \
+                        "${bin_dir}/pdfinfo" \
+                        "${bin_dir}/pdftoppm" \
+                        "${bin_dir}/pdftotext" \
+                        "${bin_dir}/qpdf" \
+                        "${bin_dir}/mutool" \
+                        "${bin_dir}/gs" \
+                        "${runtime_bin_dir}"/* \
+                        "${lib_dir}"/*
 
-                      ldd /usr/bin/pdfinfo /usr/bin/pdftoppm /usr/bin/pdftotext /usr/bin/qpdf \
+                      ldd /usr/bin/pdfimages /usr/bin/pdfinfo /usr/bin/pdftoppm /usr/bin/pdftotext /usr/bin/qpdf /usr/bin/mutool /usr/bin/gs \
                         | awk '/=> \// { print $3 } /^[[:space:]]*\/[^:[:space:]]+[[:space:]]/ { print $1 }' \
                         | sort -u \
                         | while read -r lib; do
                             [ -n "${lib}" ] || continue
+                            case "${lib}" in
+                              */ld-linux-*.so.*|*/libc.so.*)
+                                continue
+                                ;;
+                            esac
                             cp -L "${lib}" "${lib_dir}/"
                           done
 
-                      for bin in pdfinfo pdftoppm pdftotext qpdf; do
+                      for bin in pdfimages pdfinfo pdftoppm pdftotext qpdf mutool gs; do
                         install -m 0755 "$(command -v "${bin}")" "${runtime_bin_dir}/${bin}"
                         printf '%s\n' \
                           '#!/bin/sh' \
@@ -103,8 +117,14 @@ spec:
                         /home/node/.openclaw/bin/uv venv --python 3.12 /home/node/.openclaw/python
                       fi
 
-                      log "Installing pypdf"
-                      /home/node/.openclaw/bin/uv pip install --python /home/node/.openclaw/python/bin/python pypdf
+                      log "Installing Python PDF dependencies"
+                      UV_LINK_MODE=copy /home/node/.openclaw/bin/uv pip install \
+                        --python /home/node/.openclaw/python/bin/python \
+                        pypdf \
+                        pdfplumber \
+                        pymupdf \
+                        PyPDF2 \
+                        pdfminer.six
 
                       mkdir -p /home/node/.openclaw/workspace/skills
                       cd /home/node/.openclaw/workspace

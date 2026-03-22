@@ -65,14 +65,6 @@ spec:
                           done
 
                       chown -R 1000:1000 "${openclaw_home}"
-                  volumeMounts:
-                    - name: data
-                      mountPath: /home/node/.openclaw
-                    - name: mail
-                      mountPath: /home/node/.openclaw/workspace/mail
-                      readOnly: true
-                    - name: tmp
-                      mountPath: /tmp
                 init-skills:
                   command:
                     - sh
@@ -229,6 +221,10 @@ spec:
           persistence:
             data:
               storageClass: longhorn
+              advancedMounts:
+                main:
+                  init-runtime-deps:
+                    - path: /home/node/.openclaw
             mail:
               enabled: true
               type: persistentVolumeClaim

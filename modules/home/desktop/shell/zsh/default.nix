@@ -21,6 +21,7 @@
       k = "kubectl";
       ksy = "kubectl -n kube-system";
       kgp = "kubectl get pods";
+      kgpw = "kubectl get pods -w";
       kgs = "kubectl get services";
       kgd = "kubectl get deploy,daemonsets";
       kge = "kubectl exec -it";

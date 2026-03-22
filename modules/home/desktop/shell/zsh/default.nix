@@ -97,7 +97,18 @@
       eval "$(zoxide init zsh)"
 
       kn() {
-        kubectl config set-context --namespace="$1" --current=true
+        local ns="$1"
+        [ -n "$ns" ] || {
+          echo "usage: kn <namespace>" >&2
+          return 1
+        }
+
+        kubectl get namespace "$ns" >/dev/null 2>&1 || {
+          echo "namespace not found: $ns" >&2
+          return 1
+        }
+
+        kubectl config set-context --namespace="$ns" --current=true
       }
 
       setopt completeinword NO_flowcontrol NO_listbeep NO_singlelinezle

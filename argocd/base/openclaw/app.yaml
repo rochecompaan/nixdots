@@ -45,7 +45,6 @@ spec:
                       bin_dir="${openclaw_home}/bin"
                       lib_dir="${openclaw_home}/lib"
                       python_dir="${openclaw_home}/python"
-                      sessions_dir="${openclaw_home}/sessions"
                       workspace_dir="${openclaw_home}/workspace"
                       skills_dir="${workspace_dir}/skills"
 
@@ -54,7 +53,6 @@ spec:
                         "${bin_dir}" \
                         "${lib_dir}" \
                         "${python_dir}" \
-                        "${sessions_dir}" \
                         "${workspace_dir}" \
                         "${skills_dir}"
 

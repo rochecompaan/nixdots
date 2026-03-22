@@ -23,11 +23,14 @@ spec:
               set -eu
               export DEBIAN_FRONTEND=noninteractive
               apt-get update
-              apt-get install -y --no-install-recommends ca-certificates isync
+              apt-get install -y --no-install-recommends ca-certificates gosu isync
               rm -rf /var/lib/apt/lists/*
 
+              sync_uid=1000
+              sync_gid=1000
               maildir_root="/mail/Maildir/${GMAIL_ADDRESS}"
               mkdir -p /work "${maildir_root}"
+              chown -R "${sync_uid}:${sync_gid}" /work /mail
 
               cat > /work/mbsyncrc <<EOF_INNER
               IMAPAccount gmail
@@ -58,10 +61,12 @@ spec:
               SyncState *
               EOF_INNER
 
-              while true; do
-                mbsync -V -c /work/mbsyncrc gmail || true
-                sleep "${MBSYNC_POLL_SECONDS:-300}"
-              done
+              exec gosu "${sync_uid}:${sync_gid}" /bin/sh -lc '
+                while true; do
+                  mbsync -V -c /work/mbsyncrc gmail || true
+                  sleep "${MBSYNC_POLL_SECONDS:-300}"
+                done
+              '
           envFrom:
             - configMapRef:
                 name: openclaw-mail-sync-config

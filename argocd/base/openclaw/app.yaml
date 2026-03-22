@@ -44,6 +44,7 @@ spec:
                       openclaw_home=/home/node/.openclaw
                       bin_dir="${openclaw_home}/bin"
                       lib_dir="${openclaw_home}/lib"
+                      runtime_bin_dir="${openclaw_home}/runtime-bin"
                       python_dir="${openclaw_home}/python"
                       workspace_dir="${openclaw_home}/workspace"
                       skills_dir="${workspace_dir}/skills"
@@ -52,6 +53,7 @@ spec:
                         "${openclaw_home}" \
                         "${bin_dir}" \
                         "${lib_dir}" \
+                        "${runtime_bin_dir}" \
                         "${python_dir}" \
                         "${workspace_dir}" \
                         "${skills_dir}"
@@ -61,9 +63,7 @@ spec:
                       apt-get install -y --no-install-recommends ca-certificates poppler-utils qpdf
                       rm -rf /var/lib/apt/lists/*
 
-                      for bin in pdfinfo pdftoppm pdftotext qpdf; do
-                        install -m 0755 "$(command -v "${bin}")" "${bin_dir}/${bin}"
-                      done
+                      rm -f "${lib_dir}"/*
 
                       ldd /usr/bin/pdfinfo /usr/bin/pdftoppm /usr/bin/pdftotext /usr/bin/qpdf \
                         | awk '/=> \// { print $3 } /^[[:space:]]*\/[^:[:space:]]+[[:space:]]/ { print $1 }' \
@@ -73,7 +73,16 @@ spec:
                             cp -L "${lib}" "${lib_dir}/"
                           done
 
-                      chown -R 1000:1000 "${bin_dir}" "${lib_dir}"
+                      for bin in pdfinfo pdftoppm pdftotext qpdf; do
+                        install -m 0755 "$(command -v "${bin}")" "${runtime_bin_dir}/${bin}"
+                        printf '%s\n' \
+                          '#!/bin/sh' \
+                          "exec env LD_LIBRARY_PATH=\"${lib_dir}\" \"${runtime_bin_dir}/${bin}\" \"\$@\"" \
+                          > "${bin_dir}/${bin}"
+                        chmod 0755 "${bin_dir}/${bin}"
+                      done
+
+                      chown -R 1000:1000 "${bin_dir}" "${lib_dir}" "${runtime_bin_dir}"
                 init-skills:
                   command:
                     - sh
@@ -113,7 +122,6 @@ spec:
               containers:
                 main:
                   env:
-                    LD_LIBRARY_PATH: /home/node/.openclaw/lib
                     PATH: /home/node/.openclaw/bin:/home/node/.openclaw/python/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
                   envFrom:
                     - secretRef:

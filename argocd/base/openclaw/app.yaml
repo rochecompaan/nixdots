@@ -26,12 +26,13 @@ spec:
           controllers:
             main:
               initContainers:
-                init-skills:
+                init-runtime-deps:
                   image:
                     repository: debian
                     tag: stable-slim
                   securityContext:
                     readOnlyRootFilesystem: false
+                    runAsNonRoot: false
                     runAsUser: 0
                     runAsGroup: 0
                   command:
@@ -43,25 +44,13 @@ spec:
                       openclaw_home=/home/node/.openclaw
                       bin_dir="${openclaw_home}/bin"
                       lib_dir="${openclaw_home}/lib"
-                      py_dir="${openclaw_home}/python"
 
-                      mkdir -p "${bin_dir}" "${lib_dir}" "${py_dir}"
+                      mkdir -p "${bin_dir}" "${lib_dir}"
 
                       export DEBIAN_FRONTEND=noninteractive
                       apt-get update
-                      apt-get install -y --no-install-recommends ca-certificates curl poppler-utils qpdf
+                      apt-get install -y --no-install-recommends ca-certificates poppler-utils qpdf
                       rm -rf /var/lib/apt/lists/*
-
-                      if [ ! -x "${bin_dir}/uv" ]; then
-                        echo "Installing uv..."
-                        curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="${bin_dir}" sh
-                      fi
-
-                      if [ ! -x "${py_dir}/bin/python" ]; then
-                        "${bin_dir}/uv" venv --python 3.12 "${py_dir}"
-                      fi
-
-                      "${bin_dir}/uv" pip install --python "${py_dir}/bin/python" pypdf
 
                       for bin in pdfinfo pdftoppm pdftotext qpdf; do
                         install -m 0755 "$(command -v "${bin}")" "${bin_dir}/${bin}"
@@ -76,6 +65,42 @@ spec:
                           done
 
                       chown -R 1000:1000 "${openclaw_home}"
+                init-skills:
+                  command:
+                    - sh
+                    - -c
+                    - |
+                      log() { echo "[$(date -Iseconds)] [init-skills] $*"; }
+
+                      log "Starting skills initialization"
+
+                      mkdir -p /home/node/.openclaw/bin
+                      if [ ! -x /home/node/.openclaw/bin/uv ]; then
+                        log "Installing uv..."
+                        curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/home/node/.openclaw/bin sh
+                      fi
+
+                      if [ ! -x /home/node/.openclaw/python/bin/python ]; then
+                        log "Creating Python environment"
+                        /home/node/.openclaw/bin/uv venv --python 3.12 /home/node/.openclaw/python
+                      fi
+
+                      log "Installing pypdf"
+                      /home/node/.openclaw/bin/uv pip install --python /home/node/.openclaw/python/bin/python pypdf
+
+                      mkdir -p /home/node/.openclaw/workspace/skills
+                      cd /home/node/.openclaw/workspace
+                      for skill in weather; do
+                        if [ -n "$skill" ] && [ ! -d "skills/${skill##*/}" ]; then
+                          log "Installing skill: $skill"
+                          if ! npx -y clawhub install "$skill" --no-input; then
+                            log "WARNING: Failed to install skill: $skill"
+                          fi
+                        else
+                          log "Skill already installed: $skill"
+                        fi
+                      done
+                      log "Skills initialization complete"
               containers:
                 main:
                   env:

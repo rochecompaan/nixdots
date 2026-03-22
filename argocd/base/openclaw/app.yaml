@@ -25,8 +25,60 @@ spec:
           configMode: merge
           controllers:
             main:
+              initContainers:
+                init-skills:
+                  image: debian:stable-slim
+                  securityContext:
+                    readOnlyRootFilesystem: false
+                    runAsUser: 0
+                    runAsGroup: 0
+                  command:
+                    - sh
+                    - -c
+                    - |
+                      set -eu
+
+                      openclaw_home=/home/node/.openclaw
+                      bin_dir="${openclaw_home}/bin"
+                      lib_dir="${openclaw_home}/lib"
+                      py_dir="${openclaw_home}/python"
+
+                      mkdir -p "${bin_dir}" "${lib_dir}" "${py_dir}"
+
+                      export DEBIAN_FRONTEND=noninteractive
+                      apt-get update
+                      apt-get install -y --no-install-recommends ca-certificates curl poppler-utils qpdf
+                      rm -rf /var/lib/apt/lists/*
+
+                      if [ ! -x "${bin_dir}/uv" ]; then
+                        echo "Installing uv..."
+                        curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR="${bin_dir}" sh
+                      fi
+
+                      if [ ! -x "${py_dir}/bin/python" ]; then
+                        "${bin_dir}/uv" venv --python 3.12 "${py_dir}"
+                      fi
+
+                      "${bin_dir}/uv" pip install --python "${py_dir}/bin/python" pypdf
+
+                      for bin in pdfinfo pdftoppm pdftotext qpdf; do
+                        install -m 0755 "$(command -v "${bin}")" "${bin_dir}/${bin}"
+                      done
+
+                      ldd /usr/bin/pdfinfo /usr/bin/pdftoppm /usr/bin/pdftotext /usr/bin/qpdf \
+                        | awk '/=> \// { print $3 } /^\// { print $1 }' \
+                        | sort -u \
+                        | while read -r lib; do
+                            [ -n "${lib}" ] || continue
+                            cp -L "${lib}" "${lib_dir}/"
+                          done
+
+                      chown -R 1000:1000 "${openclaw_home}"
               containers:
                 main:
+                  env:
+                    LD_LIBRARY_PATH: /home/node/.openclaw/lib
+                    PATH: /home/node/.openclaw/bin:/home/node/.openclaw/python/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
                   envFrom:
                     - secretRef:
                         name: openclaw-env-secret

@@ -44,8 +44,19 @@ spec:
                       openclaw_home=/home/node/.openclaw
                       bin_dir="${openclaw_home}/bin"
                       lib_dir="${openclaw_home}/lib"
+                      python_dir="${openclaw_home}/python"
+                      sessions_dir="${openclaw_home}/sessions"
+                      workspace_dir="${openclaw_home}/workspace"
+                      skills_dir="${workspace_dir}/skills"
 
-                      mkdir -p "${bin_dir}" "${lib_dir}"
+                      install -d -m 0755 -o 1000 -g 1000 \
+                        "${openclaw_home}" \
+                        "${bin_dir}" \
+                        "${lib_dir}" \
+                        "${python_dir}" \
+                        "${sessions_dir}" \
+                        "${workspace_dir}" \
+                        "${skills_dir}"
 
                       export DEBIAN_FRONTEND=noninteractive
                       apt-get update
@@ -64,7 +75,7 @@ spec:
                             cp -L "${lib}" "${lib_dir}/"
                           done
 
-                      chown -R 1000:1000 "${openclaw_home}"
+                      chown -R 1000:1000 "${bin_dir}" "${lib_dir}"
                 init-skills:
                   command:
                     - sh

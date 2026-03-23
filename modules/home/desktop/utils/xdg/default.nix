@@ -75,6 +75,14 @@ let
   );
 in
 {
+  xdg.dataFile = {
+    "icons/hicolor/32x32/apps/outlook.png".source = ./icons/outlook/32.png;
+    "icons/hicolor/48x48/apps/outlook.png".source = ./icons/outlook/48.png;
+    "icons/hicolor/128x128/apps/outlook.png".source = ./icons/outlook/128.png;
+    "icons/hicolor/256x256/apps/outlook.png".source = ./icons/outlook/256.png;
+    "icons/hicolor/512x512/apps/outlook.png".source = ./icons/outlook/512.png;
+  };
+
   xdg.configFile = lib.mkIf (config.default.de == "niri") {
     # Prevent systemd-xdg-autostart services from launching/respawning these
     # during `nh home switch`; Niri starts the required ones explicitly.

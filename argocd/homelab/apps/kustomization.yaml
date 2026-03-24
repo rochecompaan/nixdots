@@ -9,6 +9,7 @@ resources:
   - ../../base/webmutt
   - ../../base/openclaw-mail-sync
   - ../../base/openclaw
+  - ../../base/matrix
   - ../../base/garage
   - ../../base/ftp
   - ../../base/infra

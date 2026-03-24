@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: '4'
+spec:
+  project: default
+  source:
+    chart: matrix
+    repoURL: https://remram44.github.io/matrix-helm
+    targetRevision: 2.9.16
+    helm:
+      releaseName: matrix
+      valuesObject:
+        homeserverConfig:
+          server_name: matrix.compaan
+          public_baseurl: https://matrix.compaan/
+          web_client_location: https://matrix.compaan/
+          email:
+            app_name: Matrix
+            client_base_url: https://matrix.compaan/
+          trusted_key_servers: []
+          report_stats: false
+        ingress:
+          enabled: true
+          exposeWellKnown: false
+          className: traefik
+          annotations:
+            cert-manager.io/cluster-issuer: compaan-ca
+          hosts:
+            - matrix.compaan
+          tls:
+            - secretName: matrix-compaan-tls
+              hosts:
+                - matrix.compaan
+        storage:
+          storageClass: longhorn
+          capacity: 10Gi
+        element:
+          enabled: false
+        postgresql:
+          primary:
+            persistence:
+              enabled: true
+              storageClass: longhorn
+              size: 8Gi
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: matrix
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+    syncOptions:
+      - CreateNamespace=true

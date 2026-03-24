@@ -21,7 +21,7 @@ spec:
       releaseName: openclaw
       valuesObject:
         app-template:
-          openclawVersion: "2026.3.2"
+          openclawVersion: "2026.3.23-2"
           configMode: merge
           controllers:
             main:

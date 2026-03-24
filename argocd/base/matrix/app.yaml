@@ -23,6 +23,11 @@ spec:
             client_base_url: https://matrix.compaan/
           trusted_key_servers: []
           report_stats: false
+        secret:
+          generate: true
+          jobAnnotations:
+            argocd.argoproj.io/hook: PreSync
+            argocd.argoproj.io/hook-delete-policy: HookSucceeded
         ingress:
           enabled: true
           exposeWellKnown: false

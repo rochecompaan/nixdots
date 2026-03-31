@@ -43,6 +43,7 @@ in
         claude-code-router
         opencode
         gemini-cli
+        pi
       ]);
 
   };

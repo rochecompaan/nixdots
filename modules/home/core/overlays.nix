@@ -68,5 +68,14 @@
         in
         unstable.k8sgpt;
     })
+    (_: prev: {
+      signal-desktop =
+        let
+          unstable = import inputs.nixpkgs-unstable {
+            inherit (prev) system;
+          };
+        in
+        unstable.signal-desktop;
+    })
   ];
 }

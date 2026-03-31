@@ -61,7 +61,6 @@
       ll = "ls -alF";
       la = "ls -A";
       l = "ls -CF";
-      terraform = "tofu";
       tfplan = "tofu plan -out=\"tfplan.out\" && tofu show -no-color tfplan.out >> .terraform/tfplan-$(date +%Y%m%d-%H%M%S).log";
       tfapply = "tofu apply \"tfplan.out\"";
       iplocal = "ip -json route get 8.8.8.8 | jq -r '.[].prefsrc'";

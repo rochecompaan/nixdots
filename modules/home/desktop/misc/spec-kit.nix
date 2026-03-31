@@ -6,7 +6,7 @@
 let
   specKit = pkgs.python3.pkgs.buildPythonApplication rec {
     pname = "spec-kit";
-    version = "0.0.90";
+    version = "0.4.3";
     pyproject = true;
 
     src = pkgs.fetchFromGitHub {

@@ -28,6 +28,7 @@ in
         signal-desktop
         ssh-to-age
         stremio
+        timewarrior
         transmission_4
         vesktop
         vlc

@@ -50,8 +50,11 @@
     # Hyprpaper, wallpaper manager for hyprland
     hyprpaper.url = "github:hyprwm/hyprpaper";
 
-    # Numtide AI Tools
-    nix-ai-tools.url = "github:numtide/nix-ai-tools";
+    # Numtide LLM agent packages
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
+    # Bubblewrap jail library for restricted agent wrappers
+    jail-nix.url = "sourcehut:~alexdavid/jail.nix";
 
     # My personal nixvim config
     nixvim.url = "github:rochecompaan/nixvim";

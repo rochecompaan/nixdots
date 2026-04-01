@@ -181,11 +181,11 @@
     "blueprint": {
       "inputs": {
         "nixpkgs": [
-          "nix-ai-tools",
+          "llm-agents",
           "nixpkgs"
         ],
         "systems": [
-          "nix-ai-tools",
+          "llm-agents",
           "systems"
         ]
       },
@@ -206,20 +206,20 @@
     "bun2nix": {
       "inputs": {
         "flake-parts": [
-          "nix-ai-tools",
+          "llm-agents",
           "flake-parts"
         ],
         "import-tree": "import-tree",
         "nixpkgs": [
-          "nix-ai-tools",
+          "llm-agents",
           "nixpkgs"
         ],
         "systems": [
-          "nix-ai-tools",
+          "llm-agents",
           "systems"
         ],
         "treefmt-nix": [
-          "nix-ai-tools",
+          "llm-agents",
           "treefmt-nix"
         ]
       },
@@ -409,7 +409,7 @@
     "flake-parts_2": {
       "inputs": {
         "nixpkgs-lib": [
-          "nix-ai-tools",
+          "llm-agents",
           "nixpkgs"
         ]
       },
@@ -1299,6 +1299,21 @@
         "type": "github"
       }
     },
+    "jail-nix": {
+      "locked": {
+        "lastModified": 1770418571,
+        "narHash": "sha256-EzQUbe1gwW/xpJoMuMeblWcjAEF+F92cz/enz0Mz/qo=",
+        "owner": "~alexdavid",
+        "repo": "jail.nix",
+        "rev": "c141cf8cc68617625b4a28a7d8ce0a35904815d5",
+        "type": "sourcehut"
+      },
+      "original": {
+        "owner": "~alexdavid",
+        "repo": "jail.nix",
+        "type": "sourcehut"
+      }
+    },
     "krewfile": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -1320,6 +1335,29 @@
         "type": "github"
       }
     },
+    "llm-agents": {
+      "inputs": {
+        "blueprint": "blueprint",
+        "bun2nix": "bun2nix",
+        "flake-parts": "flake-parts_2",
+        "nixpkgs": "nixpkgs_5",
+        "systems": "systems_5",
+        "treefmt-nix": "treefmt-nix"
+      },
+      "locked": {
+        "lastModified": 1775013753,
+        "narHash": "sha256-uIEYD2rwgV9EFO5x0SQ34Yj50r/4Abj28OibW404eCw=",
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "rev": "5a192c61b052a7713ea8eb5490a64087a996afa7",
+        "type": "github"
+      },
+      "original": {
+        "owner": "numtide",
+        "repo": "llm-agents.nix",
+        "type": "github"
+      }
+    },
     "nh": {
       "inputs": {
         "nixpkgs": [
@@ -1337,29 +1375,6 @@
       "original": {
         "owner": "viperML",
         "repo": "nh",
-        "type": "github"
-      }
-    },
-    "nix-ai-tools": {
-      "inputs": {
-        "blueprint": "blueprint",
-        "bun2nix": "bun2nix",
-        "flake-parts": "flake-parts_2",
-        "nixpkgs": "nixpkgs_5",
-        "systems": "systems_5",
-        "treefmt-nix": "treefmt-nix"
-      },
-      "locked": {
-        "lastModified": 1774928491,
-        "narHash": "sha256-blqxzOmDdR35BjHeA8V6NeoQot4mysWy8N8ZMiHyEsk=",
-        "owner": "numtide",
-        "repo": "nix-ai-tools",
-        "rev": "fb1dfb5960aa4b8a91995f8f99ec2452e5052dbe",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "nix-ai-tools",
         "type": "github"
       }
     },
@@ -1508,11 +1523,11 @@
     },
     "nixpkgs_5": {
       "locked": {
-        "lastModified": 1774610258,
-        "narHash": "sha256-HaThtroVD9wRdx7KQk0B75JmFcXlMUoEdDFNOMOlsOs=",
+        "lastModified": 1774855581,
+        "narHash": "sha256-YkreHeMgTCYvJ5fESV0YyqQK49bHGe2B51tH6claUh4=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "832efc09b4caf6b4569fbf9dc01bec3082a00611",
+        "rev": "15c6719d8c604779cf59e03c245ea61d3d7ab69b",
         "type": "github"
       },
       "original": {
@@ -1798,9 +1813,10 @@
         "hm": "hm",
         "hyprpaper": "hyprpaper",
         "hyprspace": "hyprspace",
+        "jail-nix": "jail-nix",
         "krewfile": "krewfile",
+        "llm-agents": "llm-agents",
         "nh": "nh",
-        "nix-ai-tools": "nix-ai-tools",
         "nix-secrets": "nix-secrets",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_6",
@@ -2110,7 +2126,7 @@
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
-          "nix-ai-tools",
+          "llm-agents",
           "nixpkgs"
         ]
       },

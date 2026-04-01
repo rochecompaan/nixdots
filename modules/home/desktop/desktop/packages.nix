@@ -38,7 +38,7 @@ in
         yazi
         ydotool
       ]
-      ++ (with inputs.nix-ai-tools.packages.${pkgs.system}; [
+      ++ (with inputs.llm-agents.packages.${pkgs.system}; [
         codex
         claude-code
         claude-code-router

@@ -24,10 +24,8 @@ spec:
           trusted_key_servers: []
           report_stats: false
         secret:
-          generate: true
-          jobAnnotations:
-            argocd.argoproj.io/hook: PreSync
-            argocd.argoproj.io/hook-delete-policy: HookSucceeded
+          name: matrix
+          generate: false
         ingress:
           enabled: true
           exposeWellKnown: false

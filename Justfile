@@ -28,3 +28,24 @@ seal-openclaw-mail-secret:
     -o yaml \
     | kubeseal --format=yaml \
     > argocd/homelab/openclaw-mail-sync/secret.yaml
+
+seal-matrix-secret:
+  mkdir -p argocd/homelab/infra; \
+  tmpdir="$(mktemp -d)"; \
+  trap 'rm -rf "$tmpdir"' EXIT; \
+  form_secret="$(openssl rand -base64 48 | tr -d '\n')"; \
+  macaroon_secret_key="$(openssl rand -base64 48 | tr -d '\n')"; \
+  registration_shared_secret="$(openssl rand -base64 48 | tr -d '\n')"; \
+  signing_key_id="a_$(openssl rand -hex 4)"; \
+  signing_key_seed="$(openssl rand -base64 32 | tr -d '\n')"; \
+  printf 'ed25519 %s %s\n' "$signing_key_id" "$signing_key_seed" > "$tmpdir/signing.key"; \
+  kubectl create secret generic matrix \
+    --namespace matrix \
+    --from-file=signing.key="$tmpdir/signing.key" \
+    --from-literal=form_secret="$form_secret" \
+    --from-literal=macaroon_secret_key="$macaroon_secret_key" \
+    --from-literal=registration_shared_secret="$registration_shared_secret" \
+    --dry-run=client \
+    -o yaml \
+    | kubeseal --format=yaml \
+    > argocd/homelab/infra/matrix-secret.yaml

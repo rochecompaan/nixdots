@@ -244,8 +244,8 @@ affinity:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - fordyce
                 - kipsang
+                - selassie
                 - walmsley
 
 environment: {}

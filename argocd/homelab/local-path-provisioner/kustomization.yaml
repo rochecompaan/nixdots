@@ -23,7 +23,7 @@ patches:
                           "paths":["/opt/local-path-provisioner", "/srv/data"]
                   },
                   {
-                          "node":"fordyce",
+                          "node":"selassie",
                           "paths":["/opt/local-path-provisioner", "/srv/data"]
                   },
                   {
@@ -46,4 +46,3 @@ patches:
         name: local-path-storage
         labels:
           pod-security.kubernetes.io/enforce: privileged
-

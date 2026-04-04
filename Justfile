@@ -3,6 +3,9 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 gmail_username_entry := "GMAIL_MAIL_SYNC_USERNAME"
 gmail_webmutt_app_password_entry := "GMAIL_WEBMUTT_MAIL_SYNC"
 gmail_openclaw_app_password_entry := "GMAIL_OPENCLAW_MAIL_SYNC"
+argocd_server := "argocd.compaan"
+argocd_username := "admin"
+argocd_password_entry := "private/login/argocd.compaan-login-admin"
 openziti_controller_url := "https://ctrl.compaan.cloud/edge/management/v1"
 openziti_login_controller := "ctrl.compaan.cloud:443"
 openziti_username := "admin"
@@ -53,6 +56,14 @@ seal-matrix-secret:
     -o yaml \
     | kubeseal --format=yaml \
     > argocd/homelab/infra/matrix-secret.yaml
+
+argocd-login:
+  argocd login {{argocd_server}} \
+    --username {{argocd_username}} \
+    --password "$(pass show {{argocd_password_entry}} | head -1)"
+
+argocd-sync app="root": argocd-login
+  argocd app sync {{app}}
 
 ziti-edge-login:
   ziti edge login {{openziti_login_controller}} \

@@ -10,6 +10,7 @@ resources:
   - ../../base/openclaw-mail-sync
   - ../../base/openclaw
   - ../../base/matrix
+  - ../../base/miniziti-operator
   - ../../base/garage
   - ../../base/ftp
   - ../../base/infra

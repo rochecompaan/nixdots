@@ -3,6 +3,10 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 gmail_username_entry := "GMAIL_MAIL_SYNC_USERNAME"
 gmail_webmutt_app_password_entry := "GMAIL_WEBMUTT_MAIL_SYNC"
 gmail_openclaw_app_password_entry := "GMAIL_OPENCLAW_MAIL_SYNC"
+openziti_controller_url := "https://ctrl.compaan.cloud/edge/management/v1"
+openziti_login_controller := "ctrl.compaan.cloud:443"
+openziti_username := "admin"
+openziti_password_entry := "private/login/zac-ctrl.compaan.cloud-admin"
 
 default:
   @just --list
@@ -49,3 +53,27 @@ seal-matrix-secret:
     -o yaml \
     | kubeseal --format=yaml \
     > argocd/homelab/infra/matrix-secret.yaml
+
+ziti-edge-login:
+  ziti edge login {{openziti_login_controller}} \
+    -u "{{openziti_username}}" \
+    -p "$(pass show {{openziti_password_entry}} | head -n1)"
+
+seal-openziti-management-secret: ziti-edge-login
+  mkdir -p argocd/homelab/miniziti-operator; \
+  controller_url="${OPENZITI_CONTROLLER_URL:-{{openziti_controller_url}}}"; \
+  username="${OPENZITI_USERNAME:-{{openziti_username}}}"; \
+  password="${OPENZITI_PASSWORD:-$(pass show {{openziti_password_entry}} | head -n1 | tr -d '[:space:]')}"; \
+  args=(create secret generic openziti-management \
+    --namespace ziti \
+    --from-literal="controllerUrl=$controller_url" \
+    --from-literal="username=$username" \
+    --from-literal="password=$password" \
+    --dry-run=client \
+    -o yaml); \
+  if [[ -n "${OPENZITI_CA_BUNDLE_FILE:-}" ]]; then \
+    args+=(--from-file="caBundle=${OPENZITI_CA_BUNDLE_FILE}"); \
+  fi; \
+  kubectl "${args[@]}" \
+    | kubeseal --format=yaml \
+    > argocd/homelab/miniziti-operator/openziti-management-secret.yaml

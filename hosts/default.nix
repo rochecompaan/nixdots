@@ -28,6 +28,7 @@
         dauwalter = mkHost "dauwalter";
         kipsang = mkHost "kipsang";
         fordyce = mkHost "fordyce";
+        selassie = mkHost "selassie";
         walmsley = mkHost "walmsley";
       };
 
@@ -57,6 +58,15 @@
           user = "root";
           sshUser = "roche";
           path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.fordyce;
+        };
+      };
+
+      selassie = {
+        hostname = "192.168.1.104";
+        profiles.system = {
+          user = "root";
+          sshUser = "roche";
+          path = inputs.deploy-rs.lib.x86_64-linux.activate.nixos self.nixosConfigurations.selassie;
         };
       };
 

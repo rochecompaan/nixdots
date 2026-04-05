@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-namespace: webmutt
-resources:
-  - namespace.yaml
-  - configmap.yaml
-  - secret.yaml
-  - pvc-maildir.yaml
-  - deployment.yaml

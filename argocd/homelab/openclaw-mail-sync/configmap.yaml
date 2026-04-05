@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: openclaw-mail-sync-config
-data:
-  MBSYNC_POLL_SECONDS: "300"
-  OPENCLAW_MBSYNC_PATTERNS: '"DMARC" "root" "Discovery Claims"'

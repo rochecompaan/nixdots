@@ -7,6 +7,7 @@
     ./k9s
     ./keybase
     ./lazygit
+    ./pi
     ./rnnoise
     ./rofi
     ./sops

@@ -121,6 +121,12 @@
     service.enable = true;
   };
 
+  # systemd.services.ziti-edge-tunnel.environment = {
+  #   ZITI_VERBOSE = "trace";
+  #   ZITI_LOG = "6;tlsuv=6";
+  #   TLS_DEBUG = "1";
+  # };
+
   programs.adb.enable = true;
 
   fileSystems."/mnt/kipsang-data" = {

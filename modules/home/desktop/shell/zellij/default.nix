@@ -49,6 +49,23 @@ in
   };
 
   xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijFavs;
+  xdg.configFile."zellij/layouts/left-main-right-stack.kdl".text = ''
+    layout {
+      pane size=1 borderless=true {
+        plugin location="tab-bar"
+      }
+      pane split_direction="horizontal" {
+        pane
+        pane split_direction="vertical" {
+          pane
+          pane
+        }
+      }
+      pane size=1 borderless=true {
+        plugin location="status-bar"
+      }
+    }
+  '';
   xdg.configFile."zellij/config.kdl".text = ''
     // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
     ui {
@@ -94,6 +111,7 @@ in
         bind "n" { NewPane; SwitchToMode "Normal"; }
         bind "d" { NewPane "Down"; SwitchToMode "Normal"; }
         bind "r" { NewPane "Right"; SwitchToMode "Normal"; }
+        bind "s" { NewPane "stacked"; SwitchToMode "Normal"; }
         bind "x" { CloseFocus; SwitchToMode "Normal"; }
         bind "z" { ToggleFocusFullscreen; SwitchToMode "Normal"; }
         bind "f" { TogglePaneFrames; SwitchToMode "Normal"; }
@@ -375,7 +393,7 @@ in
     // The name of the default layout to load on startup
     // Default: "default"
     //
-    // default_layout "compact"
+    default_layout "left-main-right-stack"
 
     // Choose the mode that zellij uses when starting up.
     // Default: normal
@@ -436,8 +454,8 @@ in
     // mirror_session true
 
     // The folder in which Zellij will look for layouts
+    // Defaults to the layouts directory inside the Zellij config dir.
     //
-    layout_dir "${config.xdg.configHome}/zellij/layouts"
 
     // The folder in which Zellij will look for themes
     //

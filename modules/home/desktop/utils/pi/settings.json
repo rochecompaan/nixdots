@@ -1,0 +1,7 @@
+{
+  "lastChangelogVersion": "0.64.0",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.4",
+  "defaultThinkingLevel": "high",
+  "theme": "gruvbox"
+}

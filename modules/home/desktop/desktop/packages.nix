@@ -41,8 +41,6 @@ in
       ++ (with inputs.llm-agents.packages.${pkgs.system}; [
         codex
         claude-code
-        claude-code-router
-        opencode
         gemini-cli
         pi
       ]);

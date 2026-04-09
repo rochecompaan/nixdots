@@ -6,6 +6,7 @@
     ./hyprpaper
     ./low-battery
     ./notes
+    ./streamlinear
     ./swaync
     ./waybar
   ];

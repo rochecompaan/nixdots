@@ -6,6 +6,8 @@
     ".pi/agent/extensions/security.ts".source = ./security.ts;
     ".pi/agent/extensions/theme-cycler.ts".source = ./theme-cycler.ts;
 
+    ".pi/agent/skills/linear/SKILL.md".source = ./skills/linear/SKILL.md;
+
     ".pi/agent/themes/catppuccin-mocha.json".source = ./themes/catppuccin-mocha.json;
     ".pi/agent/themes/cyberpunk.json".source = ./themes/cyberpunk.json;
     ".pi/agent/themes/dracula.json".source = ./themes/dracula.json;

@@ -8,7 +8,10 @@ export default function (pi: ExtensionAPI) {
     [
       "DBUS_SESSION_BUS_ADDRESS",
       "DISPLAY",
+      "EDITOR",
+      "GIT_EDITOR",
       "SSH_AUTH_SOCK",
+      "VISUAL",
       "WAYLAND_DISPLAY",
       "XAUTHORITY",
       "XDG_RUNTIME_DIR",

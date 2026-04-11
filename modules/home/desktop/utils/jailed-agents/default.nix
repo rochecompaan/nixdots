@@ -42,6 +42,9 @@ let
     pinentry-gtk2
   ];
 
+  editorDefault = config.home.sessionVariables.EDITOR or "vi";
+  editorCommand = if editorDefault == "nvim" then "${pkgs.neovim}/bin/nvim" else editorDefault;
+
   commonJailOptions = with jail.combinators; [
     network
     time-zone
@@ -171,11 +174,15 @@ in
         piFiles.package
         config.sops.secrets."openrouter-api-key".path
       ];
+      extraPkgs = [ pkgs.neovim ];
       gitPackage = jailedPiGit;
       gitSupport = true;
       extraEnv = {
         DBUS_SESSION_BUS_ADDRESS = "\${DBUS_SESSION_BUS_ADDRESS:-}";
         DISPLAY = "\${DISPLAY:-:0}";
+        EDITOR = "${editorCommand}";
+        GIT_EDITOR = "${editorCommand}";
+        VISUAL = "${editorCommand}";
         WAYLAND_DISPLAY = "\${WAYLAND_DISPLAY:-}";
         XAUTHORITY = "\${XAUTHORITY:-}";
         XDG_RUNTIME_DIR = "\${XDG_RUNTIME_DIR:-}";

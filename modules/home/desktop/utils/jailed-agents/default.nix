@@ -24,6 +24,7 @@ let
     gnutar
     gzip
     jq
+    pre-commit
     procps
     ripgrep
     unzip

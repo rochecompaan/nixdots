@@ -76,6 +76,8 @@ in
       udev.packages = [
         pkgs.libu2f-host
         pkgs.yubikey-personalization
+        pkgs.platformio-core
+        pkgs.openocd
       ];
       pcscd.enable = true;
       supergfxd.enable = true;

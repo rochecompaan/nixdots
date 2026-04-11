@@ -20,6 +20,7 @@ in
         libreoffice
         nextcloud-client
         obs-studio
+        platformio
         playwright-test
         playwright-mcp
         qbittorrent-cli

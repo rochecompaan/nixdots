@@ -12,6 +12,7 @@ in
     ".pi/agent/extensions/filter-output.ts".source = ./filter-output.ts;
     ".pi/agent/extensions/security.ts".source = ./security.ts;
     ".pi/agent/extensions/theme-cycler.ts".source = ./theme-cycler.ts;
+    ".pi/agent/extensions/review.ts".source = ./review.ts;
 
     ".pi/agent/skills/linear/SKILL.md".source = ./skills/linear/SKILL.md;
 

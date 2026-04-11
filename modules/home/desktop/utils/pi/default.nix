@@ -8,6 +8,7 @@ in
   home.file = {
     ".pi/agent/settings.json".text = builtins.toJSON piFiles.piSettings;
 
+    ".pi/agent/extensions/bash-env.ts".source = ./bash-env.ts;
     ".pi/agent/extensions/filter-output.ts".source = ./filter-output.ts;
     ".pi/agent/extensions/security.ts".source = ./security.ts;
     ".pi/agent/extensions/theme-cycler.ts".source = ./theme-cycler.ts;

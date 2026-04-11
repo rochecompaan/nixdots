@@ -12,14 +12,13 @@ let
     inherit config pkgs;
   };
 
-  commonPkgs = with pkgs; [
+  commonPkgsBase = with pkgs; [
     bashInteractive
     coreutils
     curl
     diffutils
     findutils
     gawkInteractive
-    git
     gnugrep
     gnused
     gnutar
@@ -30,6 +29,17 @@ let
     unzip
     wget
     which
+  ];
+
+  gitSupportDirs = [
+    "${homeDir}/.config/git"
+    "${homeDir}/.gnupg"
+    "/run/user/1000/gnupg"
+  ];
+
+  gitSupportPkgs = with pkgs; [
+    gnupg
+    pinentry-gtk2
   ];
 
   commonJailOptions = with jail.combinators; [
@@ -46,19 +56,51 @@ let
       configDirs ? [ ],
       readonlyDirs ? [ ],
       extraPkgs ? [ ],
+      gitPackage ? pkgs.git,
+      gitSupport ? false,
+      extraEnv ? { },
     }:
-    jail name package (
-      with jail.combinators;
-      commonJailOptions
-      ++ map (dir: readwrite (noescape dir)) configDirs
-      ++ map (dir: readonly (noescape dir)) readonlyDirs
-      ++ [
-        (add-pkg-deps commonPkgs)
-        (add-pkg-deps extraPkgs)
-      ]
-    );
+    let
+      basePackage = jail name package (
+        with jail.combinators;
+        commonJailOptions
+        ++ map (dir: readwrite (noescape dir)) (configDirs ++ lib.optionals gitSupport gitSupportDirs)
+        ++ map (dir: readonly (noescape dir)) readonlyDirs
+        ++ [
+          (add-pkg-deps (
+            commonPkgsBase ++ [ gitPackage ] ++ extraPkgs ++ lib.optionals gitSupport gitSupportPkgs
+          ))
+        ]
+      );
+
+      extraEnvFlags = lib.concatStringsSep " " (
+        lib.mapAttrsToList (envName: envValue: "--setenv ${envName} \"${envValue}\"") extraEnv
+      );
+    in
+    if extraEnvFlags == "" then
+      basePackage
+    else
+      pkgs.runCommand name { } ''
+        mkdir -p $out
+        cp -a ${basePackage}/. $out/
+        chmod u+w $out/bin/${name}
+        substituteInPlace $out/bin/${name} \
+          --replace '--setenv HOME "$HOME"' '--setenv HOME "$HOME" ${extraEnvFlags}'
+      '';
 
   agentPkgs = inputs.llm-agents.packages.${pkgs.system};
+
+  jailedPiGit = pkgs.writeShellScriptBin "git" ''
+    exec ${pkgs.git}/bin/git \
+      -c user.name='Roché Compaan' \
+      -c user.email='roche@sixfeetup.com' \
+      -c commit.gpgsign=true \
+      -c tag.gpgsign=true \
+      -c user.signingkey='0EFBE04F978347E4' \
+      -c gpg.format=openpgp \
+      -c gpg.openpgp.program='${pkgs.gnupg}/bin/gpg' \
+      "$@"
+  '';
 
   jailedPiPackage = pkgs.symlinkJoin {
     name = "pi-jailed-runtime";
@@ -129,6 +171,15 @@ in
         piFiles.package
         config.sops.secrets."openrouter-api-key".path
       ];
+      gitPackage = jailedPiGit;
+      gitSupport = true;
+      extraEnv = {
+        DBUS_SESSION_BUS_ADDRESS = "\${DBUS_SESSION_BUS_ADDRESS:-}";
+        DISPLAY = "\${DISPLAY:-:0}";
+        WAYLAND_DISPLAY = "\${WAYLAND_DISPLAY:-}";
+        XAUTHORITY = "\${XAUTHORITY:-}";
+        XDG_RUNTIME_DIR = "\${XDG_RUNTIME_DIR:-}";
+      };
     })
   ];
 }

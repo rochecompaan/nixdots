@@ -98,6 +98,7 @@ let
     ${builtins.toJSON piSettings}
     EOF
 
+    cp ${./bash-env.ts} $out/.pi/agent/extensions/bash-env.ts
     cp ${./filter-output.ts} $out/.pi/agent/extensions/filter-output.ts
     cp ${./security.ts} $out/.pi/agent/extensions/security.ts
     cp ${./theme-cycler.ts} $out/.pi/agent/extensions/theme-cycler.ts

@@ -1,6 +1,5 @@
 {
   lib,
-  inputs,
   pkgs,
   config,
   ...
@@ -14,11 +13,13 @@
   systemd.user.services.hyprpaper = {
     Unit = {
       Description = "Hyprland wallpaper daemon";
+      After = [ "graphical-session.target" ];
+      ConditionEnvironment = "WAYLAND_DISPLAY";
       PartOf = [ "graphical-session.target" ];
     };
 
     Service = {
-      ExecStart = "${lib.getExe inputs.hyprpaper.packages.${pkgs.system}.default}";
+      ExecStart = "${lib.getExe pkgs.hyprpaper}";
       Restart = "on-failure";
     };
 

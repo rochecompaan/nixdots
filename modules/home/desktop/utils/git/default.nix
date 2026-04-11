@@ -17,8 +17,8 @@
 
       settings = {
         user = {
-          email = "roche@upfrontsoftware.co.za";
-          name = "rochecompaan";
+          email = "roche@sixfeetup.com";
+          name = "Roché Compaan";
         };
         aliases = {
           st = " status ";
@@ -39,19 +39,6 @@
         };
 
         extraConfig = {
-          core = {
-            editor = "nvim";
-            excludesfile = "~/.config/git/ignore";
-          };
-
-          credential = {
-            helper = "store";
-          };
-
-          pull = {
-            rebase = true;
-          };
-
           color = {
             ui = true;
             pager = true;
@@ -75,6 +62,29 @@
             #   header = "dim white";
             #   nobranch = "white";
             # };
+          };
+
+          core = {
+            editor = "nvim";
+            excludesfile = "~/.config/git/ignore";
+          };
+
+          credential = {
+            helper = "store";
+          };
+
+          delta = {
+            decorations = false;
+            features = "side-by-side line-numbers decorations";
+            whitespace-error-style = "22 reverse";
+          };
+
+          pull = {
+            rebase = true;
+          };
+
+          rerere = {
+            enabled = true;
           };
         };
 

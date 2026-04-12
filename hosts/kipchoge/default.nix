@@ -1,7 +1,6 @@
 {
   config,
   inputs,
-  pkgs,
   ...
 }:
 {
@@ -69,7 +68,7 @@
   services.xserver.videoDrivers = [ "nvidia" ];
 
   services.mosquitto = {
-    enable = true;
+    enable = false;
     listeners = [
       {
         address = "192.168.1.4";
@@ -81,28 +80,6 @@
     ];
   };
   services.resolved.enable = true;
-
-  virtualisation.oci-containers = {
-    backend = "docker";
-    containers.homeassistant = {
-      volumes = [ "/home/roche/home-assistant:/config" ];
-      environment.TZ = "Africa/Johannesburg";
-      # Warning: if the tag does not change, the image will not be updated
-      image = "ghcr.io/home-assistant/home-assistant:stable";
-      autoStart = true;
-      extraOptions = [
-        "--privileged"
-        "--network=host"
-      ];
-    };
-  };
-
-  services.jellyfin.enable = true;
-  environment.systemPackages = with pkgs; [
-    jellyfin
-    jellyfin-web
-    jellyfin-ffmpeg
-  ];
 
   services.duckdns = {
     enable = true;
@@ -128,6 +105,32 @@
   # };
 
   programs.adb.enable = true;
+
+  services.caddy = {
+    enable = true;
+    config = ''
+      :8096 {
+        reverse_proxy https://jellyfin.compaan {
+          header_up Host jellyfin.compaan
+        }
+      }
+    '';
+  };
+
+  # Temporary MQTT proxy until client IPs can be updated
+  services.haproxy = {
+    enable = true;
+    config = ''
+      frontend mqtt
+        bind *:1883
+        mode tcp
+        default_backend mqtt_backend
+
+      backend mqtt_backend
+        mode tcp
+        server mqtt 192.168.1.1:1883
+    '';
+  };
 
   fileSystems."/mnt/kipsang-data" = {
     device = "192.168.1.101:/";

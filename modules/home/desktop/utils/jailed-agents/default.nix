@@ -7,7 +7,21 @@
 }:
 let
   homeDir = config.home.homeDirectory;
-  jail = inputs.jail-nix.lib.init pkgs;
+  gitUserName = config.programs.git.settings.user.name;
+  gitUserEmail = config.programs.git.settings.user.email;
+  jail = inputs.jail-nix.lib.extend {
+    inherit pkgs;
+    additionalCombinators =
+      combinators: with combinators; {
+        git-identity-env = compose [
+          (set-env "GIT_CONFIG_COUNT" "2")
+          (set-env "GIT_CONFIG_KEY_0" "user.name")
+          (set-env "GIT_CONFIG_VALUE_0" gitUserName)
+          (set-env "GIT_CONFIG_KEY_1" "user.email")
+          (set-env "GIT_CONFIG_VALUE_1" gitUserEmail)
+        ];
+      };
+  };
   piFiles = import ../pi/files.nix {
     inherit config pkgs;
   };
@@ -32,17 +46,6 @@ let
     which
   ];
 
-  gitSupportDirs = [
-    "${homeDir}/.config/git"
-    "${homeDir}/.gnupg"
-    "/run/user/1000/gnupg"
-  ];
-
-  gitSupportPkgs = with pkgs; [
-    gnupg
-    pinentry-gtk2
-  ];
-
   editorDefault = config.home.sessionVariables.EDITOR or "vi";
   editorCommand = if editorDefault == "nvim" then "${pkgs.neovim}/bin/nvim" else editorDefault;
 
@@ -60,51 +63,20 @@ let
       configDirs ? [ ],
       readonlyDirs ? [ ],
       extraPkgs ? [ ],
-      gitPackage ? pkgs.git,
       gitSupport ? false,
-      extraEnv ? { },
+      extraPermissions ? [ ],
     }:
-    let
-      basePackage = jail name package (
-        with jail.combinators;
-        commonJailOptions
-        ++ map (dir: readwrite (noescape dir)) (configDirs ++ lib.optionals gitSupport gitSupportDirs)
-        ++ map (dir: readonly (noescape dir)) readonlyDirs
-        ++ [
-          (add-pkg-deps (
-            commonPkgsBase ++ [ gitPackage ] ++ extraPkgs ++ lib.optionals gitSupport gitSupportPkgs
-          ))
-        ]
-      );
-
-      extraEnvFlags = lib.concatStringsSep " " (
-        lib.mapAttrsToList (envName: envValue: "--setenv ${envName} \"${envValue}\"") extraEnv
-      );
-    in
-    if extraEnvFlags == "" then
-      basePackage
-    else
-      pkgs.runCommand name { } ''
-        mkdir -p $out
-        cp -a ${basePackage}/. $out/
-        chmod u+w $out/bin/${name}
-        substituteInPlace $out/bin/${name} \
-          --replace '--setenv HOME "$HOME"' '--setenv HOME "$HOME" ${extraEnvFlags}'
-      '';
+    jail name package (
+      with jail.combinators;
+      commonJailOptions
+      ++ map (dir: readwrite (noescape dir)) configDirs
+      ++ map (dir: readonly (noescape dir)) readonlyDirs
+      ++ lib.optionals gitSupport [ git-identity-env ]
+      ++ extraPermissions
+      ++ [ (add-pkg-deps (commonPkgsBase ++ [ pkgs.git ] ++ extraPkgs)) ]
+    );
 
   agentPkgs = inputs.llm-agents.packages.${pkgs.system};
-
-  jailedPiGit = pkgs.writeShellScriptBin "git" ''
-    exec ${pkgs.git}/bin/git \
-      -c user.name='Roché Compaan' \
-      -c user.email='roche@sixfeetup.com' \
-      -c commit.gpgsign=true \
-      -c tag.gpgsign=true \
-      -c user.signingkey='0EFBE04F978347E4' \
-      -c gpg.format=openpgp \
-      -c gpg.openpgp.program='${pkgs.gnupg}/bin/gpg' \
-      "$@"
-  '';
 
   jailedPiPackage = pkgs.symlinkJoin {
     name = "pi-jailed-runtime";
@@ -113,6 +85,9 @@ let
       mv $out/bin/pi $out/bin/.pi-real
       cat > $out/bin/pi <<EOF
       #!${pkgs.bashInteractive}/bin/bash
+      export EDITOR="${editorCommand}"
+      export GIT_EDITOR="${editorCommand}"
+      export VISUAL="${editorCommand}"
       export PI_CODING_AGENT_DIR=${homeDir}/.pi/agent-jailed
       export OPENROUTER_API_KEY="\$(cat ${config.sops.secrets."openrouter-api-key".path})"
       exec $out/bin/.pi-real "\$@"
@@ -176,18 +151,7 @@ in
         config.sops.secrets."openrouter-api-key".path
       ];
       extraPkgs = [ pkgs.neovim ];
-      gitPackage = jailedPiGit;
       gitSupport = true;
-      extraEnv = {
-        DBUS_SESSION_BUS_ADDRESS = "\${DBUS_SESSION_BUS_ADDRESS:-}";
-        DISPLAY = "\${DISPLAY:-:0}";
-        EDITOR = "${editorCommand}";
-        GIT_EDITOR = "${editorCommand}";
-        VISUAL = "${editorCommand}";
-        WAYLAND_DISPLAY = "\${WAYLAND_DISPLAY:-}";
-        XAUTHORITY = "\${XAUTHORITY:-}";
-        XDG_RUNTIME_DIR = "\${XDG_RUNTIME_DIR:-}";
-      };
     })
   ];
 }

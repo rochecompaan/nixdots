@@ -51,18 +51,15 @@ in
   xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijFavs;
   xdg.configFile."zellij/layouts/left-main-right-stack.kdl".text = ''
     layout {
-      pane size=1 borderless=true {
-        plugin location="tab-bar"
-      }
-      pane split_direction="horizontal" {
-        pane
+      default_tab_template {
         pane split_direction="vertical" {
           pane
-          pane
+          pane stacked=true {
+            pane expanded=true
+            pane
+            pane
+          }
         }
-      }
-      pane size=1 borderless=true {
-        plugin location="status-bar"
       }
     }
   '';

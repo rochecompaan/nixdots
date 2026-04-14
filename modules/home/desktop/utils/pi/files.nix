@@ -41,10 +41,7 @@ let
 
   piSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
     theme = "stylix";
-    packages = [
-      "${piBashLiveView}/lib/node_modules/pi-bash-live-view"
-      "${diffPackage}/lib/node_modules/diff"
-    ];
+    packages = [ "${piBashLiveView}/lib/node_modules/pi-bash-live-view" ];
   };
 
   stylixPiTheme = {

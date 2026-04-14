@@ -33,5 +33,8 @@ in
     ".pi/agent/skills/github/SKILL.md".source = ./skills/github/SKILL.md;
 
     ".pi/agent/themes/stylix.json".text = builtins.toJSON piFiles.stylixPiTheme;
+
+    # Node modules for extensions
+    ".pi/agent/node_modules/diff".source = "${piFiles.diffPackage}/lib/node_modules/diff";
   };
 }

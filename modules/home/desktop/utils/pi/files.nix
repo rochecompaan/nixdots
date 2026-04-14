@@ -27,9 +27,24 @@ let
     dontNpmBuild = true;
   };
 
+  # Diff npm package for multi-edit extension
+  diffPackageSrc = pkgs.fetchurl {
+    url = "https://registry.npmjs.org/diff/-/diff-7.0.0.tgz";
+    sha256 = "sha256-kRLnmAa9a+V4p6bxJNlnEdQGCwus1NS6xOlq59CPKsE=";
+  };
+
+  diffPackage = pkgs.runCommand "diff-npm" { } ''
+    mkdir -p $out/lib/node_modules/diff
+    cd $out/lib/node_modules/diff
+    ${pkgs.gnutar}/bin/tar -xzf ${diffPackageSrc} --strip-components=1
+  '';
+
   piSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
     theme = "stylix";
-    packages = [ "${piBashLiveView}/lib/node_modules/pi-bash-live-view" ];
+    packages = [
+      "${piBashLiveView}/lib/node_modules/pi-bash-live-view"
+      "${diffPackage}/lib/node_modules/diff"
+    ];
   };
 
   stylixPiTheme = {
@@ -154,5 +169,10 @@ let
   '';
 in
 {
-  inherit package piSettings stylixPiTheme;
+  inherit
+    package
+    piSettings
+    stylixPiTheme
+    diffPackage
+    ;
 }

@@ -115,35 +115,42 @@ let
   };
 
   package = pkgs.runCommand "pi-agent-files" { } ''
-    mkdir -p $out/.pi/agent/extensions
-    mkdir -p $out/.pi/agent/skills/linear
-    mkdir -p $out/.pi/agent/themes
+        mkdir -p $out/.pi/agent/extensions
+        mkdir -p $out/.pi/agent/skills/linear
+        mkdir -p $out/.pi/agent/skills/commit
+        mkdir -p $out/.pi/agent/skills/frontend-design
+        mkdir -p $out/.pi/agent/skills/github
+        mkdir -p $out/.pi/agent/themes
 
-    cat > $out/.pi/agent/settings.json <<'EOF'
-    ${builtins.toJSON piSettings}
-    EOF
+        cat > $out/.pi/agent/settings.json <<'EOF'
+        ${builtins.toJSON piSettings}
+        EOF
 
-    cp ${./filter-output.ts} $out/.pi/agent/extensions/filter-output.ts
-    cp ${./security.ts} $out/.pi/agent/extensions/security.ts
-    cp ${./theme-cycler.ts} $out/.pi/agent/extensions/theme-cycler.ts
+        cp ${./extensions/filter-output.ts} $out/.pi/agent/extensions/filter-output.ts
+        cp ${./extensions/security.ts} $out/.pi/agent/extensions/security.ts
+        cp ${./extensions/theme-cycler.ts} $out/.pi/agent/extensions/theme-cycler.ts
+        cp ${./extensions/review.ts} $out/.pi/agent/extensions/review.ts
+        cp ${./extensions/answer.ts} $out/.pi/agent/extensions/answer.ts
+        cp ${./extensions/btw.ts} $out/.pi/agent/extensions/btw.ts
+        cp ${./extensions/context.ts} $out/.pi/agent/extensions/context.ts
+        cp ${./extensions/control.ts} $out/.pi/agent/extensions/control.ts
+        cp ${./extensions/files.ts} $out/.pi/agent/extensions/files.ts
+        cp ${./extensions/loop.ts} $out/.pi/agent/extensions/loop.ts
+        cp ${./extensions/multi-edit.ts} $out/.pi/agent/extensions/multi-edit.ts
+        cp ${./extensions/notify.ts} $out/.pi/agent/extensions/notify.ts
+        cp ${./extensions/prompt-editor.ts} $out/.pi/agent/extensions/prompt-editor.ts
+        cp ${./extensions/session-breakdown.ts} $out/.pi/agent/extensions/session-breakdown.ts
+        cp ${./extensions/todos.ts} $out/.pi/agent/extensions/todos.ts
+    cp ${./extensions/whimsical.ts} $out/.pi/agent/extensions/whimsical.ts
 
-    cp ${./skills/linear/SKILL.md} $out/.pi/agent/skills/linear/SKILL.md
+        cp ${./skills/linear/SKILL.md} $out/.pi/agent/skills/linear/SKILL.md
+        cp ${./skills/commit/SKILL.md} $out/.pi/agent/skills/commit/SKILL.md
+        cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
+        cp ${./skills/github/SKILL.md} $out/.pi/agent/skills/github/SKILL.md
 
-    cat > $out/.pi/agent/themes/stylix.json <<'EOF'
-    ${builtins.toJSON stylixPiTheme}
-    EOF
-
-    cp ${./themes/catppuccin-mocha.json} $out/.pi/agent/themes/catppuccin-mocha.json
-    cp ${./themes/cyberpunk.json} $out/.pi/agent/themes/cyberpunk.json
-    cp ${./themes/dracula.json} $out/.pi/agent/themes/dracula.json
-    cp ${./themes/everforest.json} $out/.pi/agent/themes/everforest.json
-    cp ${./themes/gruvbox.json} $out/.pi/agent/themes/gruvbox.json
-    cp ${./themes/midnight-ocean.json} $out/.pi/agent/themes/midnight-ocean.json
-    cp ${./themes/nord.json} $out/.pi/agent/themes/nord.json
-    cp ${./themes/ocean-breeze.json} $out/.pi/agent/themes/ocean-breeze.json
-    cp ${./themes/rose-pine.json} $out/.pi/agent/themes/rose-pine.json
-    cp ${./themes/synthwave.json} $out/.pi/agent/themes/synthwave.json
-    cp ${./themes/tokyo-night.json} $out/.pi/agent/themes/tokyo-night.json
+        cat > $out/.pi/agent/themes/stylix.json <<'EOF'
+        ${builtins.toJSON stylixPiTheme}
+        EOF
   '';
 in
 {

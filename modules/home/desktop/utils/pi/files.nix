@@ -142,7 +142,7 @@ let
         cp ${./extensions/security.ts} $out/.pi/agent/extensions/security.ts
         cp ${./extensions/theme-cycler.ts} $out/.pi/agent/extensions/theme-cycler.ts
         cp ${./extensions/review.ts} $out/.pi/agent/extensions/review.ts
-        cp ${./extensions/answer.ts} $out/.pi/agent/extensions/answer.ts
+        cp -r ${./extensions/answer} $out/.pi/agent/extensions/answer
         cp ${./extensions/btw.ts} $out/.pi/agent/extensions/btw.ts
         cp ${./extensions/context.ts} $out/.pi/agent/extensions/context.ts
         cp ${./extensions/control.ts} $out/.pi/agent/extensions/control.ts

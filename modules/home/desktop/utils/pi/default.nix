@@ -14,7 +14,7 @@ in
     ".pi/agent/extensions/review.ts".source = ./extensions/review.ts;
 
     # New extensions
-    ".pi/agent/extensions/answer.ts".source = ./extensions/answer.ts;
+    ".pi/agent/extensions/answer".source = ./extensions/answer;
     ".pi/agent/extensions/btw.ts".source = ./extensions/btw.ts;
     ".pi/agent/extensions/context.ts".source = ./extensions/context.ts;
     ".pi/agent/extensions/control.ts".source = ./extensions/control.ts;

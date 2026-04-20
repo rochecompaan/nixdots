@@ -76,8 +76,12 @@ in
           # Move focus
           "SUPER, h, movefocus, l"
           "SUPER, l, movefocus, r"
-          "SUPER, j, movefocus, u"
-          "SUPER, k, movefocus, d"
+          "SUPER, up, movefocus, u"
+          "SUPER, down, movefocus, d"
+
+          # Page navigation
+          "SUPER, j, exec, wtype -k Page_Down"
+          "SUPER, k, exec, wtype -k Page_Up"
 
           # Move windows
           "SUPER SHIFT, h, movewindow, l"

@@ -42,7 +42,6 @@ in
       ++ (with inputs.llm-agents.packages.${pkgs.system}; [
         codex
         claude-code
-        gemini-cli
         pi
       ]);
 

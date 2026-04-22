@@ -25,7 +25,6 @@ in
     ".pi/agent/extensions/prompt-editor.ts".source = ./extensions/prompt-editor.ts;
     ".pi/agent/extensions/session-breakdown.ts".source = ./extensions/session-breakdown.ts;
     ".pi/agent/extensions/todos.ts".source = ./extensions/todos.ts;
-    ".pi/agent/extensions/whimsical.ts".source = ./extensions/whimsical.ts;
 
     ".pi/agent/skills/linear/SKILL.md".source = ./skills/linear/SKILL.md;
     ".pi/agent/skills/commit/SKILL.md".source = ./skills/commit/SKILL.md;

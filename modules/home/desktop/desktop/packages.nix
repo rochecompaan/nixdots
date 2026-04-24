@@ -40,8 +40,6 @@ in
         ydotool
       ]
       ++ (with inputs.llm-agents.packages.${pkgs.system}; [
-        codex
-        claude-code
         pi
       ]);
 

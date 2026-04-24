@@ -119,25 +119,6 @@ in
   '';
   home.packages = [
     (makeJailedAgent {
-      name = "jailed-claude";
-      package = agentPkgs.claude-code;
-      configDirs = [
-        "~/.config/claude"
-        "~/.local/share/claude"
-        "~/.local/state/claude"
-      ];
-    })
-    (makeJailedAgent {
-      name = "jailed-codex";
-      package = agentPkgs.codex;
-      configDirs = [
-        "~/.config/codex"
-        "~/.local/share/codex"
-        "~/.local/state/codex"
-        "~/.codex"
-      ];
-    })
-    (makeJailedAgent {
       name = "jailed-pi";
       package = jailedPiPackage;
       configDirs = [

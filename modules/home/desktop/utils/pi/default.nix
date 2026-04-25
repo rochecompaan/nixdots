@@ -10,7 +10,6 @@ in
 
     ".pi/agent/extensions/filter-output.ts".source = ./extensions/filter-output.ts;
     ".pi/agent/extensions/security.ts".source = ./extensions/security.ts;
-    ".pi/agent/extensions/theme-cycler.ts".source = ./extensions/theme-cycler.ts;
     ".pi/agent/extensions/review.ts".source = ./extensions/review.ts;
 
     # New extensions

@@ -27,6 +27,37 @@ let
     dontNpmBuild = true;
   };
 
+  nobodyPlansForPiSrc = pkgs.fetchgit {
+    url = "https://github.com/HashWarlock/nobody-plans-for-pi.git";
+    rev = "fc2edc0f6d90dcdeb8c1d9e10a4bca9d7c20c0e4";
+    sha256 = "sha256-sQyvyun9PEZLT/Ig8PSIM7QNT/X/3RTeiSZ8Owkg/bU=";
+  };
+
+  nobodyPlansAgentModels = {
+    planner = "openai-codex/gpt-5.5";
+    reviewer = "openai-codex/gpt-5.5";
+    scout = "openai-codex/gpt-5.4-mini";
+    worker = "openai-codex/gpt-5.5";
+  };
+
+  nobodyPlansAgentFiles = pkgs.runCommand "nobody-plans-for-pi-agents-gpt" { } ''
+    mkdir -p $out
+    cp ${nobodyPlansForPiSrc}/agents/*.md $out/
+    chmod +w $out/*.md
+
+    substituteInPlace $out/scout.md \
+      --replace-fail "model: claude-haiku-4-5" "model: ${nobodyPlansAgentModels.scout}" \
+      --replace-fail "tools: read, grep, find, ls, bash" "tools: read, grep, find, ls, bash, todo"
+    substituteInPlace $out/planner.md \
+      --replace-fail "model: claude-sonnet-4-5" "model: ${nobodyPlansAgentModels.planner}" \
+      --replace-fail "tools: read, grep, find, ls" "tools: read, grep, find, ls, todo"
+    substituteInPlace $out/reviewer.md \
+      --replace-fail "model: claude-sonnet-4-5" "model: ${nobodyPlansAgentModels.reviewer}" \
+      --replace-fail "tools: read, grep, find, ls, bash" "tools: read, grep, find, ls, bash, todo"
+    substituteInPlace $out/worker.md \
+      --replace-fail "model: claude-sonnet-4-5" "model: ${nobodyPlansAgentModels.worker}"
+  '';
+
   # Diff npm package for multi-edit extension
   diffPackageSrc = pkgs.fetchurl {
     url = "https://registry.npmjs.org/diff/-/diff-7.0.0.tgz";
@@ -41,7 +72,10 @@ let
 
   piSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
     theme = "stylix";
-    packages = [ "${piBashLiveView}/lib/node_modules/pi-bash-live-view" ];
+    packages = [
+      "${piBashLiveView}/lib/node_modules/pi-bash-live-view"
+      "${nobodyPlansForPiSrc}"
+    ];
   };
 
   stylixPiTheme = {
@@ -128,6 +162,7 @@ let
 
   package = pkgs.runCommand "pi-agent-files" { } ''
         mkdir -p $out/.pi/agent/extensions
+        mkdir -p $out/.pi/agent/agents
         mkdir -p $out/.pi/agent/skills/linear
         mkdir -p $out/.pi/agent/skills/commit
         mkdir -p $out/.pi/agent/skills/frontend-design
@@ -155,6 +190,11 @@ let
         cp ${./extensions/todos.ts} $out/.pi/agent/extensions/todos.ts
     cp ${./extensions/whimsical.ts} $out/.pi/agent/extensions/whimsical.ts
 
+        cp ${nobodyPlansAgentFiles}/scout.md $out/.pi/agent/agents/scout.md
+        cp ${nobodyPlansAgentFiles}/planner.md $out/.pi/agent/agents/planner.md
+        cp ${nobodyPlansAgentFiles}/reviewer.md $out/.pi/agent/agents/reviewer.md
+        cp ${nobodyPlansAgentFiles}/worker.md $out/.pi/agent/agents/worker.md
+
         cp ${./skills/linear/SKILL.md} $out/.pi/agent/skills/linear/SKILL.md
         cp ${./skills/commit/SKILL.md} $out/.pi/agent/skills/commit/SKILL.md
         cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
@@ -171,5 +211,8 @@ in
     piSettings
     stylixPiTheme
     diffPackage
+    nobodyPlansAgentFiles
+    nobodyPlansAgentModels
+    nobodyPlansForPiSrc
     ;
 }

@@ -25,6 +25,12 @@ in
     ".pi/agent/extensions/session-breakdown.ts".source = ./extensions/session-breakdown.ts;
     ".pi/agent/extensions/todos.ts".source = ./extensions/todos.ts;
 
+    # nobody-plans-for-pi subagent definitions with GPT model overrides.
+    ".pi/agent/agents/scout.md".source = "${piFiles.nobodyPlansAgentFiles}/scout.md";
+    ".pi/agent/agents/planner.md".source = "${piFiles.nobodyPlansAgentFiles}/planner.md";
+    ".pi/agent/agents/reviewer.md".source = "${piFiles.nobodyPlansAgentFiles}/reviewer.md";
+    ".pi/agent/agents/worker.md".source = "${piFiles.nobodyPlansAgentFiles}/worker.md";
+
     ".pi/agent/skills/linear/SKILL.md".source = ./skills/linear/SKILL.md;
     ".pi/agent/skills/commit/SKILL.md".source = ./skills/commit/SKILL.md;
     ".pi/agent/skills/frontend-design/SKILL.md".source = ./skills/frontend-design/SKILL.md;

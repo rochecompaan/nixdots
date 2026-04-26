@@ -27,6 +27,23 @@ let
     dontNpmBuild = true;
   };
 
+  piListenSrc = pkgs.fetchgit {
+    url = "https://github.com/codexstar69/pi-listen.git";
+    rev = "613ee4d8f55414a955d36d73fe712def72007b96";
+    sha256 = "sha256-u4q7P0sAPirPJ0fleNm1Iq+xEg61RkxGOVpOht2piHY=";
+  };
+
+  piListen = pkgs.buildNpmPackage {
+    pname = "pi-listen";
+    version = "5.0.7";
+    src = piListenSrc;
+
+    npmDepsHash = "sha256-4CliHDKN26ZEKMmAKHiVTrVqz9NXzgHxTciETuckcNQ=";
+
+    dontNpmPrune = true;
+    dontNpmBuild = true;
+  };
+
   nobodyPlansForPiSrc = pkgs.fetchgit {
     url = "https://github.com/HashWarlock/nobody-plans-for-pi.git";
     rev = "fc2edc0f6d90dcdeb8c1d9e10a4bca9d7c20c0e4";
@@ -74,6 +91,7 @@ let
     theme = "stylix";
     packages = [
       "${piBashLiveView}/lib/node_modules/pi-bash-live-view"
+      "${piListen}/lib/node_modules/@codexstar/pi-listen"
       "${nobodyPlansForPiSrc}"
     ];
   };

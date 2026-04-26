@@ -23,17 +23,9 @@ Welcome to my Nix config!
 
 ## Homelab Kubernetes (ArgoCD)
 
-- ArgoCD is the deployment controller for the homelab cluster.
-- `argocd/homelab/apps/kustomization.yaml` is the bootstrap bundle of ArgoCD
-  Applications; it installs ArgoCD itself and registers the rest of the apps.
-- Each app is defined under `argocd/base/<app>/app.yaml` as an ArgoCD
-  Application, sourcing either Helm charts (external repos) or Kustomize paths
-  from this repo.
-- Cluster-specific manifests live under `argocd/homelab/infra` and
-  `argocd/homelab/local-path-provisioner`, referenced by their Application
-  definitions.
-- Sync order is controlled with `argocd.argoproj.io/sync-wave` annotations, and
-  apps are configured for automated sync with prune/self-heal.
+- ArgoCD homelab configuration has moved out of this repository.
+- The homelab Kubernetes manifests now live at
+  `git@github.com:rochecompaan/homelab-k8s.git`.
 
 ## NixOS Composition
 

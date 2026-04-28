@@ -76,7 +76,7 @@ in
       udev.packages = [
         pkgs.libu2f-host
         pkgs.yubikey-personalization
-        pkgs.platformio-core
+        pkgs.platformio-core.udev
         pkgs.openocd
       ];
       pcscd.enable = true;

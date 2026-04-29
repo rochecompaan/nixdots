@@ -35,6 +35,7 @@ in
     ".pi/agent/skills/commit/SKILL.md".source = ./skills/commit/SKILL.md;
     ".pi/agent/skills/frontend-design/SKILL.md".source = ./skills/frontend-design/SKILL.md;
     ".pi/agent/skills/github/SKILL.md".source = ./skills/github/SKILL.md;
+    ".pi/agent/skills/module-size/SKILL.md".source = ./skills/module-size/SKILL.md;
 
     ".pi/agent/themes/stylix.json".text = builtins.toJSON piFiles.stylixPiTheme;
 

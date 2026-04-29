@@ -185,6 +185,7 @@ let
         mkdir -p $out/.pi/agent/skills/commit
         mkdir -p $out/.pi/agent/skills/frontend-design
         mkdir -p $out/.pi/agent/skills/github
+        mkdir -p $out/.pi/agent/skills/module-size
         mkdir -p $out/.pi/agent/themes
 
         cat > $out/.pi/agent/settings.json <<'EOF'
@@ -217,6 +218,7 @@ let
         cp ${./skills/commit/SKILL.md} $out/.pi/agent/skills/commit/SKILL.md
         cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
         cp ${./skills/github/SKILL.md} $out/.pi/agent/skills/github/SKILL.md
+        cp ${./skills/module-size/SKILL.md} $out/.pi/agent/skills/module-size/SKILL.md
 
         cat > $out/.pi/agent/themes/stylix.json <<'EOF'
         ${builtins.toJSON stylixPiTheme}

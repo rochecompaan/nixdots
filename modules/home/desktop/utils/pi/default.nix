@@ -6,7 +6,10 @@ let
 in
 {
   home.file = {
-    ".pi/agent/settings.json".text = builtins.toJSON piFiles.piSettings;
+    ".pi/agent/settings.json" = {
+      force = true;
+      text = builtins.toJSON piFiles.piSettings;
+    };
 
     ".pi/agent/extensions/filter-output.ts".source = ./extensions/filter-output.ts;
     ".pi/agent/extensions/security.ts".source = ./extensions/security.ts;

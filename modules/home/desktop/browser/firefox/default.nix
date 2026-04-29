@@ -463,4 +463,5 @@ in
     "x-scheme-handler/http" = [ "firefox.desktop" ];
     "x-scheme-handler/https" = [ "firefox.desktop" ];
   };
+  xdg.configFile."mimeapps.list".force = true;
 }

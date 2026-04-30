@@ -1,31 +1,10 @@
 { config, pkgs }:
 let
-  colors = config.lib.stylix.colors;
+  inherit (config.lib.stylix) colors;
   hex = color: "#${color}";
 
   # Pi package derivations
-  piBashLiveViewSrc = pkgs.fetchgit {
-    url = "https://github.com/lucasmeijer/pi-bash-live-view.git";
-    rev = "7802f5bdb8a6d7553da03e22fbccb542a634cd72";
-    sha256 = "sha256-/bp0HHlgisO+haaa8NZYGE7wTbTEubMbGhbZLd/BYho=";
-  };
-
-  piBashLiveView = pkgs.buildNpmPackage {
-    pname = "pi-bash-live-view";
-    version = "0.1.1";
-    src = piBashLiveViewSrc;
-
-    npmDepsHash = "sha256-fL8i5zco61xOZ7lQaI25KNpCCqCdhjPlw8cxhHJ16kw=";
-
-    nativeBuildInputs = [
-      pkgs.nodejs
-      pkgs.python3
-      pkgs.pkg-config
-    ];
-
-    dontNpmPrune = true;
-    dontNpmBuild = true;
-  };
+  notionCli = import ./notion-cli.nix { inherit pkgs; };
 
   piListenSrc = pkgs.fetchgit {
     url = "https://github.com/codexstar69/pi-listen.git";
@@ -90,7 +69,6 @@ let
   piSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
     theme = "stylix";
     packages = [
-      "${piBashLiveView}/lib/node_modules/pi-bash-live-view"
       "${piListen}/lib/node_modules/@codexstar/pi-listen"
       "${nobodyPlansForPiSrc}"
     ];
@@ -186,6 +164,7 @@ let
         mkdir -p $out/.pi/agent/skills/frontend-design
         mkdir -p $out/.pi/agent/skills/github
         mkdir -p $out/.pi/agent/skills/module-size
+        mkdir -p $out/.pi/agent/skills/notion
         mkdir -p $out/.pi/agent/themes
 
         cat > $out/.pi/agent/settings.json <<'EOF'
@@ -219,6 +198,7 @@ let
         cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
         cp ${./skills/github/SKILL.md} $out/.pi/agent/skills/github/SKILL.md
         cp ${./skills/module-size/SKILL.md} $out/.pi/agent/skills/module-size/SKILL.md
+        cp ${./skills/notion/SKILL.md} $out/.pi/agent/skills/notion/SKILL.md
 
         cat > $out/.pi/agent/themes/stylix.json <<'EOF'
         ${builtins.toJSON stylixPiTheme}
@@ -231,6 +211,7 @@ in
     piSettings
     stylixPiTheme
     diffPackage
+    notionCli
     nobodyPlansAgentFiles
     nobodyPlansAgentModels
     nobodyPlansForPiSrc

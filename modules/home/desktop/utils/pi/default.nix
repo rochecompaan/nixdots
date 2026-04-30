@@ -5,6 +5,8 @@ let
   };
 in
 {
+  home.packages = [ piFiles.notionCli ];
+
   home.file = {
     ".pi/agent/settings.json" = {
       force = true;
@@ -24,6 +26,8 @@ in
     ".pi/agent/extensions/loop.ts".source = ./extensions/loop.ts;
     ".pi/agent/extensions/multi-edit.ts".source = ./extensions/multi-edit.ts;
     ".pi/agent/extensions/notify.ts".source = ./extensions/notify.ts;
+    ".pi/agent/extensions/pi-intervals".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/projects/pi/extensions/pi-intervals";
     ".pi/agent/extensions/prompt-editor.ts".source = ./extensions/prompt-editor.ts;
     ".pi/agent/extensions/session-breakdown.ts".source = ./extensions/session-breakdown.ts;
     ".pi/agent/extensions/todos.ts".source = ./extensions/todos.ts;
@@ -39,6 +43,7 @@ in
     ".pi/agent/skills/frontend-design/SKILL.md".source = ./skills/frontend-design/SKILL.md;
     ".pi/agent/skills/github/SKILL.md".source = ./skills/github/SKILL.md;
     ".pi/agent/skills/module-size/SKILL.md".source = ./skills/module-size/SKILL.md;
+    ".pi/agent/skills/notion/SKILL.md".source = ./skills/notion/SKILL.md;
 
     ".pi/agent/themes/stylix.json".text = builtins.toJSON piFiles.stylixPiTheme;
 

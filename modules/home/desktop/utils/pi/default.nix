@@ -44,6 +44,8 @@ in
     ".pi/agent/skills/github/SKILL.md".source = ./skills/github/SKILL.md;
     ".pi/agent/skills/module-size/SKILL.md".source = ./skills/module-size/SKILL.md;
     ".pi/agent/skills/notion/SKILL.md".source = ./skills/notion/SKILL.md;
+    ".pi/agent/skills/intervals-time-entries/SKILL.md".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/projects/pi/extensions/pi-intervals/skills/intervals-time-entries/SKILL.md";
 
     ".pi/agent/themes/stylix.json".text = builtins.toJSON piFiles.stylixPiTheme;
 

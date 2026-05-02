@@ -164,12 +164,11 @@ let
         mkdir -p $out/.pi/agent/skills/frontend-design
         mkdir -p $out/.pi/agent/skills/github
         mkdir -p $out/.pi/agent/skills/module-size
+        mkdir -p $out/.pi/agent/node_modules
         mkdir -p $out/.pi/agent/skills/notion
         mkdir -p $out/.pi/agent/themes
 
-        cat > $out/.pi/agent/settings.json <<'EOF'
-        ${builtins.toJSON piSettings}
-        EOF
+        printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON piSettings)} > $out/.pi/agent/settings.json
 
         cp ${./extensions/filter-output.ts} $out/.pi/agent/extensions/filter-output.ts
         cp ${./extensions/security.ts} $out/.pi/agent/extensions/security.ts
@@ -200,9 +199,9 @@ let
         cp ${./skills/module-size/SKILL.md} $out/.pi/agent/skills/module-size/SKILL.md
         cp ${./skills/notion/SKILL.md} $out/.pi/agent/skills/notion/SKILL.md
 
-        cat > $out/.pi/agent/themes/stylix.json <<'EOF'
-        ${builtins.toJSON stylixPiTheme}
-        EOF
+        ln -s ${diffPackage}/lib/node_modules/diff $out/.pi/agent/node_modules/diff
+
+        printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON stylixPiTheme)} > $out/.pi/agent/themes/stylix.json
   '';
 in
 {

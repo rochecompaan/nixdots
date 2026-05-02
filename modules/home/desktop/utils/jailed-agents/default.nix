@@ -20,6 +20,12 @@ let
           (set-env "GIT_CONFIG_KEY_1" "user.email")
           (set-env "GIT_CONFIG_VALUE_1" gitUserEmail)
         ];
+        runtime-closures =
+          packages: state:
+          state
+          // {
+            additionalRuntimeClosures = state.additionalRuntimeClosures ++ map toString packages;
+          };
       };
   };
   piFiles = import ../pi/files.nix {
@@ -64,6 +70,7 @@ let
       readonlyDirs ? [ ],
       extraPkgs ? [ ],
       gitSupport ? false,
+      runtimeClosurePkgs ? [ ],
       extraPermissions ? [ ],
     }:
     jail name package (
@@ -72,6 +79,7 @@ let
       ++ map (dir: readwrite (noescape dir)) configDirs
       ++ map (dir: readonly (noescape dir)) readonlyDirs
       ++ lib.optionals gitSupport [ git-identity-env ]
+      ++ lib.optionals (runtimeClosurePkgs != [ ]) [ (runtime-closures runtimeClosurePkgs) ]
       ++ extraPermissions
       ++ [ (add-pkg-deps (commonPkgsBase ++ [ pkgs.git ] ++ extraPkgs)) ]
     );
@@ -112,6 +120,7 @@ in
 
     ln -sfn ${piFiles.package}/.pi/agent/settings.json "$agent_dir/settings.json"
     ln -sfn ${piFiles.package}/.pi/agent/extensions "$agent_dir/extensions"
+    ln -sfn ${piFiles.package}/.pi/agent/node_modules "$agent_dir/node_modules"
     ln -sfn ${piFiles.package}/.pi/agent/skills "$agent_dir/skills"
     ln -sfn ${piFiles.package}/.pi/agent/themes "$agent_dir/themes"
     ln -sfn ${homeDir}/.pi/agent/auth.json "$agent_dir/auth.json"
@@ -131,8 +140,12 @@ in
         piFiles.package
         config.sops.secrets."openrouter-api-key".path
       ];
-      extraPkgs = [ pkgs.neovim ];
+      extraPkgs = [
+        jailedPiPackage
+        pkgs.neovim
+      ];
       gitSupport = true;
+      runtimeClosurePkgs = [ piFiles.package ];
     })
   ];
 }

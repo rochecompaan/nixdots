@@ -28,6 +28,7 @@ in
         scrcpy
         signal-desktop
         ssh-to-age
+        tea
         timewarrior
         transmission_4
         vesktop

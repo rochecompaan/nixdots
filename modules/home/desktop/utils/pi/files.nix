@@ -23,36 +23,27 @@ let
     dontNpmBuild = true;
   };
 
-  nobodyPlansForPiSrc = pkgs.fetchgit {
-    url = "https://github.com/HashWarlock/nobody-plans-for-pi.git";
-    rev = "fc2edc0f6d90dcdeb8c1d9e10a4bca9d7c20c0e4";
-    sha256 = "sha256-sQyvyun9PEZLT/Ig8PSIM7QNT/X/3RTeiSZ8Owkg/bU=";
+  piSubagentsSrc = pkgs.fetchgit {
+    url = "https://github.com/nicobailon/pi-subagents.git";
+    rev = "0b3f5b4d16557228cf7ce3e2de7b708f94ccf9ac";
+    sha256 = "sha256-OOepzpERAz1E7yIl85IxcXs+QFUzi6uhpC6RjQXr1Yc=";
   };
 
-  nobodyPlansAgentModels = {
-    planner = "openai-codex/gpt-5.5";
-    reviewer = "openai-codex/gpt-5.5";
-    scout = "openai-codex/gpt-5.4-mini";
-    worker = "openai-codex/gpt-5.5";
+  piSubagents = pkgs.buildNpmPackage {
+    pname = "pi-subagents";
+    version = "0.23.0";
+    src = piSubagentsSrc;
+
+    npmDepsHash = "sha256-hJwe6crzgVnosyJcfV5BIu0cfm69kEQ1vaZNteQxoY4=";
+
+    dontNpmBuild = true;
   };
 
-  nobodyPlansAgentFiles = pkgs.runCommand "nobody-plans-for-pi-agents-gpt" { } ''
-    mkdir -p $out
-    cp ${nobodyPlansForPiSrc}/agents/*.md $out/
-    chmod +w $out/*.md
-
-    substituteInPlace $out/scout.md \
-      --replace-fail "model: claude-haiku-4-5" "model: ${nobodyPlansAgentModels.scout}" \
-      --replace-fail "tools: read, grep, find, ls, bash" "tools: read, grep, find, ls, bash, todo"
-    substituteInPlace $out/planner.md \
-      --replace-fail "model: claude-sonnet-4-5" "model: ${nobodyPlansAgentModels.planner}" \
-      --replace-fail "tools: read, grep, find, ls" "tools: read, grep, find, ls, todo"
-    substituteInPlace $out/reviewer.md \
-      --replace-fail "model: claude-sonnet-4-5" "model: ${nobodyPlansAgentModels.reviewer}" \
-      --replace-fail "tools: read, grep, find, ls, bash" "tools: read, grep, find, ls, bash, todo"
-    substituteInPlace $out/worker.md \
-      --replace-fail "model: claude-sonnet-4-5" "model: ${nobodyPlansAgentModels.worker}"
-  '';
+  superpowersSrc = pkgs.fetchgit {
+    url = "https://github.com/obra/superpowers.git";
+    rev = "e7a2d16476bf042e9add4699c9d018a90f86e4a6";
+    sha256 = "sha256-8/M/S0BUYurZkFqe6LemVtBQnPSxBNfy1C7Q6f92hjE=";
+  };
 
   # Diff npm package for multi-edit extension
   diffPackageSrc = pkgs.fetchurl {
@@ -70,7 +61,8 @@ let
     theme = "stylix";
     packages = [
       "${piListen}/lib/node_modules/@codexstar/pi-listen"
-      "${nobodyPlansForPiSrc}"
+      "${piSubagents}/lib/node_modules/pi-subagents"
+      "${superpowersSrc}"
     ];
   };
 
@@ -187,11 +179,6 @@ let
         cp ${./extensions/todos.ts} $out/.pi/agent/extensions/todos.ts
     cp ${./extensions/whimsical.ts} $out/.pi/agent/extensions/whimsical.ts
 
-        cp ${nobodyPlansAgentFiles}/scout.md $out/.pi/agent/agents/scout.md
-        cp ${nobodyPlansAgentFiles}/planner.md $out/.pi/agent/agents/planner.md
-        cp ${nobodyPlansAgentFiles}/reviewer.md $out/.pi/agent/agents/reviewer.md
-        cp ${nobodyPlansAgentFiles}/worker.md $out/.pi/agent/agents/worker.md
-
         cp ${./skills/linear/SKILL.md} $out/.pi/agent/skills/linear/SKILL.md
         cp ${./skills/commit/SKILL.md} $out/.pi/agent/skills/commit/SKILL.md
         cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
@@ -211,8 +198,5 @@ in
     stylixPiTheme
     diffPackage
     notionCli
-    nobodyPlansAgentFiles
-    nobodyPlansAgentModels
-    nobodyPlansForPiSrc
     ;
 }

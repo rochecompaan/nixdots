@@ -7,6 +7,7 @@
 }:
 let
   homeDir = config.home.homeDirectory;
+  defaultJailedPiAgentDir = "${homeDir}/.pi/agent-jailed";
   gitUserName = config.programs.git.settings.user.name;
   gitUserEmail = config.programs.git.settings.user.email;
   jail = inputs.jail-nix.lib.extend {
@@ -96,7 +97,7 @@ let
       export EDITOR="${editorCommand}"
       export GIT_EDITOR="${editorCommand}"
       export VISUAL="${editorCommand}"
-      export PI_CODING_AGENT_DIR=${homeDir}/.pi/agent-jailed
+      export PI_CODING_AGENT_DIR="\${"$"}{PI_CODING_AGENT_DIR:-${defaultJailedPiAgentDir}}"
       export OPENROUTER_API_KEY="\$(cat ${config.sops.secrets."openrouter-api-key".path})"
       exec $out/bin/.pi-real "\$@"
       EOF
@@ -110,7 +111,7 @@ in
     sopsFile = "${inputs.nix-secrets}/secrets.yaml";
   };
   home.activation.jailedPiAgentDir = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    agent_dir=${homeDir}/.pi/agent-jailed
+    agent_dir=${defaultJailedPiAgentDir}
 
     mkdir -p ${homeDir}/.pi/agent/sessions
     touch ${homeDir}/.pi/agent/auth.json
@@ -134,7 +135,7 @@ in
         "${homeDir}/.pi/agent"
         "${homeDir}/.pi/agent/auth.json"
         "${homeDir}/.pi/agent/sessions"
-        "${homeDir}/.pi/agent-jailed"
+        defaultJailedPiAgentDir
       ];
       readonlyDirs = [
         piFiles.package
@@ -146,6 +147,9 @@ in
       ];
       gitSupport = true;
       runtimeClosurePkgs = [ piFiles.package ];
+      extraPermissions = with jail.combinators; [
+        (try-fwd-env "PI_CODING_AGENT_DIR")
+      ];
     })
   ];
 }

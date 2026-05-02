@@ -11,10 +11,37 @@
 
   nix = {
     settings = {
-      # Resource management settings
-      max-jobs = 8; # Limit parallel build jobs
+      # Resource management settings: avoid memory-pressure stalls during large builds.
+      max-jobs = 2; # Limit parallel build jobs
       cores = 8; # Cores per build job
-      min-free = "2G"; # Keep at least 2GB free
+      min-free = "5G"; # Keep enough headroom for the desktop and OOM handling
+    };
+  };
+
+  # Add breathing room for memory spikes from browsers, containers, and compilers.
+  swapDevices = [
+    {
+      device = "/var/lib/swapfile";
+      size = 32768; # MiB
+    }
+  ];
+
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+    memoryPercent = 25;
+    priority = 100;
+  };
+
+  systemd.oomd = {
+    enable = true;
+    enableRootSlice = true;
+    enableSystemSlice = true;
+    enableUserSlices = true;
+    settings.OOM = {
+      DefaultMemoryPressureDurationSec = "20s";
+      DefaultMemoryPressureLimit = "60%";
+      SwapUsedLimit = "90%";
     };
   };
 

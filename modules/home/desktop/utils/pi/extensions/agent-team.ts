@@ -18,6 +18,71 @@ interface AgentTeamPreset {
   agents: Record<AgentRole, AgentTeamEntry>;
 }
 
+export const AGENT_TEAM_HELP_TEXT = [
+  "/agent-team selects a session-wide subagent model/thinking preset.",
+  "",
+  "Commands:",
+  "",
+  "```text",
+  "/agent-team              # same as status",
+  "/agent-team status       # show active team",
+  "/agent-team list         # list available presets",
+  "/agent-team use <team>   # select a preset for this session",
+  "/agent-team validate [team]",
+  "/agent-team clear        # unset team",
+  "```",
+  "",
+  "Presets live in either:",
+  "",
+  "```text",
+  ".pi/agent-teams/<name>.json              # project-local",
+  "~/.pi/agent/agent-teams/<name>.json      # global",
+  "```",
+  "",
+  "Example preset:",
+  "",
+  "```json",
+  "{",
+  "  \"name\": \"default\",",
+  "  \"agents\": {",
+  "    \"scout\": {",
+  "      \"model\": \"provider/model-id\",",
+  "      \"thinking\": \"low\"",
+  "    },",
+  "    \"planner\": {",
+  "      \"model\": \"provider/model-id\",",
+  "      \"thinking\": \"medium\"",
+  "    },",
+  "    \"worker\": {",
+  "      \"model\": \"provider/model-id\",",
+  "      \"thinking\": \"medium\"",
+  "    },",
+  "    \"reviewer\": {",
+  "      \"model\": \"provider/model-id\",",
+  "      \"thinking\": \"high\"",
+  "    }",
+  "  }",
+  "}",
+  "```",
+  "",
+  "Allowed thinking values:",
+  "",
+  "```text",
+  "off, minimal, low, medium, high, xhigh",
+  "```",
+  "",
+  "Typical flow:",
+  "",
+  "```text",
+  "/agent-team list",
+  "/agent-team validate default",
+  "/agent-team use default",
+  "/agent-team status",
+  "```",
+  "",
+  "Then when I dispatch subagents, I can use the selected team mapping to choose models for roles like `worker`, `reviewer`, `planner`, or `scout`.",
+].join("\n");
+
 const GLOBAL_AGENT_TEAMS_DIR = join(homedir(), ".pi", "agent", "agent-teams");
 const SAFE_PRESET_NAME = /^[A-Za-z0-9._-]+$/;
 type PresetScope = "project" | "global";
@@ -133,6 +198,11 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
     handler: async (args, ctx) => {
       const tokens = args.trim().split(/\s+/).filter(Boolean);
       const subcommand = tokens[0] ?? "status";
+
+      if (subcommand === "help") {
+        ctx.ui.notify(AGENT_TEAM_HELP_TEXT, "info");
+        return;
+      }
 
       if (subcommand === "status") {
         if (!activeTeamName) {

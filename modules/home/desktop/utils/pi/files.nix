@@ -149,46 +149,53 @@ let
   };
 
   package = pkgs.runCommand "pi-agent-files" { } ''
-        mkdir -p $out/.pi/agent/extensions
-        mkdir -p $out/.pi/agent/agents
-        mkdir -p $out/.pi/agent/skills/linear
-        mkdir -p $out/.pi/agent/skills/commit
-        mkdir -p $out/.pi/agent/skills/frontend-design
-        mkdir -p $out/.pi/agent/skills/github
-        mkdir -p $out/.pi/agent/skills/module-size
-        mkdir -p $out/.pi/agent/node_modules
-        mkdir -p $out/.pi/agent/skills/notion
-        mkdir -p $out/.pi/agent/themes
+    mkdir -p $out/.pi/agent/extensions
+    mkdir -p $out/.pi/agent/agent-teams
+    mkdir -p $out/.pi/agent/agents
+    mkdir -p $out/.pi/agent/skills/linear
+    mkdir -p $out/.pi/agent/skills/commit
+    mkdir -p $out/.pi/agent/skills/frontend-design
+    mkdir -p $out/.pi/agent/skills/github
+    mkdir -p $out/.pi/agent/skills/module-size
+    mkdir -p $out/.pi/agent/node_modules
+    mkdir -p $out/.pi/agent/skills/notion
+    mkdir -p $out/.pi/agent/skills/selecting-subagent-models
+    mkdir -p $out/.pi/agent/themes
 
-        printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON piSettings)} > $out/.pi/agent/settings.json
+    printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON piSettings)} > $out/.pi/agent/settings.json
 
-        cp ${./extensions/filter-output.ts} $out/.pi/agent/extensions/filter-output.ts
-        cp ${./extensions/security.ts} $out/.pi/agent/extensions/security.ts
-        cp ${./extensions/theme-cycler.ts} $out/.pi/agent/extensions/theme-cycler.ts
-        cp ${./extensions/review.ts} $out/.pi/agent/extensions/review.ts
-        cp -r ${./extensions/answer} $out/.pi/agent/extensions/answer
-        cp ${./extensions/btw.ts} $out/.pi/agent/extensions/btw.ts
-        cp ${./extensions/context.ts} $out/.pi/agent/extensions/context.ts
-        cp ${./extensions/control.ts} $out/.pi/agent/extensions/control.ts
-        cp ${./extensions/files.ts} $out/.pi/agent/extensions/files.ts
-        cp ${./extensions/loop.ts} $out/.pi/agent/extensions/loop.ts
-        cp ${./extensions/multi-edit.ts} $out/.pi/agent/extensions/multi-edit.ts
-        cp ${./extensions/notify.ts} $out/.pi/agent/extensions/notify.ts
-        cp ${./extensions/prompt-editor.ts} $out/.pi/agent/extensions/prompt-editor.ts
-        cp ${./extensions/session-breakdown.ts} $out/.pi/agent/extensions/session-breakdown.ts
-        cp ${./extensions/todos.ts} $out/.pi/agent/extensions/todos.ts
+    cp ${./extensions/filter-output.ts} $out/.pi/agent/extensions/filter-output.ts
+    cp ${./extensions/security.ts} $out/.pi/agent/extensions/security.ts
+    cp ${./extensions/theme-cycler.ts} $out/.pi/agent/extensions/theme-cycler.ts
+    cp ${./extensions/review.ts} $out/.pi/agent/extensions/review.ts
+    cp ${./extensions/agent-team.ts} $out/.pi/agent/extensions/agent-team.ts
+    cp -r ${./extensions/answer} $out/.pi/agent/extensions/answer
+    cp ${./extensions/btw.ts} $out/.pi/agent/extensions/btw.ts
+    cp ${./extensions/context.ts} $out/.pi/agent/extensions/context.ts
+    cp ${./extensions/control.ts} $out/.pi/agent/extensions/control.ts
+    cp ${./extensions/files.ts} $out/.pi/agent/extensions/files.ts
+    cp ${./extensions/loop.ts} $out/.pi/agent/extensions/loop.ts
+    cp ${./extensions/multi-edit.ts} $out/.pi/agent/extensions/multi-edit.ts
+    cp ${./extensions/notify.ts} $out/.pi/agent/extensions/notify.ts
+    cp ${./extensions/prompt-editor.ts} $out/.pi/agent/extensions/prompt-editor.ts
+    cp ${./extensions/session-breakdown.ts} $out/.pi/agent/extensions/session-breakdown.ts
+    cp ${./extensions/todos.ts} $out/.pi/agent/extensions/todos.ts
     cp ${./extensions/whimsical.ts} $out/.pi/agent/extensions/whimsical.ts
 
-        cp ${./skills/linear/SKILL.md} $out/.pi/agent/skills/linear/SKILL.md
-        cp ${./skills/commit/SKILL.md} $out/.pi/agent/skills/commit/SKILL.md
-        cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
-        cp ${./skills/github/SKILL.md} $out/.pi/agent/skills/github/SKILL.md
-        cp ${./skills/module-size/SKILL.md} $out/.pi/agent/skills/module-size/SKILL.md
-        cp ${./skills/notion/SKILL.md} $out/.pi/agent/skills/notion/SKILL.md
+    cp -r ${./agent-teams}/. $out/.pi/agent/agent-teams/
+    cp -r ${./agents}/. $out/.pi/agent/agents/
 
-        ln -s ${diffPackage}/lib/node_modules/diff $out/.pi/agent/node_modules/diff
+    cp ${./skills/linear/SKILL.md} $out/.pi/agent/skills/linear/SKILL.md
+    cp ${./skills/commit/SKILL.md} $out/.pi/agent/skills/commit/SKILL.md
+    cp ${./skills/frontend-design/SKILL.md} $out/.pi/agent/skills/frontend-design/SKILL.md
+    cp ${./skills/github/SKILL.md} $out/.pi/agent/skills/github/SKILL.md
+    cp ${./skills/module-size/SKILL.md} $out/.pi/agent/skills/module-size/SKILL.md
+    cp ${./skills/notion/SKILL.md} $out/.pi/agent/skills/notion/SKILL.md
+    cp ${./skills/selecting-subagent-models/SKILL.md} $out/.pi/agent/skills/selecting-subagent-models/SKILL.md
 
-        printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON stylixPiTheme)} > $out/.pi/agent/themes/stylix.json
+    ln -s ${diffPackage}/lib/node_modules/diff $out/.pi/agent/node_modules/diff
+
+    printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON stylixPiTheme)} > $out/.pi/agent/themes/stylix.json
   '';
 in
 {

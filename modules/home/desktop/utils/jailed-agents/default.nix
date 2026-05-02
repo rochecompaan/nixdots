@@ -120,6 +120,8 @@ in
     mkdir -p "$agent_dir"
 
     ln -sfn ${piFiles.package}/.pi/agent/settings.json "$agent_dir/settings.json"
+    ln -sfn ${piFiles.package}/.pi/agent/agent-teams "$agent_dir/agent-teams"
+    ln -sfn ${piFiles.package}/.pi/agent/agents "$agent_dir/agents"
     ln -sfn ${piFiles.package}/.pi/agent/extensions "$agent_dir/extensions"
     ln -sfn ${piFiles.package}/.pi/agent/node_modules "$agent_dir/node_modules"
     ln -sfn ${piFiles.package}/.pi/agent/skills "$agent_dir/skills"

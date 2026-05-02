@@ -18,6 +18,7 @@ in
     ".pi/agent/extensions/review.ts".source = ./extensions/review.ts;
 
     # New extensions
+    ".pi/agent/extensions/agent-team.ts".source = ./extensions/agent-team.ts;
     ".pi/agent/extensions/answer".source = ./extensions/answer;
     ".pi/agent/extensions/btw.ts".source = ./extensions/btw.ts;
     ".pi/agent/extensions/context.ts".source = ./extensions/context.ts;
@@ -32,12 +33,17 @@ in
     ".pi/agent/extensions/session-breakdown.ts".source = ./extensions/session-breakdown.ts;
     ".pi/agent/extensions/todos.ts".source = ./extensions/todos.ts;
 
+    ".pi/agent/agent-teams".source = ./agent-teams;
+    ".pi/agent/agents".source = ./agents;
+
     ".pi/agent/skills/linear/SKILL.md".source = ./skills/linear/SKILL.md;
     ".pi/agent/skills/commit/SKILL.md".source = ./skills/commit/SKILL.md;
     ".pi/agent/skills/frontend-design/SKILL.md".source = ./skills/frontend-design/SKILL.md;
     ".pi/agent/skills/github/SKILL.md".source = ./skills/github/SKILL.md;
     ".pi/agent/skills/module-size/SKILL.md".source = ./skills/module-size/SKILL.md;
     ".pi/agent/skills/notion/SKILL.md".source = ./skills/notion/SKILL.md;
+    ".pi/agent/skills/selecting-subagent-models/SKILL.md".source =
+      ./skills/selecting-subagent-models/SKILL.md;
     ".pi/agent/skills/intervals-time-entries/SKILL.md".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/projects/pi/extensions/pi-intervals/skills/intervals-time-entries/SKILL.md";
 

@@ -3,22 +3,27 @@ let
   # Pi package derivations
   notionCli = import ./notion-cli.nix { inherit pkgs; };
 
-  piListenSrc = pkgs.fetchgit {
-    url = "https://github.com/codexstar69/pi-listen.git";
-    rev = "613ee4d8f55414a955d36d73fe712def72007b96";
-    sha256 = "sha256-u4q7P0sAPirPJ0fleNm1Iq+xEg61RkxGOVpOht2piHY=";
+  piListenSrc = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/@codexstar/pi-listen/-/pi-listen-7.2.2.tgz";
+    hash = "sha256-MbYQiwQMvXkN0dRYdMTTX+4whLjey/yGcke5zq6BRO0=";
   };
 
-  piListen = pkgs.buildNpmPackage {
-    pname = "pi-listen";
-    version = "5.0.7";
-    src = piListenSrc;
-
-    npmDepsHash = "sha256-4CliHDKN26ZEKMmAKHiVTrVqz9NXzgHxTciETuckcNQ=";
-
-    dontNpmPrune = true;
-    dontNpmBuild = true;
+  sherpaOnnxNode = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/sherpa-onnx-node/-/sherpa-onnx-node-1.13.0.tgz";
+    hash = "sha256-YV+px436CmhSDmshUmOLWTaeoqp+miY69TqHJpMwPkA=";
   };
+
+  sherpaOnnxLinuxX64 = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/sherpa-onnx-linux-x64/-/sherpa-onnx-linux-x64-1.13.0.tgz";
+    hash = "sha256-w1SfJmebP8inl1z/sd0qaC1wL/KYDmnzD/NiDCde3gY=";
+  };
+
+  piListen = pkgs.runCommand "pi-listen-7.2.2" { } ''
+    mkdir -p $out/node_modules
+    cp -r ${piListenSrc}/. $out/
+    cp -r ${sherpaOnnxNode} $out/node_modules/sherpa-onnx-node
+    cp -r ${sherpaOnnxLinuxX64} $out/node_modules/sherpa-onnx-linux-x64
+  '';
 
   piSubagentsSrc = pkgs.fetchgit {
     url = "https://github.com/nicobailon/pi-subagents.git";
@@ -57,7 +62,7 @@ let
   piSettings = (builtins.fromJSON (builtins.readFile ./settings.json)) // {
     theme = "stylix";
     packages = [
-      "${piListen}/lib/node_modules/@codexstar/pi-listen"
+      "${piListen}"
       "${piSubagents}/lib/node_modules/pi-subagents"
       "${superpowersSrc}"
     ];

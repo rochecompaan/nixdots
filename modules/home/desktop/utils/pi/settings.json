@@ -19,7 +19,7 @@
     "ttsDeepgramVoiceId": "aura-asteria-en",
     "ttsSpeed": 1,
     "ttsAutoSpeak": true,
-    "autoSubmitOnSpeak": false,
+    "autoSubmitOnSpeak": true,
     "holdThresholdMs": 700,
     "ttsDeepgramStreaming": false,
     "ttsOnboardingShown": false,

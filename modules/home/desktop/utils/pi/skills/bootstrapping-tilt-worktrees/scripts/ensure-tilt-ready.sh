@@ -77,7 +77,7 @@ if ! command -v kubectl >/dev/null 2>&1; then
   exit 1
 fi
 
-if ! tilt --port "$tilt_port" logs --tail=1 >/dev/null 2>&1; then
+if ! tilt --port "$tilt_port" logs >/dev/null 2>&1; then
   cat >&2 <<MSG
 Tilt is required but the configured Tilt instance is not running.
 Configured TILT_PORT=$tilt_port

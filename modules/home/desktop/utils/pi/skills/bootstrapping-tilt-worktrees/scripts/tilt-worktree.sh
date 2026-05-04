@@ -68,13 +68,14 @@ fi
 
 case "$action" in
   up)
+    kubectl create namespace "$namespace" --dry-run=client -o yaml | kubectl apply -f -
     exec tilt up --port "$tilt_port" --namespace "$namespace" "$@"
     ;;
   logs)
     exec tilt --port "$tilt_port" logs "$@"
     ;;
   down)
-    exec tilt down --port "$tilt_port" --namespace "$namespace" "$@"
+    exec tilt down --namespace "$namespace" "$@"
     ;;
   *)
     echo "Unknown action: $action" >&2

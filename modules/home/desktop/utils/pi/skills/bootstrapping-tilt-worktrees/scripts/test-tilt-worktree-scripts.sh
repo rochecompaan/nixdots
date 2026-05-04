@@ -138,8 +138,24 @@ CROPRUN_TILT_NAMESPACE=croprun-poison
 POISON=\$(touch '$tmpdir/poisoned')
 ENV
 
+make_fake_bin kubectl '
+case "$*" in
+  "create namespace croprun-occupied --dry-run=client -o yaml")
+    echo "kubectl $*" >> "$TMPDIR/fake-tilt.args"
+    printf "apiVersion: v1\nkind: Namespace\nmetadata:\n  name: croprun-occupied\n"
+    ;;
+  "apply -f -")
+    cat >/dev/null
+    echo "kubectl $*" >> "$TMPDIR/fake-tilt.args"
+    ;;
+  *)
+    echo "unexpected kubectl args: $*" >&2
+    exit 2
+    ;;
+esac
+'
 make_fake_bin tilt '
-echo "$*" >> "$TMPDIR/fake-tilt.args"
+echo "tilt $*" >> "$TMPDIR/fake-tilt.args"
 exit 0
 '
 (
@@ -148,7 +164,26 @@ exit 0
     TILT_WORKTREE_NAMESPACE_ENV=CROPRUN_TILT_NAMESPACE \
     "$tilt_script" up >/tmp/tilt-worktree-up.out 2>&1
 )
-assert_contains "$tmpdir/fake-tilt.args" "up --port 32101 --namespace croprun-occupied"
+assert_contains "$tmpdir/fake-tilt.args" "kubectl create namespace croprun-occupied --dry-run=client -o yaml"
+assert_contains "$tmpdir/fake-tilt.args" "kubectl apply -f -"
+assert_contains "$tmpdir/fake-tilt.args" "tilt up --port 32101 --namespace croprun-occupied"
+
+rm -f "$tmpdir/fake-tilt.args"
+make_fake_bin tilt '
+if [ "$*" = "down --namespace croprun-occupied" ]; then
+  echo "tilt $*" >> "$TMPDIR/fake-tilt.args"
+  exit 0
+fi
+echo "unexpected tilt args: $*" >&2
+exit 2
+'
+(
+  cd "$tmpdir/occupied"
+  TMPDIR="$tmpdir" PATH="$tmpdir:$PATH" \
+    TILT_WORKTREE_NAMESPACE_ENV=CROPRUN_TILT_NAMESPACE \
+    "$tilt_script" down >/tmp/tilt-worktree-down-action.out 2>&1
+)
+assert_contains "$tmpdir/fake-tilt.args" "tilt down --namespace croprun-occupied"
 
 set +e
 (
@@ -184,6 +219,13 @@ if [ -e "$tmpdir/fake-tilt.args" ]; then
   fail "ensure-tilt-ready invoked tilt with an invalid TILT_PORT"
 fi
 
+make_fake_bin tilt '
+if [ "$1" = "--port" ] && [ "$2" = "32101" ] && [ "$3" = "logs" ]; then
+  exit 0
+fi
+echo "unexpected tilt args: $*" >&2
+exit 2
+'
 (
   cd "$tmpdir/poison"
   TMPDIR="$tmpdir" PATH="$tmpdir:$PATH" \

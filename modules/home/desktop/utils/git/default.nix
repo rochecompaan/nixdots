@@ -17,7 +17,7 @@
 
       settings = {
         user = {
-          email = "roche@sixfeetup.com";
+          email = "roche@upfrontsoftware.co.za";
           name = "Roché Compaan";
         };
         aliases = {

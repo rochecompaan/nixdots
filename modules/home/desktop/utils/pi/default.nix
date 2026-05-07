@@ -19,6 +19,15 @@ in
     ".pi/agent/skills".source = "${piFiles.package}/.pi/agent/skills";
     ".pi/agent/themes/stylix.json".text = builtins.toJSON piFiles.stylixPiTheme;
 
+    ".pi/dashboard/config.json" = {
+      force = true;
+      text = builtins.toJSON {
+        port = 18765;
+        piPort = 18766;
+        tunnel.enabled = false;
+      };
+    };
+
     # Node modules for extensions
     ".pi/agent/node_modules/diff".source = "${piFiles.diffPackage}/lib/node_modules/diff";
   };

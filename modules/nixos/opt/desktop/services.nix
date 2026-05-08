@@ -45,30 +45,22 @@ in
           default_session = {
             command =
               let
-                sessionArgs =
+                sessionCommand =
                   if config.desktop.de == "hyprland" then
-                    [
-                      "--sessions 'Hyprland'"
-                      "--cmd 'hyprland'"
-                    ]
+                    "hyprland"
                   else if config.desktop.de == "niri" then
-                    [
-                      "--sessions 'niri'"
-                      "--cmd 'niri-session'"
-                    ]
+                    "niri-session"
                   else
-                    [ ];
+                    "";
               in
-              lib.concatStringsSep " " (
-                [
-                  (lib.getExe pkgs.greetd.tuigreet)
-                  "--time"
-                  "--remember"
-                  "--remember-user-session"
-                  "--asterisks"
-                ]
-                ++ sessionArgs
-              );
+              lib.escapeShellArgs [
+                (lib.getExe pkgs.tuigreet)
+                "--time"
+                "--remember"
+                "--asterisks"
+                "--cmd"
+                sessionCommand
+              ];
             user = "greeter";
           };
         };

@@ -49,9 +49,12 @@ in
   };
 
   xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijFavs;
-  xdg.configFile."zellij/layouts/left-main-right-stack.kdl".text = ''
+  xdg.configFile."zellij/layouts/roche-stacked.kdl".text = ''
     layout {
       default_tab_template {
+        pane size=1 borderless=true {
+          plugin location="zellij:tab-bar"
+        }
         pane split_direction="vertical" {
           pane
           pane stacked=true {
@@ -390,7 +393,7 @@ in
     // The name of the default layout to load on startup
     // Default: "default"
     //
-    default_layout "left-main-right-stack"
+    default_layout "roche-stacked"
 
     // Choose the mode that zellij uses when starting up.
     // Default: normal

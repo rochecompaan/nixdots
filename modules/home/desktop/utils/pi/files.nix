@@ -230,7 +230,7 @@ let
     packages = [
       "${piListen}"
       "${piSubagents}/lib/node_modules/pi-subagents"
-      "${piAgentDashboard}/lib/node_modules/@blackbelt-technology/pi-agent-dashboard"
+      # "${piAgentDashboard}/lib/node_modules/@blackbelt-technology/pi-agent-dashboard"
       "${superpowersSrc}"
     ];
   };

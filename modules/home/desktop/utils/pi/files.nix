@@ -202,7 +202,9 @@ let
     npmDepsHash = "sha256-KYkTGuQ8MGGbWh5YLIEjuOmSHoAQkDi7LYUbOUncpOw=";
 
     makeCacheWritable = true;
-    npmRebuildFlags = [ "--ignore-scripts" ];
+    # Rebuild only node-pty so the Linux native module exists at runtime;
+    # rebuilding every install script tries to fetch phantomjs from the network.
+    npmRebuildFlags = [ "node-pty" ];
   };
 
   superpowersSrc = pkgs.fetchgit {

@@ -119,6 +119,7 @@ in
     rm -rf "$agent_dir"
     mkdir -p "$agent_dir"
 
+    ln -sfn ${piFiles.package}/.pi/agent/AGENTS.md "$agent_dir/AGENTS.md"
     ln -sfn ${piFiles.package}/.pi/agent/settings.json "$agent_dir/settings.json"
     ln -sfn ${piFiles.package}/.pi/agent/agent-teams "$agent_dir/agent-teams"
     ln -sfn ${piFiles.package}/.pi/agent/agents "$agent_dir/agents"

@@ -255,6 +255,13 @@ let
     ln -s ${config.home.homeDirectory}/projects/pi/extensions/pi-intervals/skills/intervals-time-entries $out/.pi/agent/skills/intervals-time-entries
     ln -s ${diffPackage}/lib/node_modules/diff $out/.pi/agent/node_modules/diff
 
+    cat > $out/.pi/agent/AGENTS.md <<'EOF'
+    ## Plans, specs and designs
+
+    - **Save plans to:** `docs/plans/YYYY-MM-DD-<feature-name>.md`
+    - Write the validated design (spec) to `docs/specs/YYYY-MM-DD-<topic>-design.md`
+    EOF
+
     printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON piSettings)} > $out/.pi/agent/settings.json
     printf '%s' ${pkgs.lib.escapeShellArg (builtins.toJSON stylixPiTheme)} > $out/.pi/agent/themes/stylix.json
   '';

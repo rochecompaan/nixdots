@@ -8,6 +8,11 @@ in
   home.packages = [ piFiles.notionCli ];
 
   home.file = {
+    ".pi/agent/AGENTS.md" = {
+      force = true;
+      source = "${piFiles.package}/.pi/agent/AGENTS.md";
+    };
+
     ".pi/agent/settings.json" = {
       force = true;
       text = builtins.toJSON piFiles.piSettings;

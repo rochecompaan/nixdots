@@ -23,14 +23,16 @@
   # Niri: host-specific output mode, scale, and named workspaces.
   # Append to the main Niri config in a single block to avoid duplicate option definitions.
   xdg.configFile."niri/config.kdl".text = lib.mkAfter ''
-    output "DP-1" {
-      mode "3840x2160@60"
-      scale 2
-    }
-
     output "HDMI-A-1" {
       mode "3840x2160@60"
       scale 2
+      position x=0 y=0
+    }
+
+    output "DP-1" {
+      mode "3840x2160@60"
+      scale 2
+      position x=1920 y=0
     }
 
     // Named persistent workspaces pinned to outputs.

@@ -160,9 +160,9 @@ let
 in
 {
   programs.waybar = {
-    enable = true;
+    enable = lib.mkForce false;
     # Under niri, prefer compositor autostart over systemd to ensure env is set
-    systemd.enable = lib.mkIf (config.default.de == "hyprland") true;
+    systemd.enable = lib.mkForce false;
 
     settings = generateOutputSettings [
       "eDP-1"

@@ -5,6 +5,7 @@
     ./hypridle
     ./hyprpaper
     ./low-battery
+    ./noctalia
     ./notes
     ./streamlinear
     ./swaync

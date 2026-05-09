@@ -33,6 +33,11 @@
     # Zellij plugin for statusbar
     zjstatus.url = "github:dj95/zjstatus";
 
+    noctalia = {
+      url = "github:noctalia-dev/noctalia-shell";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Ags, a customizable and extensible shell
     ags.url = "github:Aylur/ags";
 

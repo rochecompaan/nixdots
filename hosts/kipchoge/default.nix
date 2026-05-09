@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   ...
 }:
@@ -110,14 +109,6 @@
     ];
   };
   services.resolved.enable = true;
-
-  services.duckdns = {
-    enable = true;
-    domains = [
-      "roche"
-    ];
-    tokenFile = config.sops.secrets."duckdns-token".path;
-  };
 
   programs.ziti = {
     enable = true;

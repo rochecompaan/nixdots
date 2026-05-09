@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   inputs,
   ...
@@ -37,14 +36,6 @@
 
   vpn.nordvpn.enable = true;
   vpn.sfu.enable = true;
-
-  services.duckdns = {
-    enable = true;
-    domains = [
-      "rochelaptop"
-    ];
-    tokenFile = config.sops.secrets."duckdns-token".path;
-  };
 
   services.resolved.enable = true;
 

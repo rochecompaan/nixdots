@@ -39,15 +39,6 @@
             "useDistroLogo": false
           },
           {
-            "clockColor": "none",
-            "customFont": "",
-            "formatHorizontal": "HH:mm ddd, MMM dd",
-            "formatVertical": "HH mm - dd MM",
-            "id": "Clock",
-            "tooltipFormat": "HH:mm ddd, MMM dd",
-            "useCustomFont": false
-          },
-          {
             "compactMode": true,
             "diskPath": "/",
             "iconColor": "none",
@@ -110,7 +101,7 @@
             "hideUnoccupied": false,
             "iconScale": 0.8,
             "id": "Workspace",
-            "labelMode": "index",
+            "labelMode": "name",
             "occupiedColor": "secondary",
             "pillSize": 0.6,
             "showApplications": false,
@@ -170,6 +161,15 @@
             "icon": "noctalia",
             "id": "ControlCenter",
             "useDistroLogo": false
+          },
+          {
+            "clockColor": "none",
+            "customFont": "",
+            "formatHorizontal": "HH:mm ddd, MMM dd",
+            "formatVertical": "HH mm - dd MM",
+            "id": "Clock",
+            "tooltipFormat": "HH:mm ddd, MMM dd",
+            "useCustomFont": false
           }
         ]
       },
@@ -730,10 +730,10 @@
       }
     },
     "notificationsState": {
-      "lastSeenTs": 0
+      "lastSeenTs": 1778338352000
     },
     "changelogState": {
-      "lastSeenVersion": ""
+      "lastSeenVersion": "v4.7.7"
     },
     "colorSchemesList": {
       "schemes": [],

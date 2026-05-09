@@ -28,16 +28,19 @@ let
   settings = import ./settings.nix { inherit lib pkgs; };
   style = import ./style.nix { inherit config; };
 in
-{
-  services.swaync = {
-    enable = lib.mkForce false;
-    package = pkgs.swaynotificationcenter;
+lib.mkMerge [
+  {
+    services.swaync = {
+      enable = lib.mkForce false;
+      package = pkgs.swaynotificationcenter;
 
-    inherit settings;
-    inherit (style) style;
-  };
+      inherit settings;
+      inherit (style) style;
+    };
+  }
 
-  systemd.user.services.swaync.Service.Environment = lib.mkIf config.services.swaync.enable (
-    "PATH=/run/wrappers/bin:${lib.makeBinPath dependencies}"
-  );
-}
+  (lib.mkIf config.services.swaync.enable {
+    systemd.user.services.swaync.Service.Environment =
+      "PATH=/run/wrappers/bin:${lib.makeBinPath dependencies}";
+  })
+]

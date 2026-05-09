@@ -13,7 +13,7 @@
         locked-title = "no";
         term = "xterm-256color";
         vertical-letter-offset = "-0.75";
-        pad = "12x21 center";
+        pad = "0x0";
         resize-delay-ms = 100;
         selection-target = "primary";
         bold-text-in-bright = "no";

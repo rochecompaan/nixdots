@@ -15,6 +15,7 @@ in
       [
         android-tools
         copier
+        devenv
         gimp
         keymapp
         libreoffice

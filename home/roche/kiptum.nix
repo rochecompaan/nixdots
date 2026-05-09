@@ -70,4 +70,6 @@
     workspace "10" { open-on-output "eDP-1"; }
   '';
 
+  programs.element-desktop.enable = true;
+
 }

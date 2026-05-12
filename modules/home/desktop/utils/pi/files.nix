@@ -26,6 +26,55 @@ let
     cp -r ${sherpaOnnxLinuxX64} $out/node_modules/sherpa-onnx-linux-x64
   '';
 
+  matrixSdkCryptoNodeFiles = {
+    x86_64-linux = "matrix-sdk-crypto.linux-x64-gnu.node";
+  };
+
+  matrixSdkCryptoNodes = {
+    x86_64-linux = pkgs.fetchurl {
+      url = "https://github.com/matrix-org/matrix-rust-sdk-crypto-nodejs/releases/download/v0.4.0/matrix-sdk-crypto.linux-x64-gnu.node";
+      hash = "sha256-cHjU3ZhxKPea/RksT2IfZK3s435D8qh1bx0KnwNN5xg=";
+    };
+  };
+
+  matrixSdkCryptoNodeFile =
+    matrixSdkCryptoNodeFiles.${pkgs.stdenv.hostPlatform.system}
+      or (throw "Unsupported matrix-sdk-crypto-nodejs platform: ${pkgs.stdenv.hostPlatform.system}");
+
+  matrixSdkCryptoNode =
+    matrixSdkCryptoNodes.${pkgs.stdenv.hostPlatform.system}
+      or (throw "Unsupported matrix-sdk-crypto-nodejs platform: ${pkgs.stdenv.hostPlatform.system}");
+
+  piMessengerBridgePackageLock = pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/tintinweb/pi-messenger-bridge/8b0c1da19c930225b15ec971f9225241a82b381d/package-lock.json";
+    hash = "sha256-6gwABX5hgrLzHWLP/CWefq1F5pwuwlPTNoYi702R8pw=";
+  };
+
+  piMessengerBridgeSrc = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/pi-messenger-bridge/-/pi-messenger-bridge-0.4.0.tgz";
+    hash = "sha256-sbI1Diu0Ii/zU9p5Ar0RnwQJ5hbr3BM1ShNNc85PFqs=";
+  };
+
+  piMessengerBridge = pkgs.buildNpmPackage {
+    pname = "pi-messenger-bridge";
+    version = "0.4.0";
+    src = piMessengerBridgeSrc;
+
+    npmDepsHash = "sha256-iTQy7wkXT86MZCDpPnU7jpwoxroV97w7WyxTqW15ZwI=";
+
+    dontNpmBuild = true;
+    makeCacheWritable = true;
+
+    postPatch = ''
+      cp ${piMessengerBridgePackageLock} package-lock.json
+    '';
+
+    postInstall = ''
+      install -Dm444 ${matrixSdkCryptoNode} \
+        $out/lib/node_modules/pi-messenger-bridge/node_modules/@matrix-org/matrix-sdk-crypto-nodejs/${matrixSdkCryptoNodeFile}
+    '';
+  };
+
   piSubagentsSrc = pkgs.fetchgit {
     url = "https://github.com/nicobailon/pi-subagents.git";
     rev = "0b3f5b4d16557228cf7ce3e2de7b708f94ccf9ac";
@@ -64,6 +113,7 @@ let
     theme = "stylix";
     packages = [
       "${piListen}"
+      "${piMessengerBridge}/lib/node_modules/pi-messenger-bridge"
       "${piRemote}/lib/node_modules/@noahsaso/pi-remote"
       "${piSubagents}/lib/node_modules/pi-subagents"
       "${superpowersSrc}"

@@ -1,5 +1,5 @@
-import { existsSync, readFileSync, readdirSync } from "node:fs";
-import { basename, join } from "node:path";
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { homedir } from "node:os";
 import { Type } from "@sinclair/typebox";
 import type { ExtensionAPI, ExtensionContext } from "@mariozechner/pi-coding-agent";
@@ -19,7 +19,7 @@ interface AgentTeamPreset {
 }
 
 export const AGENT_TEAM_HELP_TEXT = [
-  "/agent-team selects a session-wide subagent model/thinking preset.",
+  "/agent-team selects an active subagent model/thinking preset.",
   "",
   "Commands:",
   "",
@@ -27,9 +27,9 @@ export const AGENT_TEAM_HELP_TEXT = [
   "/agent-team              # same as status",
   "/agent-team status       # show active team",
   "/agent-team list         # list available presets",
-  "/agent-team use <team>   # select a preset for this session",
+  "/agent-team use <team>   # select and persist a preset",
   "/agent-team validate [team]",
-  "/agent-team clear        # unset team",
+  "/agent-team clear        # unset persisted team",
   "```",
   "",
   "Presets live in either:",
@@ -84,8 +84,14 @@ export const AGENT_TEAM_HELP_TEXT = [
 ].join("\n");
 
 const GLOBAL_AGENT_TEAMS_DIR = join(homedir(), ".pi", "agent", "agent-teams");
+const AGENT_SETTINGS_PATH = join(homedir(), ".pi", "agent", "settings.json");
 const SAFE_PRESET_NAME = /^[A-Za-z0-9._-]+$/;
 type PresetScope = "project" | "global";
+
+interface AgentSettings {
+  activeAgentTeam?: unknown;
+  [key: string]: unknown;
+}
 
 function projectAgentTeamsDir(cwd: string): string {
   return join(cwd, ".pi", "agent-teams");
@@ -94,6 +100,37 @@ function projectAgentTeamsDir(cwd: string): string {
 function readJsonFile<T>(path: string): T | undefined {
   if (!existsSync(path)) return undefined;
   return JSON.parse(readFileSync(path, "utf-8")) as T;
+}
+
+function readAgentSettings(): AgentSettings {
+  if (!existsSync(AGENT_SETTINGS_PATH)) return {};
+  const parsed = JSON.parse(readFileSync(AGENT_SETTINGS_PATH, "utf-8")) as unknown;
+  if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
+  return parsed as AgentSettings;
+}
+
+function writeAgentSettings(settings: AgentSettings): void {
+  mkdirSync(dirname(AGENT_SETTINGS_PATH), { recursive: true });
+  const tempPath = `${AGENT_SETTINGS_PATH}.${process.pid}.${Date.now()}.tmp`;
+  writeFileSync(tempPath, `${JSON.stringify(settings, null, 2)}\n`, "utf-8");
+  renameSync(tempPath, AGENT_SETTINGS_PATH);
+}
+
+function readActiveAgentTeamSetting(): string | undefined {
+  const settings = readAgentSettings();
+  return typeof settings.activeAgentTeam === "string" ? settings.activeAgentTeam : undefined;
+}
+
+function writeActiveAgentTeamSetting(teamName: string): void {
+  const settings = readAgentSettings();
+  settings.activeAgentTeam = teamName;
+  writeAgentSettings(settings);
+}
+
+function clearActiveAgentTeamSetting(): void {
+  const settings = readAgentSettings();
+  delete settings.activeAgentTeam;
+  writeAgentSettings(settings);
 }
 
 function presetLocations(name: string, cwd?: string): Array<{ scope: PresetScope; path: string }> {
@@ -179,22 +216,32 @@ function isSafePresetName(name: string): boolean {
   return Boolean(name) && basename(name) === name && !name.includes("/") && !name.includes("\\") && SAFE_PRESET_NAME.test(name);
 }
 
-function resolveActiveTeam(activeTeamName: string | undefined): { source: "session" | "none"; name?: string } {
-  if (activeTeamName) return { source: "session", name: activeTeamName };
+type ActiveTeamSource = "settings" | "session" | "none";
+
+function resolveActiveTeam(
+  activeTeamName: string | undefined,
+  activeTeamSource: ActiveTeamSource,
+): { source: ActiveTeamSource; name?: string } {
+  if (activeTeamName) return { source: activeTeamSource, name: activeTeamName };
   return { source: "none" };
+}
+
+function errorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
 }
 
 export default function agentTeamExtension(pi: ExtensionAPI) {
   let activeTeamName: string | undefined;
+  let activeTeamSource: ActiveTeamSource = "none";
 
   function updateStatus(ctx: ExtensionContext) {
-    const resolved = resolveActiveTeam(activeTeamName);
+    const resolved = resolveActiveTeam(activeTeamName, activeTeamSource);
     const label = resolved.name ? `team:${resolved.name}` : "team:none";
     ctx.ui.setStatus("agent-team", ctx.ui.theme.fg(resolved.name ? "accent" : "dim", label));
   }
 
   pi.registerCommand("agent-team", {
-    description: "Manage session subagent team",
+    description: "Manage active subagent team",
     handler: async (args, ctx) => {
       const tokens = args.trim().split(/\s+/).filter(Boolean);
       const subcommand = tokens[0] ?? "status";
@@ -206,7 +253,7 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
 
       if (subcommand === "status") {
         if (!activeTeamName) {
-          ctx.ui.notify("No session team selected", "info");
+          ctx.ui.notify("No active team selected", "info");
           updateStatus(ctx);
           return;
         }
@@ -215,12 +262,12 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
         if (error) {
           ctx.ui.notify(error, "error");
         } else if (!preset) {
-          ctx.ui.notify(`Session team '${activeTeamName}' no longer exists`, "error");
+          ctx.ui.notify(`Active team '${activeTeamName}' no longer exists`, "error");
         } else {
           const validationErrors = validatePreset(preset);
           if (validationErrors.length > 0) {
             ctx.ui.notify(
-              `Session team '${activeTeamName}' is invalid:\n${validationErrors.map((entry) => `- ${entry}`).join("\n")}`,
+              `Active team '${activeTeamName}' is invalid:\n${validationErrors.map((entry) => `- ${entry}`).join("\n")}`,
               "error",
             );
           } else {
@@ -238,7 +285,7 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
         } else {
           ctx.ui.notify(
             names
-              .map((name) => (name === activeTeamName ? `${name} (session-active)` : name))
+              .map((name) => (name === activeTeamName ? `${name} (active)` : name))
               .join("\n"),
             "info",
           );
@@ -277,9 +324,17 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
           return;
         }
 
+        try {
+          writeActiveAgentTeamSetting(name);
+        } catch (error) {
+          ctx.ui.notify(`Failed to persist active agent team: ${errorMessage(error)}`, "error");
+          return;
+        }
+
         activeTeamName = name;
+        activeTeamSource = "settings";
         pi.appendEntry("agent-team-state", { activeTeamName });
-        ctx.ui.notify(`Selected session team '${name}'`, "info");
+        ctx.ui.notify(`Selected active team '${name}'`, "info");
         updateStatus(ctx);
         return;
       }
@@ -292,7 +347,7 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
 
         const name = tokens[1] ?? activeTeamName;
         if (!name) {
-          ctx.ui.notify("No session team selected", "error");
+          ctx.ui.notify("No active team selected", "error");
           return;
         }
         if (tokens[1] && !isSafePresetName(tokens[1])) {
@@ -344,9 +399,17 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
       }
 
       if (subcommand === "clear") {
+        try {
+          clearActiveAgentTeamSetting();
+        } catch (error) {
+          ctx.ui.notify(`Failed to clear active agent team setting: ${errorMessage(error)}`, "error");
+          return;
+        }
+
         activeTeamName = undefined;
+        activeTeamSource = "none";
         pi.appendEntry("agent-team-state", { activeTeamName: undefined });
-        ctx.ui.notify("Cleared session team selection", "info");
+        ctx.ui.notify("Cleared active team selection", "info");
         updateStatus(ctx);
         return;
       }
@@ -358,18 +421,18 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
   pi.registerTool({
     name: "resolve_agent_team",
     label: "Resolve Agent Team",
-    description: "Resolve the session-selected subagent team model and thinking mappings",
+    description: "Resolve the active subagent team model and thinking mappings",
     parameters: Type.Object({
       role: Type.Optional(Type.String({ description: "Optional role to resolve, such as worker or reviewer" })),
     }),
     async execute(_toolCallId, params, _signal, _onUpdate, ctx) {
-      const resolved = resolveActiveTeam(activeTeamName);
+      const resolved = resolveActiveTeam(activeTeamName, activeTeamSource);
       if (!resolved.name) {
         return {
           content: [
             {
               type: "text",
-              text: "No session team selected; ask the human for a session team or use Pi agent defaults if they decline.",
+              text: "No active team selected; ask the human for an agent team or use Pi agent defaults if they decline.",
             },
           ],
           details: { source: "none" },
@@ -426,15 +489,31 @@ export default function agentTeamExtension(pi: ExtensionAPI) {
 
   pi.on("session_start", async (_event, ctx) => {
     activeTeamName = undefined;
-    const entries = await ctx.sessionManager.getEntries();
-    for (let index = entries.length - 1; index >= 0; index -= 1) {
-      const entry = entries[index];
-      if (entry.type === "custom" && entry.customType === "agent-team-state") {
-        const restoredName = entry.data?.activeTeamName;
-        activeTeamName = typeof restoredName === "string" && isSafePresetName(restoredName) ? restoredName : undefined;
-        break;
+    activeTeamSource = "none";
+
+    try {
+      const settingsTeamName = readActiveAgentTeamSetting();
+      if (settingsTeamName && isSafePresetName(settingsTeamName)) {
+        activeTeamName = settingsTeamName;
+        activeTeamSource = "settings";
+      }
+    } catch (error) {
+      ctx.ui.notify(`Failed to read active agent team setting: ${errorMessage(error)}`, "error");
+    }
+
+    if (!activeTeamName) {
+      const entries = await ctx.sessionManager.getEntries();
+      for (let index = entries.length - 1; index >= 0; index -= 1) {
+        const entry = entries[index];
+        if (entry.type === "custom" && entry.customType === "agent-team-state") {
+          const restoredName = entry.data?.activeTeamName;
+          activeTeamName = typeof restoredName === "string" && isSafePresetName(restoredName) ? restoredName : undefined;
+          activeTeamSource = activeTeamName ? "session" : "none";
+          break;
+        }
       }
     }
+
     updateStatus(ctx);
   });
 }

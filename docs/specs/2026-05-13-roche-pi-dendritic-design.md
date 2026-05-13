@@ -50,6 +50,14 @@ roche-pi/
 
 `flake.nix` should only define inputs and call `inputs.import-tree ./modules` through `flake-parts`.
 
+Initial supported systems should be limited to:
+
+```nix
+systems = [ "x86_64-linux" ];
+```
+
+Broader support for `aarch64-linux`, `x86_64-darwin`, and `aarch64-darwin` should be deferred until the package set is made more configurable and platform-sensitive dependencies are gated per system.
+
 ## Flake Outputs
 
 The extracted repository should expose these first-class outputs:
@@ -256,9 +264,22 @@ Minimum verification for `nixdots` after migration:
 - inspect generated `~/.pi/agent/settings.json` in a build or dry run
 - run Pi and confirm extensions, skills, subagents, and agent teams are discovered
 
+## Platform Scope
+
+The initial extraction should target `x86_64-linux` only. This matches the current `nixdots` flake and avoids prematurely abstracting platform-specific package pins.
+
+Known platform-sensitive components include:
+
+- `pi-listen`, which currently fetches `sherpa-onnx-linux-x64` artifacts.
+- `pi-messenger-bridge`, which currently installs `matrix-sdk-crypto.linux-x64-gnu.node`.
+- jailed Pi integration, which depends on Linux-oriented jail/bubblewrap behavior.
+
+Future portability work should make these features optional or per-platform before adding more systems to the flake.
+
 ## Non-goals
 
 - Do not make the defaults public-minimal; this is intentionally personal-first.
+- Do not support non-`x86_64-linux` systems in the first extraction pass.
 - Do not publish to npm initially; the Nix store path package is the primary distribution mechanism.
 - Do not solve secrets or API key management inside the extracted package.
 - Do not make direct Kubernetes or homelab changes as part of this work.

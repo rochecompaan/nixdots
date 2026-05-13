@@ -1015,38 +1015,38 @@ Expected: signed commit succeeds.
 Write `/home/roche/projects/pi/roche-pi/modules/lib/project-pi.nix`:
 
 ```nix
-{ self, ... }:
+{ ... }:
 {
   perSystem =
-    { pkgs, system, ... }:
+    { pkgs, self', ... }:
     let
-      piConfigPackage = self.packages.${system}.pi-config;
-
-      projectPiShellHook =
+      piConfigPackage = self'.packages.pi-config;
+    in
+    {
+      lib.projectPiShellHook =
         {
           agentTeam ? null,
+          includePackage ? false,
           extraSettings ? { },
         }:
         let
-          settings = {
-            packages = [ "${piConfigPackage}" ];
-          }
-          // pkgs.lib.optionalAttrs (agentTeam != null) {
-            activeAgentTeam = agentTeam;
-          }
-          // extraSettings;
+          settings = pkgs.lib.recursiveUpdate (
+            pkgs.lib.optionalAttrs includePackage {
+              packages = [ "${piConfigPackage}" ];
+            }
+            // pkgs.lib.optionalAttrs (agentTeam != null) {
+              activeAgentTeam = agentTeam;
+            }
+          ) extraSettings;
         in
         ''
           mkdir -p .pi
-          ln -sfn ${piConfigPackage}/agents .pi/agents
-          ln -sfn ${piConfigPackage}/agent-teams .pi/agent-teams
-          cat > .pi/settings.json <<'JSON'
+          ln -sfnT ${piConfigPackage}/agents .pi/agents
+          ln -sfnT ${piConfigPackage}/agent-teams .pi/agent-teams
+          cat > .pi/settings.json <<'EOF'
           ${builtins.toJSON settings}
-          JSON
+          EOF
         '';
-    in
-    {
-      lib.projectPiShellHook = projectPiShellHook;
     };
 }
 ```
@@ -1085,10 +1085,18 @@ Run:
 
 ```bash
 cd /home/roche/projects/pi/roche-pi
-nix develop --command bash -lc 'test -f .pi/settings.json && jq . .pi/settings.json && test -L .pi/agents && test -L .pi/agent-teams'
+nix develop --command bash -lc 'test -f .pi/settings.json && jq . .pi/settings.json && test -L .pi/agents && test -L .pi/agent-teams && ! jq -e ".packages" .pi/settings.json'
 ```
 
-Expected: command succeeds and prints valid JSON containing the `pi-config` package path.
+Expected: command succeeds, prints valid JSON with `activeAgentTeam`, and default settings omit `packages` to avoid duplicate global extension loading.
+
+Run:
+
+```bash
+nix eval .#lib.x86_64-linux.projectPiShellHook --raw --apply 'f: f { includePackage = true; }'
+```
+
+Expected: output shell hook includes JSON with a `packages` array containing the `pi-config` package path.
 
 - [ ] **Step 4: Commit project helper**
 

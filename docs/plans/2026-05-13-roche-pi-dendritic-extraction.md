@@ -350,9 +350,7 @@ pkgs.buildGoModule rec {
   ];
 
   postInstall = ''
-    if [ -e "$out/bin/notion-cli" ]; then
-      mv "$out/bin/notion-cli" "$out/bin/notion"
-    fi
+    mv "$out/bin/notion-cli" "$out/bin/notion"
   '';
 
   meta = {
@@ -683,10 +681,9 @@ Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`:
     { pkgs, self', system, ... }:
     let
       piRemote = self'.packages.pi-remote;
-      notionCli = self'.packages.notion-cli;
       piDeps = import ../../nix/packages/pi-deps.nix { inherit pkgs piRemote; };
-      settingsLib = import ../lib/settings.nix { inherit (pkgs) lib; };
-      themeLib = import ../lib/theme.nix { };
+      settingsLib = import ../../nix/lib/settings.nix { inherit (pkgs) lib; };
+      themeLib = import ../../nix/lib/theme.nix { };
 
       baseSettings = builtins.fromJSON (builtins.readFile ../../resources/settings.json);
 
@@ -756,7 +753,7 @@ Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`:
       packages = {
         default = piConfig;
         pi-config = piConfig;
-        inherit notionCli piRemote;
+        inherit piRemote;
       };
 
       lib = {

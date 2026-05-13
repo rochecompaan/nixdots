@@ -37,7 +37,7 @@
 
 ### Existing repository: `/home/roche/nixdots`
 
-- Modify: `flake.nix` — add temporary local `roche-pi` input.
+- Modify: `flake.nix` — add either a temporary local `path:` `roche-pi` input for validation or the final `github:` input after the new repo is pushed.
 - Modify: `modules/home/desktop/utils/default.nix` — keep `./pi` import for now until replacement is stable, then remove it.
 - Modify: `modules/home/desktop/utils/pi/default.nix` — replace local file wiring with `inputs.roche-pi.homeModules.default` import and `programs.roche-pi` configuration.
 - Modify: `modules/home/desktop/utils/jailed-agents/default.nix` — defer full migration; only update after base Home Manager path verifies.
@@ -1119,15 +1119,15 @@ Expected: signed commit succeeds if there were changes; skip if `git status --sh
 
 ---
 
-## Task 9: Wire `nixdots` to the local extracted flake
+## Task 9: Wire `nixdots` to the extracted flake
 
 **Files:**
 - Modify: `/home/roche/nixdots/flake.nix`
 - Modify: `/home/roche/nixdots/modules/home/desktop/utils/pi/default.nix`
 
-- [ ] **Step 1: Add the `roche-pi` input to `nixdots/flake.nix`**
+- [ ] **Step 1: Choose the `roche-pi` input source**
 
-Add this input near the other personal inputs in `/home/roche/nixdots/flake.nix`:
+For local validation before the new repo is pushed, add this temporary input near the other personal inputs in `/home/roche/nixdots/flake.nix`:
 
 ```nix
     # Personal Pi configuration package
@@ -1136,6 +1136,18 @@ Add this input near the other personal inputs in `/home/roche/nixdots/flake.nix`
       inputs.nixpkgs.follows = "nixpkgs";
     };
 ```
+
+For the final committed integration after the new repo is pushed, prefer:
+
+```nix
+    # Personal Pi configuration package
+    roche-pi = {
+      url = "github:rochecompaan/roche-pi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+```
+
+Do not commit the `github:` form until the remote repository exists and contains the commits being referenced. Use the `path:` form only as an explicit local-validation step.
 
 - [ ] **Step 2: Replace `modules/home/desktop/utils/pi/default.nix`**
 
@@ -1288,7 +1300,7 @@ Create a short note in the final response listing deferred items:
 ```text
 Deferred:
 - migrate jailed Pi to roche-pi.homeModules.jailed-pi
-- convert nixdots roche-pi input from path: to github: after publishing
+- convert nixdots roche-pi input from path: to github: after pushing the new repo
 - add platform gates before enabling non-x86_64-linux systems
 - optionally publish as an npm Pi package
 ```

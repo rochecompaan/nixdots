@@ -4,7 +4,7 @@
 
 **Goal:** Extract `modules/home/desktop/utils/pi` into a personal-first dendritic `roche-pi` flake targeting `x86_64-linux`, then consume it from `nixdots`.
 
-**Architecture:** Create `/home/roche/roche-pi` as a flake-parts + import-tree repository with resource files under `resources/` and output-producing modules under `modules/`. Build a store-backed `pi-config` package, expose Home Manager modules and project shell helpers, then replace the local `nixdots` Pi module with the external module.
+**Architecture:** Create `/home/roche/projects/pi/roche-pi` as a flake-parts + import-tree repository with resource files under `resources/` and output-producing modules under `modules/`. Build a store-backed `pi-config` package, expose Home Manager modules and project shell helpers, then replace the local `nixdots` Pi module with the external module.
 
 **Tech Stack:** Nix flakes, flake-parts, import-tree, Home Manager modules, Pi package manifests, Nix store path package sources, x86_64-linux.
 
@@ -12,7 +12,7 @@
 
 ## File Structure
 
-### New repository: `/home/roche/roche-pi`
+### New repository: `/home/roche/projects/pi/roche-pi`
 
 - Create: `flake.nix` — minimal dendritic entrypoint using `flake-parts` and `import-tree`.
 - Create: `README.md` — usage docs for Home Manager and project/devenv consumers.
@@ -47,26 +47,26 @@
 ## Task 1: Bootstrap the dendritic `roche-pi` repository
 
 **Files:**
-- Create: `/home/roche/roche-pi/flake.nix`
-- Create: `/home/roche/roche-pi/modules/parts.nix`
-- Create: `/home/roche/roche-pi/README.md`
-- Create: `/home/roche/roche-pi/package.json`
+- Create: `/home/roche/projects/pi/roche-pi/flake.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/parts.nix`
+- Create: `/home/roche/projects/pi/roche-pi/README.md`
+- Create: `/home/roche/projects/pi/roche-pi/package.json`
 
 - [ ] **Step 1: Create the repository directory**
 
 Run:
 
 ```bash
-mkdir -p /home/roche/roche-pi/modules
-cd /home/roche/roche-pi
+mkdir -p /home/roche/projects/pi/roche-pi/modules
+cd /home/roche/projects/pi/roche-pi
 git init
 ```
 
-Expected: Git reports an initialized repository at `/home/roche/roche-pi/.git/`.
+Expected: Git reports an initialized repository at `/home/roche/projects/pi/roche-pi/.git/`.
 
 - [ ] **Step 2: Create `flake.nix`**
 
-Write `/home/roche/roche-pi/flake.nix`:
+Write `/home/roche/projects/pi/roche-pi/flake.nix`:
 
 ```nix
 {
@@ -93,7 +93,7 @@ Write `/home/roche/roche-pi/flake.nix`:
 
 - [ ] **Step 3: Create `modules/parts.nix`**
 
-Write `/home/roche/roche-pi/modules/parts.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/parts.nix`:
 
 ```nix
 { inputs, ... }:
@@ -108,7 +108,7 @@ Write `/home/roche/roche-pi/modules/parts.nix`:
 
 - [ ] **Step 4: Create root `package.json`**
 
-Write `/home/roche/roche-pi/package.json`:
+Write `/home/roche/projects/pi/roche-pi/package.json`:
 
 ```json
 {
@@ -127,7 +127,7 @@ Write `/home/roche/roche-pi/package.json`:
 
 - [ ] **Step 5: Create initial `README.md`**
 
-Write `/home/roche/roche-pi/README.md`:
+Write `/home/roche/projects/pi/roche-pi/README.md`:
 
 ```markdown
 # roche-pi
@@ -167,7 +167,7 @@ shellHook = ''
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix flake show
 ```
 
@@ -178,7 +178,7 @@ Expected: command succeeds and shows at least `homeModules`, `packages`, or no o
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add flake.nix modules/parts.nix README.md package.json flake.lock
 git commit -m "feat(flake): bootstrap dendritic pi config"
 ```
@@ -190,12 +190,12 @@ Expected: signed commit succeeds.
 ## Task 2: Copy current Pi resources into the new repo
 
 **Files:**
-- Create/copy: `/home/roche/roche-pi/resources/extensions/**`
-- Create/copy: `/home/roche/roche-pi/resources/skills/**`
-- Create/copy: `/home/roche/roche-pi/resources/agents/**`
-- Create/copy: `/home/roche/roche-pi/resources/agent-teams/**`
-- Create/copy: `/home/roche/roche-pi/resources/settings.json`
-- Create/copy: `/home/roche/roche-pi/resources/pi-remote-package-lock.json`
+- Create/copy: `/home/roche/projects/pi/roche-pi/resources/extensions/**`
+- Create/copy: `/home/roche/projects/pi/roche-pi/resources/skills/**`
+- Create/copy: `/home/roche/projects/pi/roche-pi/resources/agents/**`
+- Create/copy: `/home/roche/projects/pi/roche-pi/resources/agent-teams/**`
+- Create/copy: `/home/roche/projects/pi/roche-pi/resources/settings.json`
+- Create/copy: `/home/roche/projects/pi/roche-pi/resources/pi-remote-package-lock.json`
 
 - [ ] **Step 1: Copy resource directories and files**
 
@@ -203,23 +203,23 @@ Run:
 
 ```bash
 cd /home/roche/nixdots
-mkdir -p /home/roche/roche-pi/resources
-cp -R modules/home/desktop/utils/pi/extensions /home/roche/roche-pi/resources/extensions
-cp -R modules/home/desktop/utils/pi/skills /home/roche/roche-pi/resources/skills
-cp -R modules/home/desktop/utils/pi/agents /home/roche/roche-pi/resources/agents
-cp -R modules/home/desktop/utils/pi/agent-teams /home/roche/roche-pi/resources/agent-teams
-cp modules/home/desktop/utils/pi/settings.json /home/roche/roche-pi/resources/settings.json
-cp modules/home/desktop/utils/pi/pi-remote-package-lock.json /home/roche/roche-pi/resources/pi-remote-package-lock.json
+mkdir -p /home/roche/projects/pi/roche-pi/resources
+cp -R modules/home/desktop/utils/pi/extensions /home/roche/projects/pi/roche-pi/resources/extensions
+cp -R modules/home/desktop/utils/pi/skills /home/roche/projects/pi/roche-pi/resources/skills
+cp -R modules/home/desktop/utils/pi/agents /home/roche/projects/pi/roche-pi/resources/agents
+cp -R modules/home/desktop/utils/pi/agent-teams /home/roche/projects/pi/roche-pi/resources/agent-teams
+cp modules/home/desktop/utils/pi/settings.json /home/roche/projects/pi/roche-pi/resources/settings.json
+cp modules/home/desktop/utils/pi/pi-remote-package-lock.json /home/roche/projects/pi/roche-pi/resources/pi-remote-package-lock.json
 ```
 
-Expected: copied files appear under `/home/roche/roche-pi/resources`.
+Expected: copied files appear under `/home/roche/projects/pi/roche-pi/resources`.
 
 - [ ] **Step 2: Verify expected resource counts**
 
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 find resources/extensions -type f | wc -l
 find resources/skills -type f | wc -l
 find resources/agents -type f | wc -l
@@ -234,7 +234,7 @@ Expected: each `find` count is non-zero, and `jq` exits successfully.
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add resources
 git commit -m "feat(resources): import pi configuration resources"
 ```
@@ -246,13 +246,13 @@ Expected: signed commit succeeds.
 ## Task 3: Extract package dependency derivations
 
 **Files:**
-- Create: `/home/roche/roche-pi/modules/packages/pi-remote.nix`
-- Create: `/home/roche/roche-pi/modules/packages/notion-cli.nix`
-- Create: `/home/roche/roche-pi/modules/packages/pi-deps.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/packages/pi-remote.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/packages/notion-cli.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/packages/pi-deps.nix`
 
 - [ ] **Step 1: Create `modules/packages/pi-remote.nix`**
 
-Write `/home/roche/roche-pi/modules/packages/pi-remote.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-remote.nix`:
 
 ```nix
 { pkgs }:
@@ -291,7 +291,7 @@ pkgs.buildNpmPackage {
 
 - [ ] **Step 2: Create `modules/packages/notion-cli.nix`**
 
-Write `/home/roche/roche-pi/modules/packages/notion-cli.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/packages/notion-cli.nix`:
 
 ```nix
 { pkgs }:
@@ -332,7 +332,7 @@ pkgs.buildGoModule rec {
 
 - [ ] **Step 3: Create `modules/packages/pi-deps.nix`**
 
-Write `/home/roche/roche-pi/modules/packages/pi-deps.nix` by extracting the package dependency definitions from current `modules/home/desktop/utils/pi/files.nix`. It must return an attrset with these names:
+Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-deps.nix` by extracting the package dependency definitions from current `modules/home/desktop/utils/pi/files.nix`. It must return an attrset with these names:
 
 ```nix
 {
@@ -455,7 +455,7 @@ in
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix fmt
 ```
 
@@ -466,7 +466,7 @@ Expected: command succeeds or reports no formatter configured. If no formatter e
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add modules/packages resources/pi-remote-package-lock.json
 git commit -m "feat(packages): extract pi dependency derivations"
 ```
@@ -478,12 +478,12 @@ Expected: signed commit succeeds.
 ## Task 4: Implement settings and theme builders
 
 **Files:**
-- Create: `/home/roche/roche-pi/modules/lib/settings.nix`
-- Create: `/home/roche/roche-pi/modules/lib/theme.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/lib/settings.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/lib/theme.nix`
 
 - [ ] **Step 1: Create `modules/lib/theme.nix`**
 
-Write `/home/roche/roche-pi/modules/lib/theme.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/lib/theme.nix`:
 
 ```nix
 { }:
@@ -578,7 +578,7 @@ Write `/home/roche/roche-pi/modules/lib/theme.nix`:
 
 - [ ] **Step 2: Create `modules/lib/settings.nix`**
 
-Write `/home/roche/roche-pi/modules/lib/settings.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/lib/settings.nix`:
 
 ```nix
 { lib }:
@@ -610,7 +610,7 @@ Write `/home/roche/roche-pi/modules/lib/settings.nix`:
 Run after Task 5 creates flake lib outputs:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix eval .#lib.x86_64-linux --apply 'builtins.attrNames'
 ```
 
@@ -621,7 +621,7 @@ Expected: output includes `mkSettings`, `mkStylixTheme`, and `projectPiShellHook
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add modules/lib/theme.nix modules/lib/settings.nix
 git commit -m "feat(lib): add pi settings and theme builders"
 ```
@@ -633,11 +633,11 @@ Expected: signed commit succeeds.
 ## Task 5: Implement the `pi-config` package output
 
 **Files:**
-- Create: `/home/roche/roche-pi/modules/packages/pi-config.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`
 
 - [ ] **Step 1: Create `modules/packages/pi-config.nix`**
 
-Write `/home/roche/roche-pi/modules/packages/pi-config.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`:
 
 ```nix
 { self, ... }:
@@ -731,7 +731,7 @@ Write `/home/roche/roche-pi/modules/packages/pi-config.nix`:
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix build .#packages.x86_64-linux.pi-config
 ```
 
@@ -742,7 +742,7 @@ Expected: `./result` points to a store path containing `settings.json`, `extensi
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 find result -maxdepth 2 -type f -o -type l | sort | head -80
 jq . result/settings.json >/dev/null
 jq . result/themes/stylix.json >/dev/null
@@ -755,7 +755,7 @@ Expected: `jq` succeeds and the file list includes package resources.
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add modules/packages/pi-config.nix
 git commit -m "feat(packages): build pi config resource package"
 ```
@@ -767,12 +767,12 @@ Expected: signed commit succeeds.
 ## Task 6: Implement the Home Manager module
 
 **Files:**
-- Create: `/home/roche/roche-pi/modules/home/pi.nix`
-- Create: `/home/roche/roche-pi/modules/home/jailed-pi.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/home/pi.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/home/jailed-pi.nix`
 
 - [ ] **Step 1: Create `modules/home/pi.nix`**
 
-Write `/home/roche/roche-pi/modules/home/pi.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/home/pi.nix`:
 
 ```nix
 { self, ... }:
@@ -913,7 +913,7 @@ Write `/home/roche/roche-pi/modules/home/pi.nix`:
 
 - [ ] **Step 2: Create `modules/home/jailed-pi.nix` with an explicit unsupported-enable assertion**
 
-Write `/home/roche/roche-pi/modules/home/jailed-pi.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/home/jailed-pi.nix`:
 
 ```nix
 { ... }:
@@ -943,7 +943,7 @@ Write `/home/roche/roche-pi/modules/home/jailed-pi.nix`:
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix eval .#homeModules --apply 'builtins.attrNames'
 ```
 
@@ -954,7 +954,7 @@ Expected: output contains `default`, `pi`, and `jailed-pi`.
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add modules/home
 git commit -m "feat(home): add roche pi home module"
 ```
@@ -966,12 +966,12 @@ Expected: signed commit succeeds.
 ## Task 7: Implement project/devenv helper and dev shell
 
 **Files:**
-- Create: `/home/roche/roche-pi/modules/lib/project-pi.nix`
-- Create: `/home/roche/roche-pi/modules/devshells/default.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/lib/project-pi.nix`
+- Create: `/home/roche/projects/pi/roche-pi/modules/devshells/default.nix`
 
 - [ ] **Step 1: Create `modules/lib/project-pi.nix`**
 
-Write `/home/roche/roche-pi/modules/lib/project-pi.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/lib/project-pi.nix`:
 
 ```nix
 { self, ... }:
@@ -1012,7 +1012,7 @@ Write `/home/roche/roche-pi/modules/lib/project-pi.nix`:
 
 - [ ] **Step 2: Create `modules/devshells/default.nix`**
 
-Write `/home/roche/roche-pi/modules/devshells/default.nix`:
+Write `/home/roche/projects/pi/roche-pi/modules/devshells/default.nix`:
 
 ```nix
 { inputs, ... }:
@@ -1043,7 +1043,7 @@ Write `/home/roche/roche-pi/modules/devshells/default.nix`:
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix develop --command bash -lc 'test -f .pi/settings.json && jq . .pi/settings.json && test -L .pi/agents && test -L .pi/agent-teams'
 ```
 
@@ -1054,7 +1054,7 @@ Expected: command succeeds and prints valid JSON containing the `pi-config` pack
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git add modules/lib/project-pi.nix modules/devshells/default.nix
 git commit -m "feat(lib): add project pi shell helper"
 ```
@@ -1066,15 +1066,15 @@ Expected: signed commit succeeds.
 ## Task 8: Add checks and verify extracted repo
 
 **Files:**
-- Modify: `/home/roche/roche-pi/modules/packages/pi-config.nix`
-- Modify: `/home/roche/roche-pi/modules/devshells/default.nix`
+- Modify: `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`
+- Modify: `/home/roche/projects/pi/roche-pi/modules/devshells/default.nix`
 
 - [ ] **Step 1: Run formatter**
 
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix fmt
 ```
 
@@ -1085,7 +1085,7 @@ Expected: command succeeds and formats Nix files.
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix build .#packages.x86_64-linux.pi-config
 nix build .#packages.x86_64-linux.pi-remote
 nix build .#packages.x86_64-linux.notion-cli
@@ -1098,7 +1098,7 @@ Expected: all builds succeed.
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix flake check
 ```
 
@@ -1109,7 +1109,7 @@ Expected: command succeeds.
 Run only if files changed:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git status --short
 git add modules
 git commit -m "chore(flake): add verification checks"
@@ -1132,7 +1132,7 @@ Add this input near the other personal inputs in `/home/roche/nixdots/flake.nix`
 ```nix
     # Personal Pi configuration package
     roche-pi = {
-      url = "path:/home/roche/roche-pi";
+      url = "path:/home/roche/projects/pi/roche-pi";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 ```
@@ -1251,7 +1251,7 @@ Expected: skip this commit during the first pass if jailed Pi still needs local 
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 git status --short
 nix flake check
 ```
@@ -1275,7 +1275,7 @@ Expected: `git status --short` is empty and the build succeeds.
 Run:
 
 ```bash
-cd /home/roche/roche-pi
+cd /home/roche/projects/pi/roche-pi
 nix build .#packages.x86_64-linux.pi-config --no-link --print-out-paths | xargs -I{} jq '.packages' {}/settings.json
 ```
 

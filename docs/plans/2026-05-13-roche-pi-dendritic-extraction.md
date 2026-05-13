@@ -76,7 +76,6 @@ Write `/home/roche/projects/pi/roche-pi/flake.nix`:
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
 
     flake-parts.url = "github:hercules-ci/flake-parts";
-    flake-parts.inputs.nixpkgs.follows = "nixpkgs";
 
     import-tree.url = "github:vic/import-tree";
 
@@ -135,6 +134,8 @@ Write `/home/roche/projects/pi/roche-pi/README.md`:
 Personal-first Pi configuration packaged as a dendritic Nix flake.
 
 Initial platform support is `x86_64-linux` only.
+
+The examples below are valid once the Home Manager module and project helper modules are implemented in later tasks.
 
 ## Home Manager usage
 

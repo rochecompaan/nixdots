@@ -34,6 +34,7 @@
 - Copy: `resources/agent-teams/**` from `nixdots/modules/home/desktop/utils/pi/agent-teams/**`.
 - Copy: `resources/settings.json` from `nixdots/modules/home/desktop/utils/pi/settings.json`.
 - Copy: `resources/pi-remote-package-lock.json` from `nixdots/modules/home/desktop/utils/pi/pi-remote-package-lock.json`.
+- Create: root symlinks `extensions`, `skills`, `agents`, `agent-teams`, and `themes` to their matching `resources/*` directories for local development convenience.
 
 ### Existing repository: `/home/roche/nixdots`
 
@@ -117,9 +118,9 @@ Write `/home/roche/projects/pi/roche-pi/package.json`:
   "description": "Roché Compaan's personal Pi extensions, skills, agents, themes, and Nix packaging",
   "keywords": ["pi-package"],
   "pi": {
-    "extensions": ["./extensions"],
-    "skills": ["./skills"],
-    "themes": ["./themes"]
+    "extensions": ["./resources/extensions"],
+    "skills": ["./resources/skills"],
+    "themes": ["./resources/themes"]
   }
 }
 ```
@@ -197,6 +198,8 @@ Expected: signed commit succeeds.
 - Create/copy: `/home/roche/projects/pi/roche-pi/resources/agent-teams/**`
 - Create/copy: `/home/roche/projects/pi/roche-pi/resources/settings.json`
 - Create/copy: `/home/roche/projects/pi/roche-pi/resources/pi-remote-package-lock.json`
+- Create: `/home/roche/projects/pi/roche-pi/resources/themes/.gitkeep`
+- Create: root symlinks `/home/roche/projects/pi/roche-pi/{extensions,skills,agents,agent-teams,themes}`
 
 - [ ] **Step 1: Copy resource directories and files**
 
@@ -230,13 +233,35 @@ jq . resources/settings.json >/dev/null
 
 Expected: each `find` count is non-zero, and `jq` exits successfully.
 
-- [ ] **Step 3: Commit resource import**
+- [ ] **Step 3: Add package-facing resource targets**
 
 Run:
 
 ```bash
 cd /home/roche/projects/pi/roche-pi
-git add resources
+mkdir -p resources/themes
+: > resources/themes/.gitkeep
+rm -rf resources/extensions/.pi resources/extensions/nobody-plans-for-pi
+ln -sfn resources/extensions extensions
+ln -sfn resources/skills skills
+ln -sfn resources/agents agents
+ln -sfn resources/agent-teams agent-teams
+ln -sfn resources/themes themes
+cat > .npmignore <<'EOF'
+resources/extensions/**/*.test.ts
+extensions/**/*.test.ts
+EOF
+```
+
+Expected: root symlinks exist, `resources/themes/.gitkeep` is tracked, and extension tests are excluded from npm package payload.
+
+- [ ] **Step 4: Commit resource import**
+
+Run:
+
+```bash
+cd /home/roche/projects/pi/roche-pi
+git add .npmignore package.json resources extensions skills agents agent-teams themes
 git commit -m "feat(resources): import pi configuration resources"
 ```
 
@@ -683,19 +708,26 @@ Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`:
 
       piConfig = pkgs.runCommand "roche-pi-config" { } ''
         mkdir -p \
-          $out/extensions \
-          $out/skills \
-          $out/themes \
-          $out/agents \
-          $out/agent-teams \
+          $out/resources/extensions \
+          $out/resources/skills \
+          $out/resources/themes \
+          $out/resources/agents \
+          $out/resources/agent-teams \
           $out/node_modules
 
         cp ${../../package.json} $out/package.json
-        cp -r ${../../resources/extensions}/. $out/extensions/
-        cp -r ${../../resources/skills}/. $out/skills/
-        cp -r ${../../resources/agents}/. $out/agents/
-        cp -r ${../../resources/agent-teams}/. $out/agent-teams/
+        cp ${../../.npmignore} $out/.npmignore
+        cp -r ${../../resources/extensions}/. $out/resources/extensions/
+        cp -r ${../../resources/skills}/. $out/resources/skills/
+        cp -r ${../../resources/agents}/. $out/resources/agents/
+        cp -r ${../../resources/agent-teams}/. $out/resources/agent-teams/
+        cp -r ${../../resources/themes}/. $out/resources/themes/
 
+        ln -s resources/extensions $out/extensions
+        ln -s resources/skills $out/skills
+        ln -s resources/agents $out/agents
+        ln -s resources/agent-teams $out/agent-teams
+        ln -s resources/themes $out/themes
         ln -s ${piDeps.diffPackage}/lib/node_modules/diff $out/node_modules/diff
 
         cat > $out/AGENTS.md <<'EOF'

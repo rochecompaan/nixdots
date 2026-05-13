@@ -19,9 +19,12 @@
 - Create: `package.json` — Pi package manifest for `extensions`, `skills`, and `themes`.
 - Create: `modules/parts.nix` — x86_64-linux systems and flake-parts imports.
 - Create: `modules/packages/pi-config.nix` — packages `pi-config` and `default`.
-- Create: `modules/packages/pi-deps.nix` — Nix-built Pi package dependencies copied from current `files.nix`.
-- Create: `modules/packages/pi-remote.nix` — extracted `@noahsaso/pi-remote` derivation.
-- Create: `modules/packages/notion-cli.nix` — extracted Notion CLI derivation.
+- Create: `modules/packages/pi-deps.nix` — flake-parts module exporting Nix-built Pi dependency packages.
+- Create: `nix/packages/pi-remote.nix` — extracted `@noahsaso/pi-remote` derivation.
+- Create: `nix/packages/notion-cli.nix` — extracted Notion CLI derivation.
+- Create: `nix/packages/pi-deps.nix` — helper attrset copied from current `files.nix`.
+- Create: `modules/packages/pi-remote.nix` — flake-parts module exporting `packages.pi-remote`.
+- Create: `modules/packages/notion-cli.nix` — flake-parts module exporting `packages.notion-cli`.
 - Create: `modules/home/pi.nix` — `programs.roche-pi` Home Manager module and `homeModules.default` export.
 - Create: `modules/home/jailed-pi.nix` — optional placeholder/export for future jailed migration, initially disabled by default.
 - Create: `modules/lib/settings.nix` — pure settings builder.
@@ -275,6 +278,9 @@ Expected: signed commit succeeds.
 - Create: `/home/roche/projects/pi/roche-pi/modules/packages/pi-remote.nix`
 - Create: `/home/roche/projects/pi/roche-pi/modules/packages/notion-cli.nix`
 - Create: `/home/roche/projects/pi/roche-pi/modules/packages/pi-deps.nix`
+- Create: `/home/roche/projects/pi/roche-pi/nix/packages/pi-remote.nix`
+- Create: `/home/roche/projects/pi/roche-pi/nix/packages/notion-cli.nix`
+- Create: `/home/roche/projects/pi/roche-pi/nix/packages/pi-deps.nix`
 
 - [ ] **Step 1: Create `modules/packages/pi-remote.nix`**
 
@@ -669,11 +675,11 @@ Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`:
 { self, ... }:
 {
   perSystem =
-    { pkgs, system, ... }:
+    { pkgs, self', system, ... }:
     let
-      piRemote = import ./pi-remote.nix { inherit pkgs; };
-      notionCli = import ./notion-cli.nix { inherit pkgs; };
-      piDeps = import ./pi-deps.nix { inherit pkgs piRemote; };
+      piRemote = self'.packages.pi-remote;
+      notionCli = self'.packages.notion-cli;
+      piDeps = import ../../nix/packages/pi-deps.nix { inherit pkgs piRemote; };
       settingsLib = import ../lib/settings.nix { inherit (pkgs) lib; };
       themeLib = import ../lib/theme.nix { };
 
@@ -728,7 +734,7 @@ Write `/home/roche/projects/pi/roche-pi/modules/packages/pi-config.nix`:
         ln -s resources/agents $out/agents
         ln -s resources/agent-teams $out/agent-teams
         ln -s resources/themes $out/themes
-        ln -s ${piDeps.diffPackage}/lib/node_modules/diff $out/node_modules/diff
+        ln -s ${piDeps.nodeModulePaths.diff} $out/node_modules/diff
 
         cat > $out/AGENTS.md <<'EOF'
         ## Plans, specs and designs

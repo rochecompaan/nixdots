@@ -27,8 +27,10 @@
 - Create: `modules/packages/notion-cli.nix` — flake-parts module exporting `packages.notion-cli`.
 - Create: `modules/home/pi.nix` — `programs.roche-pi` Home Manager module and `homeModules.default` export.
 - Create: `modules/home/jailed-pi.nix` — optional placeholder/export for future jailed migration, initially disabled by default.
-- Create: `modules/lib/settings.nix` — pure settings builder.
-- Create: `modules/lib/theme.nix` — pure Pi theme builder from Base16 colors.
+- Create: `modules/lib/settings.nix` — flake-parts wrapper exposing the settings builder.
+- Create: `modules/lib/theme.nix` — flake-parts wrapper exposing the Pi theme builder.
+- Create: `nix/lib/settings.nix` — pure settings builder.
+- Create: `nix/lib/theme.nix` — pure Pi theme builder from Base16 colors.
 - Create: `modules/lib/project-pi.nix` — `projectPiShellHook` builder.
 - Create: `modules/devshells/default.nix` — a validation shell with `pi`, `jq`, `nixfmt-rfc-style`, and `git`.
 - Copy: `resources/extensions/**` from `nixdots/modules/home/desktop/utils/pi/extensions/**`.
@@ -512,6 +514,8 @@ Expected: signed commit succeeds.
 **Files:**
 - Create: `/home/roche/projects/pi/roche-pi/modules/lib/settings.nix`
 - Create: `/home/roche/projects/pi/roche-pi/modules/lib/theme.nix`
+- Create: `/home/roche/projects/pi/roche-pi/nix/lib/settings.nix`
+- Create: `/home/roche/projects/pi/roche-pi/nix/lib/theme.nix`
 
 - [ ] **Step 1: Create `modules/lib/theme.nix`**
 
@@ -628,12 +632,13 @@ Write `/home/roche/projects/pi/roche-pi/modules/lib/settings.nix`:
     let
       intervalPackages = lib.optionals (intervalsPackagePath != null) [ intervalsPackagePath ];
     in
-    baseSettings
-    // {
-      inherit theme;
-      packages = packagePaths ++ intervalPackages ++ extraPackages;
-    }
-    // settingsOverrides;
+    let
+      generatedSettings = baseSettings // {
+        inherit theme;
+        packages = packagePaths ++ intervalPackages ++ extraPackages;
+      };
+    in
+    lib.recursiveUpdate generatedSettings settingsOverrides;
 }
 ```
 

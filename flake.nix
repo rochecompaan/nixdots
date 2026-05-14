@@ -67,6 +67,9 @@
     # Personal Pi configuration package
     roche-pi = {
       url = "path:/home/roche/projects/pi/roche-pi";
+      inputs.flake-parts.follows = "flake-parts";
+      inputs.home-manager.follows = "hm";
+      inputs.llm-agents.follows = "llm-agents";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

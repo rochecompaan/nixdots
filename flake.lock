@@ -1878,14 +1878,17 @@
         ]
       },
       "locked": {
-        "lastModified": 1778720583,
-        "narHash": "sha256-PRyqyjAI5+jDUOtAepo46RQ+Hi2N6ZYSoUQQTHLou/4=",
-        "path": "/home/roche/projects/pi/roche-pi",
-        "type": "path"
+        "lastModified": 1778724881,
+        "narHash": "sha256-1zEF6G5ufcJcdc8pWfjolCKegIuKzMQgRfz/IFLRPYg=",
+        "ref": "refs/heads/main",
+        "rev": "40a0e9d2311d50b505c33a9d0f24edcf7e9bbf30",
+        "revCount": 23,
+        "type": "git",
+        "url": "ssh://git@git.compaan/roche/pi-config.git"
       },
       "original": {
-        "path": "/home/roche/projects/pi/roche-pi",
-        "type": "path"
+        "type": "git",
+        "url": "ssh://git@git.compaan/roche/pi-config.git"
       }
     },
     "root": {

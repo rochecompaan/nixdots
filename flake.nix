@@ -66,7 +66,7 @@
 
     # Personal Pi configuration package
     roche-pi = {
-      url = "path:/home/roche/projects/pi/roche-pi";
+      url = "git+ssh://git@git.compaan/roche/pi-config.git";
       inputs.flake-parts.follows = "flake-parts";
       inputs.home-manager.follows = "hm";
       inputs.llm-agents.follows = "llm-agents";

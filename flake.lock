@@ -1878,8 +1878,8 @@
         ]
       },
       "locked": {
-        "lastModified": 1778719354,
-        "narHash": "sha256-+NiNG7D89bmuIcmhC6rjWBTLiexzYQQAyjfCbmfLhdE=",
+        "lastModified": 1778720583,
+        "narHash": "sha256-PRyqyjAI5+jDUOtAepo46RQ+Hi2N6ZYSoUQQTHLou/4=",
         "path": "/home/roche/projects/pi/roche-pi",
         "type": "path"
       },

@@ -1870,6 +1870,9 @@
           "hm"
         ],
         "import-tree": "import-tree",
+        "jail-nix": [
+          "jail-nix"
+        ],
         "llm-agents": [
           "llm-agents"
         ],
@@ -1878,11 +1881,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1778724881,
-        "narHash": "sha256-1zEF6G5ufcJcdc8pWfjolCKegIuKzMQgRfz/IFLRPYg=",
+        "lastModified": 1778742554,
+        "narHash": "sha256-4kQNh2UTx3cbUIrp9P1KXmBOiWz62059kS5Ap8oKIUQ=",
         "ref": "refs/heads/main",
-        "rev": "40a0e9d2311d50b505c33a9d0f24edcf7e9bbf30",
-        "revCount": 23,
+        "rev": "c1e2dcad894c8f12d375edcd0451dc291a85c4a6",
+        "revCount": 30,
         "type": "git",
         "url": "ssh://git@git.compaan/roche/pi-config.git"
       },

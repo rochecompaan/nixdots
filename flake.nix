@@ -64,6 +64,12 @@
     # My personal nixvim config
     nixvim.url = "github:rochecompaan/nixvim";
 
+    # Personal Pi configuration package
+    roche-pi = {
+      url = "path:/home/roche/projects/pi/roche-pi";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # OpenZiti packages + modules
     openziti-nix = {
       url = "github:rochecompaan/openziti-nix";

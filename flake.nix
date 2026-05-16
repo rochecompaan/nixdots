@@ -55,12 +55,6 @@
     # Hyprpaper, wallpaper manager for hyprland
     hyprpaper.url = "github:hyprwm/hyprpaper";
 
-    # Numtide LLM agent packages
-    llm-agents.url = "github:numtide/llm-agents.nix";
-
-    # Bubblewrap jail library for restricted agent wrappers
-    jail-nix.url = "sourcehut:~alexdavid/jail.nix";
-
     # My personal nixvim config
     nixvim.url = "github:rochecompaan/nixvim";
 
@@ -69,8 +63,6 @@
       url = "git+ssh://git@git.compaan/roche/pi-config.git";
       inputs.flake-parts.follows = "flake-parts";
       inputs.home-manager.follows = "hm";
-      inputs.jail-nix.follows = "jail-nix";
-      inputs.llm-agents.follows = "llm-agents";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 

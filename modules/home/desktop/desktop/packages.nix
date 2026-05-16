@@ -1,6 +1,5 @@
 {
   config,
-  inputs,
   lib,
   pkgs,
   ...
@@ -10,39 +9,33 @@ let
 in
 {
   config = mkIf config.default.isDesktop {
-    home.packages =
-      with pkgs;
-      [
-        android-tools
-        copier
-        devenv
-        gimp
-        keymapp
-        libreoffice
-        nextcloud-client
-        obs-studio
-        platformio
-        playwright-test
-        playwright-mcp
-        qbittorrent-cli
-        qbittorrent-enhanced
-        scrcpy
-        signal-desktop
-        ssh-to-age
-        tea
-        timewarrior
-        transmission_4
-        vesktop
-        vlc
-        wdisplays
-        wlprop
-        xorg.xprop
-        yazi
-        ydotool
-      ]
-      ++ (with inputs.llm-agents.packages.${pkgs.system}; [
-        pi
-      ]);
-
+    home.packages = with pkgs; [
+      android-tools
+      copier
+      devenv
+      gimp
+      keymapp
+      libreoffice
+      nextcloud-client
+      obs-studio
+      platformio
+      playwright-test
+      playwright-mcp
+      qbittorrent-cli
+      qbittorrent-enhanced
+      scrcpy
+      signal-desktop
+      ssh-to-age
+      tea
+      timewarrior
+      transmission_4
+      vesktop
+      vlc
+      wdisplays
+      wlprop
+      xorg.xprop
+      yazi
+      ydotool
+    ];
   };
 }

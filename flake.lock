@@ -1400,10 +1400,10 @@
     },
     "nix-secrets": {
       "locked": {
-        "lastModified": 1775873866,
-        "narHash": "sha256-X+64o23IdTaA9uFWmgzEuWRA6yQmmICsAge4RSt1Wos=",
+        "lastModified": 1778969635,
+        "narHash": "sha256-BCJz+SHsrkF3MJ5n5besgt8LaJz8tZj2LogQjwsm0Vk=",
         "ref": "main",
-        "rev": "cf5db61c47fe06ccfb94b9de18b5a94e5cf92636",
+        "rev": "68c376d32fb2d8658a9d37e471be0ef91af3bad2",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/rochecompaan/nix-secrets.git"

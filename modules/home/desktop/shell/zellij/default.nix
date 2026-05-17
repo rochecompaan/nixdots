@@ -32,10 +32,7 @@ let
     	zellij attach -c "$SESSION_TITLE"
     fi
   '';
-  zellijFavs = pkgs.fetchurl {
-    url = "https://github.com/JoseMM2002/zellij-favs/releases/download/v1.0.4/zellij-favs.wasm";
-    hash = "sha256-Bc4nsAbPIdbI5xqPC2bnTSqV8Jzf6EDKNTFbRqXq92Y=";
-  };
+  zellijPlugins = import ./plugins.nix { inherit pkgs; };
 in
 {
   home.packages = [
@@ -48,7 +45,9 @@ in
     enableZshIntegration = false;
   };
 
-  xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijFavs;
+  xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijPlugins.favs;
+  xdg.configFile."zellij/plugins/harpoon.wasm".source =
+    zellijPlugins.harpoon + "/share/zellij/plugins/harpoon.wasm";
   xdg.configFile."zellij/layouts/roche-stacked.kdl".text = ''
     layout {
       default_tab_template {
@@ -227,6 +226,13 @@ in
               floating true
               display_tab_panes true
               cache_dir "${config.xdg.stateHome}/zellij-favs"
+            };
+            SwitchToMode "Normal"
+        }
+        bind "Ctrl y" {
+            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/harpoon.wasm" {
+              floating true
+              move_to_focused_tab true
             };
             SwitchToMode "Normal"
         }

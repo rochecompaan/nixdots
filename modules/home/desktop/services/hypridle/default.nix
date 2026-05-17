@@ -1,24 +1,12 @@
-{ config, ... }:
-let
-  monitorPowerOffCommand =
-    if config.default.de == "niri" then
-      "niri msg action power-off-monitors"
-    else
-      "hyprctl dispatch dpms off";
-  monitorPowerOnCommand =
-    if config.default.de == "niri" then
-      "niri msg action power-on-monitors"
-    else
-      "hyprctl dispatch dpms on";
-in
+{ config, lib, ... }:
 {
-  services.hypridle = {
+  services.hypridle = lib.mkIf (config.default.de == "hyprland") {
     enable = true;
     settings = {
       general = {
         lock_cmd = "pidof hyprlock || hyprlock";
         before_sleep_cmd = "loginctl lock-session";
-        after_sleep_cmd = monitorPowerOnCommand;
+        after_sleep_cmd = "hyprctl dispatch dpms on";
       };
 
       listener = [
@@ -33,8 +21,8 @@ in
         }
         {
           timeout = 1800;
-          on-timeout = monitorPowerOffCommand;
-          on-resume = monitorPowerOnCommand;
+          on-timeout = "hyprctl dispatch dpms off";
+          on-resume = "hyprctl dispatch dpms on";
         }
       ];
     };

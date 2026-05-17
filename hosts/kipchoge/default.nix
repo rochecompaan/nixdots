@@ -1,6 +1,7 @@
 {
   config,
   inputs,
+  lib,
   pkgs,
   ...
 }:
@@ -109,7 +110,6 @@
   systemd.tmpfiles.rules = [
     "d /home/roche/mnt 0755 roche users - -"
     "d /home/roche/mnt/copyparty 0755 roche users - -"
-    "d /home/roche/.cache/rclone/copyparty 0700 roche users - -"
   ];
 
   systemd.services.rclone-copyparty = {
@@ -117,7 +117,7 @@
     after = [ "network-online.target" ];
     wants = [ "network-online.target" ];
     wantedBy = [ "multi-user.target" ];
-    path = [ pkgs.fuse3 ];
+    environment.PATH = lib.mkForce "/run/wrappers/bin:${lib.makeBinPath [ pkgs.fuse3 ]}";
 
     script = ''
       password="$(${pkgs.coreutils}/bin/cat ${config.sops.secrets.copyparty.path})"
@@ -138,17 +138,19 @@
         --config "$RUNTIME_DIRECTORY/rclone.conf" \
         --vfs-cache-mode writes \
         --dir-cache-time 5s \
-        --cache-dir /home/roche/.cache/rclone/copyparty
+        --cache-dir "$CACHE_DIRECTORY"
     '';
 
     serviceConfig = {
       User = "roche";
       Group = "users";
+      CacheDirectory = "rclone-copyparty";
+      CacheDirectoryMode = "0700";
       RuntimeDirectory = "rclone-copyparty";
       RuntimeDirectoryMode = "0700";
       Restart = "on-failure";
       RestartSec = "10s";
-      ExecStop = "${pkgs.fuse3}/bin/fusermount3 -u /home/roche/mnt/copyparty";
+      ExecStop = "/run/wrappers/bin/fusermount3 -u /home/roche/mnt/copyparty";
     };
   };
 

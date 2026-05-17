@@ -1,5 +1,4 @@
 {
-  config,
   pkgs,
   ...
 }:
@@ -32,7 +31,6 @@ let
     	zellij attach -c "$SESSION_TITLE"
     fi
   '';
-  zellijPlugins = import ./plugins.nix { inherit pkgs; };
 in
 {
   home.packages = [
@@ -45,9 +43,6 @@ in
     enableZshIntegration = false;
   };
 
-  xdg.configFile."zellij/plugins/zellij-favs.wasm".source = zellijPlugins.favs;
-  xdg.configFile."zellij/plugins/harpoon.wasm".source =
-    zellijPlugins.harpoon + "/share/zellij/plugins/harpoon.wasm";
   xdg.configFile."zellij/layouts/roche-stacked.kdl".text = ''
     layout {
       default_tab_template {
@@ -221,21 +216,6 @@ in
       shared_except "locked" {
         bind "Ctrl l" { SwitchToMode "Locked"; }
         bind "Alt n" { NewPane; }
-        bind "Alt f" {
-            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/zellij-favs.wasm" {
-              floating true
-              display_tab_panes true
-              cache_dir "${config.xdg.stateHome}/zellij-favs"
-            };
-            SwitchToMode "Normal"
-        }
-        bind "Ctrl y" {
-            LaunchOrFocusPlugin "file:~/.config/zellij/plugins/harpoon.wasm" {
-              floating true
-              move_to_focused_tab true
-            };
-            SwitchToMode "Normal"
-        }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
         bind "Alt j" "Alt Down" { MoveFocus "Down"; }

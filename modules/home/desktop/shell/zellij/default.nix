@@ -31,6 +31,44 @@ let
       value.source = session.layout;
     }) declarativeSessions
   );
+  firstDeclarativeSession = (builtins.head declarativeSessions).name;
+  createDeclarativeSessionCommands = pkgs.lib.concatMapStringsSep "\n" (session: ''
+    create_session ${pkgs.lib.escapeShellArg session.name} ${pkgs.lib.escapeShellArg "${config.xdg.configHome}/zellij/layouts/sessions/${session.name}.kdl"}
+  '') declarativeSessions;
+  zellijStartSessions = pkgs.writeShellApplication {
+    name = "zellij-start-sessions";
+    runtimeInputs = [
+      pkgs.gnugrep
+      pkgs.gnused
+      pkgs.zellij
+    ];
+    text = ''
+      session_exists() {
+        zellij list-sessions -n 2>/dev/null | sed 's/ \[Created.*//' | grep -Fxq "$1"
+      }
+
+      create_session() {
+        name="$1"
+        layout="$2"
+
+        if session_exists "$name"; then
+          echo "zellij-start-sessions: skipping existing session '$name'"
+          return 0
+        fi
+
+        echo "zellij-start-sessions: creating session '$name' from $layout"
+        zellij --session "$name" --new-session-with-layout "$layout" attach --create-background "$name"
+      }
+
+      ${createDeclarativeSessionCommands}
+
+      if [ -n "''${ZELLIJ:-}" ]; then
+        zellij action switch-session ${pkgs.lib.escapeShellArg firstDeclarativeSession}
+      else
+        exec zellij attach ${pkgs.lib.escapeShellArg firstDeclarativeSession}
+      fi
+    '';
+  };
 
   sesh = pkgs.writeScriptBin "sesh" ''
     #! /usr/bin/env sh
@@ -65,6 +103,7 @@ in
   home.packages = [
     pkgs.tmate
     sesh
+    zellijStartSessions
   ];
 
   programs.zellij = {

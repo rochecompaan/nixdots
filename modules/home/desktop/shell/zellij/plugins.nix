@@ -26,8 +26,7 @@ let
       '';
 
   rustPlatform = pkgs.makeRustPlatform {
-    cargo = pkgs.rust.packages.prebuilt.cargo;
-    rustc = pkgs.rust.packages.prebuilt.rustc;
+    inherit (pkgs.rust.packages.prebuilt) cargo rustc;
   };
 in
 {

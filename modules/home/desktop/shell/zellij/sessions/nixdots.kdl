@@ -1,0 +1,11 @@
+layout {
+  tab name="nixdots" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/nixdots" command="nvim"
+      pane split_direction="horizontal" {
+        pane cwd="/home/roche/nixdots" command="lazygit"
+        pane cwd="/home/roche/nixdots"
+      }
+    }
+  }
+}

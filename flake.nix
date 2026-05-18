@@ -98,6 +98,7 @@
       imports = [
         ./hosts
         ./home
+        ./modules/packages/streamlinear.nix
         ./pre-commit-hooks.nix
       ];
 

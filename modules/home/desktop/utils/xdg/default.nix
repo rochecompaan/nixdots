@@ -7,6 +7,7 @@
 let
   browser = [ "firefox" ];
   chromium = lib.getExe pkgs.chromium;
+  # firefox = lib.getExe pkgs.firefox;
   imageViewer = [ "org.gnome.Loupe" ];
   videoPlayer = [ "io.github.celluloid_player.Celluloid" ];
   audioPlayer = [ "io.bassi.Amberol" ];
@@ -183,29 +184,29 @@ in
       };
     };
     desktopEntries = {
-      zoom = {
-        name = "Zoom";
-        exec = "${chromium} --app=https://app.zoom.us";
-        icon = "Zoom";
-        type = "Application";
-        terminal = false;
-        mimeType = [
-          "x-scheme-handler/zoommtg"
-          "x-scheme-handler/zoomus"
-          "x-scheme-handler/tel"
-          "x-scheme-handler/callto"
-          "x-scheme-handler/zoomphonecall"
-        ];
-        categories = [
-          "Network"
-          "InstantMessaging"
-          "VideoConference"
-        ];
-        settings = {
-          StartupNotify = "true";
-          StartupWMClass = "zoom";
-        };
-      };
+      # zoom = {
+      #   name = "Zoom";
+      #   exec = "${firefox} --new-window https://app.zoom.us";
+      #   icon = "Zoom";
+      #   type = "Application";
+      #   terminal = false;
+      #   mimeType = [
+      #     "x-scheme-handler/zoommtg"
+      #     "x-scheme-handler/zoomus"
+      #     "x-scheme-handler/tel"
+      #     "x-scheme-handler/callto"
+      #     "x-scheme-handler/zoomphonecall"
+      #   ];
+      #   categories = [
+      #     "Network"
+      #     "InstantMessaging"
+      #     "VideoConference"
+      #   ];
+      #   settings = {
+      #     StartupNotify = "true";
+      #     StartupWMClass = "zoom";
+      #   };
+      # };
       msteams = {
         name = "Microsoft Teams";
         exec = "${chromium} --app=https://teams.microsoft.com";

@@ -103,6 +103,23 @@ Welcome to my Nix config!
 3. Add any WM-specific tweaks in that file (Hyprland `monitor/workspace`, Niri
    `xdg.configFile."niri/config.kdl".text = lib.mkAfter '' ... ''`).
 
+## Reusable Packages
+
+This flake exposes selected tools for use from other development flakes.
+
+### Streamlinear
+
+Use the raw Streamlinear CLI package without Home Manager token injection:
+
+```nix
+pkgs.mkShell {
+  packages = [ inputs.nixdots.packages.${pkgs.system}.streamlinear ];
+}
+```
+
+The raw package provides `streamlinear-cli` and `streamlinear`. Set
+`LINEAR_API_TOKEN` in the consuming shell or service environment.
+
 ## Notes
 
 My config started as a fork of [elythh/flake](https://github.com/elythh/flake).

@@ -1,11 +1,16 @@
 layout {
   tab name="nixdots" {
+    pane size=1 borderless=true {
+      plugin location="zellij:tab-bar"
+    }
     pane split_direction="vertical" {
       pane cwd="/home/roche/nixdots" command="nvim"
-      pane split_direction="horizontal" {
-        pane cwd="/home/roche/nixdots" command="lazygit"
+      pane stacked=true {
+        pane cwd="/home/roche/nixdots" expanded=true command="jailed-pi"
+        pane cwd="/home/roche/nixdots"
         pane cwd="/home/roche/nixdots"
       }
     }
   }
 }
+

@@ -36,6 +36,8 @@ let
     rev = "128.0";
     hash = "sha256-Xbe9gHO8Kf9C+QnWhZr21kl42rXUQzqSDIn99thO1kE=";
   };
+
+  passffSettings = builtins.fromJSON (builtins.readFile ./config/passff.json);
 in
 {
   programs.firefox = {
@@ -160,17 +162,21 @@ in
         "signon.generation.enabled" = false;
         "signon.management.page.breach-alerts.enabled" = false;
       };
-      extensions.packages = with pkgs.nur.repos.rycee.firefox-addons; [
-        enhanced-github
-        github-file-icons
-        passff
-        reddit-enhancement-suite
-        refined-github
-        return-youtube-dislikes
-        sponsorblock
-        ublock-origin
-        vimium
-      ];
+      extensions = {
+        force = true;
+        packages = with pkgs.nur.repos.rycee.firefox-addons; [
+          enhanced-github
+          github-file-icons
+          passff
+          reddit-enhancement-suite
+          refined-github
+          return-youtube-dislikes
+          sponsorblock
+          ublock-origin
+          vimium
+        ];
+        settings."passff@invicem.pro".settings = passffSettings;
+      };
 
       search = {
         force = true;

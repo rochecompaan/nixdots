@@ -1,12 +1,41 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
 let
+  sessionShortcutsPluginPath = "${config.xdg.configHome}/zellij/plugins/session-shortcuts.wasm";
+  zellijPermissionsCache = "${config.xdg.cacheHome}/zellij/permissions.kdl";
+  zellijGrantSessionShortcutsPermissions = pkgs.writeShellScript "zellij-grant-session-shortcuts-permissions" ''
+    set -eu
+
+    cache_file=${lib.escapeShellArg zellijPermissionsCache}
+    plugin_path=${lib.escapeShellArg sessionShortcutsPluginPath}
+
+    ${pkgs.coreutils}/bin/mkdir -p "''${cache_file%/*}"
+    permissions_tmp="$(${pkgs.coreutils}/bin/mktemp "$cache_file.XXXXXX")"
+
+    if [ -f "$cache_file" ]; then
+      ${pkgs.gawk}/bin/awk -v plugin="$plugin_path" '
+        $0 == "\"" plugin "\" {" { skip = 1; next }
+        skip && $0 == "}" { skip = 0; next }
+        !skip { print }
+      ' "$cache_file" > "$permissions_tmp"
+    fi
+
+    ${pkgs.coreutils}/bin/printf '%s\n' \
+      "\"$plugin_path\" {" \
+      "    FullHdAccess" \
+      "    ReadApplicationState" \
+      "    ChangeApplicationState" \
+      "}" >> "$permissions_tmp"
+
+    ${pkgs.coreutils}/bin/mv "$permissions_tmp" "$cache_file"
+  '';
   shortcutSlots = builtins.genList (index: toString (index + 1)) 9;
   switchSessionShortcutKeybinds = pkgs.lib.concatMapStringsSep "\n" (slot: ''
-    bind "Ctrl ${slot}" {
+    bind "${slot}" {
         MessagePlugin "session-shortcuts" {
           name "switch"
           payload "${slot}"
@@ -100,6 +129,10 @@ let
   '';
 in
 {
+  home.activation.zellijSessionShortcutsPermissions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${zellijGrantSessionShortcutsPermissions}
+  '';
+
   home.packages = [
     pkgs.tmate
     sesh
@@ -261,6 +294,8 @@ in
                   };
                   SwitchToMode "Normal"
               }
+      ${switchSessionShortcutKeybinds}
+      ${saveSessionShortcutKeybinds}
             }
             tmux {
               bind "[" { SwitchToMode "Scroll"; }
@@ -288,8 +323,6 @@ in
             shared_except "locked" {
               bind "Ctrl l" { SwitchToMode "Locked"; }
               bind "Alt n" { NewPane; }
-      ${switchSessionShortcutKeybinds}
-      ${saveSessionShortcutKeybinds}
               bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
               bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }
               bind "Alt j" "Alt Down" { MoveFocus "Down"; }
@@ -335,7 +368,7 @@ in
           plugins {
             tab-bar { path "tab-bar"; }
             status-bar { path "status-bar"; }
-            session-shortcuts location="file:~/.config/zellij/plugins/session-shortcuts.wasm" {
+            session-shortcuts location="file:${sessionShortcutsPluginPath}" {
               shortcut_file "${config.xdg.configHome}/zellij/session-shortcuts.tsv"
             }
             // strider { path "strider"; }

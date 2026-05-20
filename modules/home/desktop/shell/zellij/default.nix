@@ -369,7 +369,7 @@ in
             tab-bar { path "tab-bar"; }
             status-bar { path "status-bar"; }
             session-shortcuts location="file:${sessionShortcutsPluginPath}" {
-              shortcut_file "${config.xdg.configHome}/zellij/session-shortcuts.tsv"
+              shortcut_file "/host${config.xdg.configHome}/zellij/session-shortcuts.tsv"
             }
             // strider { path "strider"; }
             // compact-bar { path "compact-bar"; }

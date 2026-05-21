@@ -20,7 +20,7 @@
     layout = ./sessions/mycity.kdl;
   }
   {
-    name = "siyavula.deploy";
+    name = "siyavula";
     workingDir = "/home/roche/projects/siyavula.deploy";
     layout = ./sessions/siyavula.deploy.kdl;
   }

@@ -147,6 +147,7 @@
               ${inputs.roche-pi.lib.${system}.projectPiShellHook {
                 jailedPi.enable = true;
                 extraSettings = {
+                  agentHomeDir = "~/.pi/agent-jailed";
                   defaultProvider = "openai-codex";
                   defaultModel = "gpt-5.5";
                   defaultThinkingLevel = "high";

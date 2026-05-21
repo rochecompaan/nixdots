@@ -24,6 +24,13 @@ in
   programs.roche-pi.jailed = {
     enable = true;
     apiKeys.OPENROUTER_API_KEY.file = config.sops.secrets."openrouter-api-key".path;
-    extraPkgs = [ pkgs.neovim ];
+    extraPkgs = with pkgs; [
+      alejandra
+      neovim
+      nix
+      perl
+      python3
+      statix
+    ];
   };
 }

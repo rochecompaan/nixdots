@@ -106,30 +106,8 @@
         {
           config,
           pkgs,
-          system,
           ...
         }:
-        let
-          jailedPi = inputs.roche-pi.lib.${system}.mkJailedPi {
-            name = "jailed-pi";
-            agentConfigPackage = inputs.roche-pi.packages.${system}.pi-config;
-            apiKeys = {
-              OPENROUTER_API_KEY.fromEnv = true;
-              OPENAI_API_KEY.fromEnv = true;
-            };
-            runtimeStoreClosurePaths = [
-              ''"$PWD/.pre-commit-config.yaml"''
-            ];
-            extraPkgs = with pkgs; [
-              alejandra
-              neovim
-              nix
-              perl
-              python3
-              statix
-            ];
-          };
-        in
         {
           devShells.default = pkgs.mkShell {
             packages = [
@@ -138,21 +116,11 @@
               pkgs.git
               pkgs.nh
               pkgs.nixos-anywhere
-              jailedPi
             ];
             name = "dots";
             DIRENV_LOG_FORMAT = "";
             shellHook = ''
               ${config.pre-commit.installationScript}
-              ${inputs.roche-pi.lib.${system}.projectPiShellHook {
-                jailedPi.enable = true;
-                extraSettings = {
-                  agentHomeDir = "~/.pi/agent-jailed";
-                  defaultProvider = "openai-codex";
-                  defaultModel = "gpt-5.5";
-                  defaultThinkingLevel = "high";
-                };
-              }}
             '';
           };
 

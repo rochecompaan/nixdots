@@ -35,7 +35,7 @@ let
   '';
   shortcutSlots = builtins.genList (index: toString (index + 1)) 9;
   switchSessionShortcutKeybinds = pkgs.lib.concatMapStringsSep "\n" (slot: ''
-    bind "${slot}" {
+    bind "Ctrl ${slot}" {
         MessagePlugin "session-shortcuts" {
           name "switch"
           payload "${slot}"
@@ -54,6 +54,15 @@ let
   '') shortcutSlots;
   zellijPlugins = import ./plugins.nix { inherit pkgs; };
   declarativeSessions = import ./sessions.nix;
+  declarativeSessionShortcuts = pkgs.lib.concatStringsSep "\n" (
+    pkgs.lib.imap1 (
+      slot: session: "${toString slot}\t${session.name}\t${session.workingDir}"
+    ) declarativeSessions
+  );
+  declarativeSessionShortcutFile = pkgs.writeText "zellij-session-shortcuts.tsv" ''
+    # slot	session	cwd	tab_position	pane_id	is_plugin
+    ${declarativeSessionShortcuts}
+  '';
   declarativeSessionLayouts = builtins.listToAttrs (
     map (session: {
       name = "zellij/layouts/sessions/${session.name}.kdl";
@@ -98,6 +107,15 @@ let
       fi
     '';
   };
+  zellijInstallDeclarativeSessionShortcuts = pkgs.writeShellScript "zellij-install-declarative-session-shortcuts" ''
+    set -eu
+
+    shortcut_file=${lib.escapeShellArg "${config.xdg.configHome}/zellij/session-shortcuts.tsv"}
+    source_file=${lib.escapeShellArg "${declarativeSessionShortcutFile}"}
+
+    ${pkgs.coreutils}/bin/mkdir -p "''${shortcut_file%/*}"
+    ${pkgs.coreutils}/bin/install -m 0644 "$source_file" "$shortcut_file"
+  '';
 
   sesh = pkgs.writeScriptBin "sesh" ''
     #! /usr/bin/env sh
@@ -128,7 +146,14 @@ let
     fi
   '';
 in
+assert lib.assertMsg (
+  builtins.length declarativeSessions <= 9
+) "zellij session-shortcuts only supports slots 1-9";
 {
+  home.activation.zellijDeclarativeSessionShortcuts = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    run ${zellijInstallDeclarativeSessionShortcuts}
+  '';
+
   home.activation.zellijSessionShortcutsPermissions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     run ${zellijGrantSessionShortcutsPermissions}
   '';
@@ -294,7 +319,6 @@ in
                   };
                   SwitchToMode "Normal"
               }
-      ${switchSessionShortcutKeybinds}
       ${saveSessionShortcutKeybinds}
             }
             tmux {
@@ -338,6 +362,7 @@ in
                   };
                   SwitchToMode "Normal"
               }
+      ${switchSessionShortcutKeybinds}
             }
             shared_except "normal" "locked" {
               bind "Enter" "Esc" { SwitchToMode "Normal"; }

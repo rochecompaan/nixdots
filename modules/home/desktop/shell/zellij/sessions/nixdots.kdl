@@ -8,7 +8,6 @@ layout {
       pane stacked=true {
         pane cwd="/home/roche/nixdots" expanded=true command="jailed-pi"
         pane cwd="/home/roche/nixdots"
-        pane cwd="/home/roche/nixdots"
       }
     }
   }

@@ -14,7 +14,7 @@ layout {
       }
     }
   }
-  tab name="roche-pi" cwd="/home/roche/homelab-k8s" {
+  tab name="homelab-k8s" cwd="/home/roche/homelab-k8s" {
     pane split_direction="vertical" {
       pane cwd="/home/roche/homelab-k8s" command="nvim"
       pane stacked=true {

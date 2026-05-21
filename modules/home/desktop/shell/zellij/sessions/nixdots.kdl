@@ -6,7 +6,7 @@ layout {
     pane split_direction="vertical" {
       pane cwd="/home/roche/nixdots" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/nixdots" expanded=true command="jailed-pi"
+        pane cwd="/home/roche/nixdots" expanded=true command="pi"
         pane cwd="/home/roche/nixdots"
       }
     }

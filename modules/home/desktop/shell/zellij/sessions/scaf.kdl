@@ -6,7 +6,7 @@ layout {
     pane split_direction="vertical" {
       pane cwd="/home/roche/projects/scaf" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/projects/scaf" expanded=true command="jailed-pi"
+        pane cwd="/home/roche/projects/scaf" expanded=true command="pi"
         pane cwd="/home/roche/projects/scaf"
       }
     }

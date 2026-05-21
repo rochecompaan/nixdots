@@ -3,6 +3,9 @@ layout {
     pane size=1 borderless=true {
       plugin location="zellij:tab-bar"
     }
+    children
+  }
+  tab name="nixdots" cwd="/home/roche/projects/nixdots" {
     pane split_direction="vertical" {
       pane cwd="/home/roche/nixdots" command="nvim"
       pane stacked=true {
@@ -11,5 +14,22 @@ layout {
       }
     }
   }
-  tab name="nixdots"
+  tab name="roche-pi" cwd="/home/roche/homelab-k8s" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/homelab-k8s" command="nvim"
+      pane stacked=true {
+        pane cwd="/home/roche/homelab-k8s" expanded=true command="pi"
+        pane cwd="/home/roche/homelab-k8s"
+      }
+    }
+  }
+  tab name="roche-pi" cwd="/home/roche/projects/pi/roche-pi" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/pi/roche-pi" command="nvim"
+      pane stacked=true {
+        pane cwd="/home/roche/pi/roche-pi" expanded=true command="pi"
+        pane cwd="/home/roche/pi/roche-pi"
+      }
+    }
+  }
 }

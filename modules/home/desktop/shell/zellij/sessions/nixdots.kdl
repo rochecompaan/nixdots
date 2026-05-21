@@ -25,10 +25,10 @@ layout {
   }
   tab name="roche-pi" cwd="/home/roche/projects/pi/roche-pi" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/pi/roche-pi" command="nvim"
+      pane cwd="/home/roche/projects/pi/roche-pi" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/pi/roche-pi" expanded=true command="pi"
-        pane cwd="/home/roche/pi/roche-pi"
+        pane cwd="/home/roche/projects/pi/roche-pi" expanded=true command="pi"
+        pane cwd="/home/roche/projects/pi/roche-pi"
       }
     }
   }

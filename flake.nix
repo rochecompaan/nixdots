@@ -103,7 +103,29 @@
       ];
 
       perSystem =
-        { config, pkgs, ... }:
+        {
+          config,
+          pkgs,
+          system,
+          ...
+        }:
+        let
+          jailedPi = inputs.roche-pi.lib.${system}.mkJailedPi {
+            name = "jailed-pi";
+            agentConfigPackage = inputs.roche-pi.packages.${system}.pi-config;
+            runtimeStoreClosurePaths = [
+              ''"$PWD/.pre-commit-config.yaml"''
+            ];
+            extraPkgs = with pkgs; [
+              alejandra
+              neovim
+              nix
+              perl
+              python3
+              statix
+            ];
+          };
+        in
         {
           devShells.default = pkgs.mkShell {
             packages = [
@@ -112,6 +134,7 @@
               pkgs.git
               pkgs.nh
               pkgs.nixos-anywhere
+              jailedPi
             ];
             name = "dots";
             DIRENV_LOG_FORMAT = "";

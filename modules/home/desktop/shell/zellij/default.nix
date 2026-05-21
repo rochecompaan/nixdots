@@ -319,6 +319,7 @@ assert lib.assertMsg (
                   };
                   SwitchToMode "Normal"
               }
+      ${switchSessionShortcutKeybinds}
       ${saveSessionShortcutKeybinds}
             }
             tmux {
@@ -362,7 +363,6 @@ assert lib.assertMsg (
                   };
                   SwitchToMode "Normal"
               }
-      ${switchSessionShortcutKeybinds}
             }
             shared_except "normal" "locked" {
               bind "Enter" "Esc" { SwitchToMode "Normal"; }

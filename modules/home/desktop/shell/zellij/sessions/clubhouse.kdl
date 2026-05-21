@@ -3,6 +3,9 @@ layout {
     pane size=1 borderless=true {
       plugin location="zellij:tab-bar"
     }
+    children
+  }
+  tab name="clubhouse" cwd="/home/roche/projects/clubhouse" {
     pane split_direction="vertical" {
       pane cwd="/home/roche/projects/clubhouse" command="nvim"
       pane stacked=true {
@@ -11,5 +14,22 @@ layout {
       }
     }
   }
-  tab name="clubhouse"
+  tab name="infra" cwd="/home/roche/projects/clubhouse/clubhouse_infra/" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/clubhouse/clubhouse_infra/" command="nvim"
+      pane stacked=true {
+        pane cwd="/home/roche/projects/clubhouse/clubhouse_infra/" expanded=true command="pi"
+        pane cwd="/home/roche/projects/clubhouse/clubhouse_infra/"
+      }
+    }
+  }
+  tab name="server" cwd="/home/roche/projects/clubhouse/clubhouse_server/" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/clubhouse/clubhouse_server/" command="nvim"
+      pane stacked=true {
+        pane cwd="/home/roche/projects/clubhouse/clubhouse_server/" expanded=true command="pi"
+        pane cwd="/home/roche/projects/clubhouse/clubhouse_server/"
+      }
+    }
+  }
 }

@@ -35,7 +35,7 @@ let
   '';
   shortcutSlots = builtins.genList (index: toString (index + 1)) 9;
   switchSessionShortcutKeybinds = pkgs.lib.concatMapStringsSep "\n" (slot: ''
-    bind "Ctrl ${slot}" {
+    bind "Ctrl Shift ${slot}" {
         MessagePlugin "session-shortcuts" {
           name "switch"
           payload "${slot}"
@@ -44,7 +44,7 @@ let
     }
   '') shortcutSlots;
   saveSessionShortcutKeybinds = pkgs.lib.concatMapStringsSep "\n" (slot: ''
-    bind "Ctrl Shift ${slot}" {
+    bind "Ctrl Shift Alt ${slot}" {
         MessagePlugin "session-shortcuts" {
           name "save"
           payload "${slot}"
@@ -319,8 +319,6 @@ assert lib.assertMsg (
                   };
                   SwitchToMode "Normal"
               }
-      ${switchSessionShortcutKeybinds}
-      ${saveSessionShortcutKeybinds}
             }
             tmux {
               bind "[" { SwitchToMode "Scroll"; }
@@ -346,6 +344,8 @@ assert lib.assertMsg (
               bind "x" { CloseFocus; SwitchToMode "Normal"; }
             }
             shared_except "locked" {
+      ${switchSessionShortcutKeybinds}
+      ${saveSessionShortcutKeybinds}
               bind "Ctrl l" { SwitchToMode "Locked"; }
               bind "Alt n" { NewPane; }
               bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }

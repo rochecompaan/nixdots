@@ -34,4 +34,9 @@
     workingDir = "/home/roche/projects/scaf";
     layout = ./sessions/scaf.kdl;
   }
+  {
+    name = "diffmill";
+    workingDir = "/home/roche/projects/diffmill";
+    layout = ./sessions/diffmill.kdl;
+  }
 ]

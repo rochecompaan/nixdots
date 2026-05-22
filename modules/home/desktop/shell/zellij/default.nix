@@ -5,64 +5,18 @@
   ...
 }:
 let
-  sessionShortcutsPluginPath = "${config.xdg.configHome}/zellij/plugins/session-shortcuts.wasm";
-  zellijPermissionsCache = "${config.xdg.cacheHome}/zellij/permissions.kdl";
-  zellijGrantSessionShortcutsPermissions = pkgs.writeShellScript "zellij-grant-session-shortcuts-permissions" ''
-    set -eu
-
-    cache_file=${lib.escapeShellArg zellijPermissionsCache}
-    plugin_path=${lib.escapeShellArg sessionShortcutsPluginPath}
-
-    ${pkgs.coreutils}/bin/mkdir -p "''${cache_file%/*}"
-    permissions_tmp="$(${pkgs.coreutils}/bin/mktemp "$cache_file.XXXXXX")"
-
-    if [ -f "$cache_file" ]; then
-      ${pkgs.gawk}/bin/awk -v plugin="$plugin_path" '
-        $0 == "\"" plugin "\" {" { skip = 1; next }
-        skip && $0 == "}" { skip = 0; next }
-        !skip { print }
-      ' "$cache_file" > "$permissions_tmp"
-    fi
-
-    ${pkgs.coreutils}/bin/printf '%s\n' \
-      "\"$plugin_path\" {" \
-      "    FullHdAccess" \
-      "    ReadApplicationState" \
-      "    ChangeApplicationState" \
-      "}" >> "$permissions_tmp"
-
-    ${pkgs.coreutils}/bin/mv "$permissions_tmp" "$cache_file"
-  '';
-  shortcutSlots = builtins.genList (index: toString (index + 1)) 9;
-  switchSessionShortcutKeybinds = pkgs.lib.concatMapStringsSep "\n" (slot: ''
-    bind "Ctrl Shift ${slot}" {
-        MessagePlugin "session-shortcuts" {
-          name "switch"
-          payload "${slot}"
-        };
-        SwitchToMode "Normal"
-    }
-  '') shortcutSlots;
-  saveSessionShortcutKeybinds = pkgs.lib.concatMapStringsSep "\n" (slot: ''
-    bind "Ctrl Shift Alt ${slot}" {
-        MessagePlugin "session-shortcuts" {
-          name "save"
-          payload "${slot}"
-        };
-        SwitchToMode "Normal"
-    }
-  '') shortcutSlots;
-  zellijPlugins = import ./plugins.nix { inherit pkgs; };
   declarativeSessions = import ./sessions.nix;
-  declarativeSessionShortcuts = pkgs.lib.concatStringsSep "\n" (
+  switchSessionKeybinds = pkgs.lib.concatStringsSep "\n" (
     pkgs.lib.imap1 (
-      slot: session: "${toString slot}\t${session.name}\t${session.workingDir}"
+      slot: session:
+      pkgs.lib.concatStringsSep "\n" [
+        "        bind \"Ctrl Shift ${toString slot}\" {"
+        "            SwitchSession name=\"${session.name}\""
+        "            SwitchToMode \"Normal\""
+        "        }"
+      ]
     ) declarativeSessions
   );
-  declarativeSessionShortcutFile = pkgs.writeText "zellij-session-shortcuts.tsv" ''
-    # slot	session	cwd	tab_position	pane_id	is_plugin
-    ${declarativeSessionShortcuts}
-  '';
   declarativeSessionLayouts = builtins.listToAttrs (
     map (session: {
       name = "zellij/layouts/sessions/${session.name}.kdl";
@@ -107,16 +61,6 @@ let
       fi
     '';
   };
-  zellijInstallDeclarativeSessionShortcuts = pkgs.writeShellScript "zellij-install-declarative-session-shortcuts" ''
-    set -eu
-
-    shortcut_file=${lib.escapeShellArg "${config.xdg.configHome}/zellij/session-shortcuts.tsv"}
-    source_file=${lib.escapeShellArg "${declarativeSessionShortcutFile}"}
-
-    ${pkgs.coreutils}/bin/mkdir -p "''${shortcut_file%/*}"
-    ${pkgs.coreutils}/bin/install -m 0644 "$source_file" "$shortcut_file"
-  '';
-
   sesh = pkgs.writeScriptBin "sesh" ''
     #! /usr/bin/env sh
 
@@ -148,16 +92,8 @@ let
 in
 assert lib.assertMsg (
   builtins.length declarativeSessions <= 9
-) "zellij session-shortcuts only supports slots 1-9";
+) "zellij session keybinds only support slots 1-9";
 {
-  home.activation.zellijDeclarativeSessionShortcuts = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run ${zellijInstallDeclarativeSessionShortcuts}
-  '';
-
-  home.activation.zellijSessionShortcutsPermissions = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run ${zellijGrantSessionShortcutsPermissions}
-  '';
-
   home.packages = [
     pkgs.tmate
     sesh
@@ -170,9 +106,6 @@ assert lib.assertMsg (
   };
 
   xdg.configFile = declarativeSessionLayouts // {
-    "zellij/plugins/session-shortcuts.wasm".source =
-      zellijPlugins."session-shortcuts" + "/share/zellij/plugins/session-shortcuts.wasm";
-
     "zellij/layouts/roche-stacked.kdl".text = ''
       layout {
         default_tab_template {
@@ -344,8 +277,7 @@ assert lib.assertMsg (
               bind "x" { CloseFocus; SwitchToMode "Normal"; }
             }
             shared_except "locked" {
-      ${switchSessionShortcutKeybinds}
-      ${saveSessionShortcutKeybinds}
+      ${switchSessionKeybinds}
               bind "Ctrl l" { SwitchToMode "Locked"; }
               bind "Alt n" { NewPane; }
               bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
@@ -393,15 +325,8 @@ assert lib.assertMsg (
           plugins {
             tab-bar { path "tab-bar"; }
             status-bar { path "status-bar"; }
-            session-shortcuts location="file:${sessionShortcutsPluginPath}" {
-              shortcut_file "/host${config.xdg.configHome}/zellij/session-shortcuts.tsv"
-            }
             // strider { path "strider"; }
             // compact-bar { path "compact-bar"; }
-          }
-
-          load_plugins {
-            "session-shortcuts"
           }
 
           // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP

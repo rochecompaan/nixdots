@@ -336,6 +336,31 @@ let
       };
     };
   };
+
+  accentedFirefoxProfile =
+    accent:
+    sharedFirefoxProfile
+    // {
+      userChrome = ''
+        :root {
+          --workspace-profile-accent: ${accent};
+        }
+
+        #navigator-toolbox {
+          border-top: 4px solid var(--workspace-profile-accent) !important;
+        }
+
+        #TabsToolbar,
+        #nav-bar,
+        #PersonalToolbar {
+          background-image: linear-gradient(
+            90deg,
+            color-mix(in srgb, var(--workspace-profile-accent) 24%, transparent),
+            transparent 70%
+          ) !important;
+        }
+      '';
+    };
 in
 {
   programs.firefox = {
@@ -356,15 +381,15 @@ in
         id = 1;
         isDefault = false;
       };
-      siyavula = sharedFirefoxProfile // {
+      siyavula = accentedFirefoxProfile "#64c896" // {
         id = 2;
         isDefault = false;
       };
-      mycity = sharedFirefoxProfile // {
+      mycity = accentedFirefoxProfile "#ff5722" // {
         id = 3;
         isDefault = false;
       };
-      homelab = sharedFirefoxProfile // {
+      homelab = accentedFirefoxProfile "#eb0" // {
         id = 4;
         isDefault = false;
       };
@@ -372,8 +397,12 @@ in
         id = 5;
         isDefault = false;
       };
-      sixfeetup = sharedFirefoxProfile // {
+      sixfeetup = accentedFirefoxProfile "#194457" // {
         id = 6;
+        isDefault = false;
+      };
+      agibase = accentedFirefoxProfile "#0abf53" // {
+        id = 7;
         isDefault = false;
       };
     };

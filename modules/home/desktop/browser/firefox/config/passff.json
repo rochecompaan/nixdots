@@ -5,7 +5,7 @@
   "buttonInputQueries": "button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]",
   "caseInsensitiveSearch": true,
   "checkDomain": 2,
-  "checkFullUrl": 2,
+  "checkFullUrl": 0,
   "checkOnlyAuto": false,
   "checkProtocol": 2,
   "checkSubdomain": 2,

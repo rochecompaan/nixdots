@@ -372,6 +372,10 @@ in
         id = 5;
         isDefault = false;
       };
+      sixfeetup = sharedFirefoxProfile // {
+        id = 6;
+        isDefault = false;
+      };
     };
   };
   xdg.mimeApps.defaultApplications = {

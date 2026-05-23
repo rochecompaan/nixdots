@@ -47,6 +47,7 @@ launch_profile 6 clubhouse
 launch_profile 7 siyavula
 launch_profile 7 mycity
 launch_profile 7 homelab
+launch_profile 7 sixfeetup
 launch_profile 8 croprun
 
 niri msg action focus-workspace 2 || true

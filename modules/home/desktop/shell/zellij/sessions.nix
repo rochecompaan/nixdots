@@ -15,6 +15,11 @@
     layout = ./sessions/clubhouse.kdl;
   }
   {
+    name = "patchmill";
+    workingDir = "/home/roche/projects/patchmill";
+    layout = ./sessions/patchmill.kdl;
+  }
+  {
     name = "mycity";
     workingDir = "/home/roche/projects/mycity";
     layout = ./sessions/mycity.kdl;
@@ -33,10 +38,5 @@
     name = "scaf";
     workingDir = "/home/roche/projects/scaf";
     layout = ./sessions/scaf.kdl;
-  }
-  {
-    name = "diffmill";
-    workingDir = "/home/roche/projects/diffmill";
-    layout = ./sessions/diffmill.kdl;
   }
 ]

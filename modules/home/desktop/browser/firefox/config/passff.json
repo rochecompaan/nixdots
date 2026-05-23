@@ -1,5 +1,5 @@
 {
-  "autoFill": false,
+  "autoFill": true,
   "autoFillBlacklist": "localhost,192.168.4:9080",
   "autoSubmit": false,
   "buttonInputQueries": "button:not([type=reset])\ninput[type=submit]\ninput[type=button]\n[role=button]",

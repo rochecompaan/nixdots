@@ -10,10 +10,10 @@ let
     pkgs.lib.imap1 (
       slot: session:
       let
-        keys = if slot == 6 then "\"Ctrl Shift 6\" \"Ctrl ^\"" else "\"Ctrl Shift ${toString slot}\"";
+        keySlot = if slot >= 6 then slot + 1 else slot;
       in
       pkgs.lib.concatStringsSep "\n" [
-        "        bind ${keys} {"
+        "        bind \"Ctrl Shift ${toString keySlot}\" {"
         "            SwitchSession name=\"${session.name}\""
         "            SwitchToMode \"Normal\""
         "        }"
@@ -94,8 +94,8 @@ let
   '';
 in
 assert lib.assertMsg (
-  builtins.length declarativeSessions <= 9
-) "zellij session keybinds only support slots 1-9";
+  builtins.length declarativeSessions <= 8
+) "zellij session keybinds skip slot 6 and support up to 8 sessions";
 {
   home.packages = [
     pkgs.tmate

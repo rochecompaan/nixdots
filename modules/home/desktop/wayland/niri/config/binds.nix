@@ -39,6 +39,7 @@ in
         Mod+Return { spawn "${term}"; }
         Mod+Shift+Z { spawn "${getExe zellijAttach}"; }
         Mod+Shift+B { spawn "firefox"; }
+        Mod+E { spawn "spacedrive"; }
         Mod+Alt+0 { spawn "qalculate-gtk"; }
         Mod+P { spawn "1password"; }
         Mod+Shift+S { screenshot; }

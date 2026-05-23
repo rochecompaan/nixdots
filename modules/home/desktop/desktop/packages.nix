@@ -25,6 +25,7 @@ in
       qbittorrent-enhanced
       scrcpy
       signal-desktop
+      spacedrive
       ssh-to-age
       tea
       timewarrior

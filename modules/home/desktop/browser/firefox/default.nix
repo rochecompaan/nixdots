@@ -29,6 +29,12 @@ let
   firefoxWithPassff = pkgs.firefox.override {
     nativeMessagingHosts = [ passffHostWithOtp ];
   };
+  firefoxPackage = firefoxWithPassff.overrideAttrs (old: {
+    buildCommand = old.buildCommand + ''
+      substituteInPlace $out/bin/firefox \
+        --replace "exec -a" ${escapeShellArg envStr}" exec -a"
+    '';
+  });
 
   betterfox = pkgs.fetchFromGitHub {
     owner = "yokoffing";
@@ -365,12 +371,7 @@ in
 {
   programs.firefox = {
     enable = true;
-    package = firefoxWithPassff.overrideAttrs (old: {
-      buildCommand = old.buildCommand + ''
-        substituteInPlace $out/bin/firefox \
-          --replace "exec -a" ${escapeShellArg envStr}" exec -a"
-      '';
-    });
+    package = firefoxPackage;
 
     profiles = {
       default = sharedFirefoxProfile // {
@@ -407,6 +408,22 @@ in
       };
     };
   };
+  xdg.desktopEntries.firefox-profile-manager = {
+    name = "Firefox Profile Manager";
+    exec = "${firefoxPackage}/bin/firefox --ProfileManager";
+    icon = "firefox";
+    type = "Application";
+    terminal = false;
+    categories = [
+      "Network"
+      "WebBrowser"
+    ];
+    settings = {
+      StartupNotify = "true";
+      StartupWMClass = "firefox";
+    };
+  };
+
   xdg.mimeApps.defaultApplications = {
     "text/html" = [ "firefox.desktop" ];
     "text/xml" = [ "firefox.desktop" ];

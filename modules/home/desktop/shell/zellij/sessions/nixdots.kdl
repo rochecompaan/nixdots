@@ -9,7 +9,9 @@ layout {
     pane split_direction="vertical" {
       pane cwd="/home/roche/nixdots" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/nixdots" expanded=true command="pi"
+        pane cwd="/home/roche/nixdots" expanded=true command="pi" {
+          args "-c"
+        }
         pane cwd="/home/roche/nixdots"
       }
     }
@@ -18,7 +20,9 @@ layout {
     pane split_direction="vertical" {
       pane cwd="/home/roche/homelab-k8s" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/homelab-k8s" expanded=true command="pi"
+        pane cwd="/home/roche/homelab-k8s" expanded=true command="pi" {
+          args "-c"
+        }
         pane cwd="/home/roche/homelab-k8s"
       }
     }
@@ -27,7 +31,9 @@ layout {
     pane split_direction="vertical" {
       pane cwd="/home/roche/projects/pi/roche-pi" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/projects/pi/roche-pi" expanded=true command="pi"
+        pane cwd="/home/roche/projects/pi/roche-pi" expanded=true command="pi" {
+          args "-c"
+        }
         pane cwd="/home/roche/projects/pi/roche-pi"
       }
     }

@@ -6,7 +6,9 @@ layout {
     pane split_direction="vertical" {
       pane cwd="/home/roche/projects/siyavula.deploy" command="nvim"
       pane stacked=true {
-        pane cwd="/home/roche/projects/siyavula.deploy" expanded=true command="pi"
+        pane cwd="/home/roche/projects/siyavula.deploy" expanded=true command="pi" {
+          args "-c"
+        }
         pane cwd="/home/roche/projects/siyavula.deploy"
       }
     }

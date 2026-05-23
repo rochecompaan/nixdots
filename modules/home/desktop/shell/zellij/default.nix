@@ -9,8 +9,11 @@ let
   switchSessionKeybinds = pkgs.lib.concatStringsSep "\n" (
     pkgs.lib.imap1 (
       slot: session:
+      let
+        keys = if slot == 6 then "\"Ctrl Shift 6\" \"Ctrl ^\"" else "\"Ctrl Shift ${toString slot}\"";
+      in
       pkgs.lib.concatStringsSep "\n" [
-        "        bind \"Ctrl Shift ${toString slot}\" {"
+        "        bind ${keys} {"
         "            SwitchSession name=\"${session.name}\""
         "            SwitchToMode \"Normal\""
         "        }"

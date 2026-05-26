@@ -136,6 +136,9 @@
 
       exec ${pkgs.rclone}/bin/rclone mount copyparty: /home/roche/mnt/copyparty \
         --config "$RUNTIME_DIRECTORY/rclone.conf" \
+        --disable-http2 \
+        --transfers 1 \
+        --max-connections 1 \
         --vfs-cache-mode writes \
         --dir-cache-time 5s \
         --cache-dir "$CACHE_DIRECTORY"

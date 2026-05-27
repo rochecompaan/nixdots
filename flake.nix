@@ -72,6 +72,8 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    patchmill.url = "github:rochecompaan/patchmill";
+
     # Private repo
     # Authenticate via ssh and use shallow clone
     nix-secrets = {

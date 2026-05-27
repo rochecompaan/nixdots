@@ -6,6 +6,7 @@
     ./k9s
     ./keybase
     ./lazygit
+    ./patchmill
     ./pi
     ./rnnoise
     ./rofi

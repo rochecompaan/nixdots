@@ -38,54 +38,52 @@
           brd = "branch -D";
         };
 
-        extraConfig = {
-          color = {
-            ui = true;
-            pager = true;
-            diff = "auto";
-            branch = true;
-            # branch = {
-            #   current = "green bold";
-            #   local = "yellow dim";
-            #   remove = "blue";
-            # };
+        color = {
+          ui = true;
+          pager = true;
+          diff = "auto";
+          branch = true;
+          # branch = {
+          #   current = "green bold";
+          #   local = "yellow dim";
+          #   remove = "blue";
+          # };
 
-            showBranch = "auto";
-            interactive = "auto";
-            grep = "auto";
-            status = true;
-            # status = {
-            #   added = "green";
-            #   changed = "yellow";
-            #   untracked = "red dim";
-            #   branch = "cyan";
-            #   header = "dim white";
-            #   nobranch = "white";
-            # };
-          };
+          showBranch = "auto";
+          interactive = "auto";
+          grep = "auto";
+          status = true;
+          # status = {
+          #   added = "green";
+          #   changed = "yellow";
+          #   untracked = "red dim";
+          #   branch = "cyan";
+          #   header = "dim white";
+          #   nobranch = "white";
+          # };
+        };
 
-          core = {
-            editor = "nvim";
-            excludesfile = "~/.config/git/ignore";
-          };
+        core = {
+          editor = "nvim";
+          excludesfile = "~/.config/git/ignore";
+        };
 
-          credential = {
-            helper = "store";
-          };
+        credential = {
+          helper = "store";
+        };
 
-          delta = {
-            decorations = false;
-            features = "side-by-side line-numbers decorations";
-            whitespace-error-style = "22 reverse";
-          };
+        delta = {
+          decorations = false;
+          features = "side-by-side line-numbers decorations";
+          whitespace-error-style = "22 reverse";
+        };
 
-          pull = {
-            rebase = true;
-          };
+        pull = {
+          rebase = true;
+        };
 
-          rerere = {
-            enabled = true;
-          };
+        rerere = {
+          enabled = true;
         };
 
       };

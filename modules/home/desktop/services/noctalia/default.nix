@@ -19,7 +19,9 @@ in
           idle = settings.idle // {
             enabled = true;
             screenOffTimeout = 1800;
-            lockTimeout = 0;
+            # 0 disables the Noctalia lock monitor; keep this aligned so the
+            # session is locked and requires PAM authentication when DPMS turns off.
+            lockTimeout = 1800;
             suspendTimeout = 0;
           };
         }

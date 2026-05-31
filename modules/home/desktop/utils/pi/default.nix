@@ -1,5 +1,6 @@
 {
   inputs,
+  pkgs,
   ...
 }:
 {
@@ -16,4 +17,8 @@
       defaultThinkingLevel = "high";
     };
   };
+
+  home.packages = [
+    inputs.roche-pi.packages.${pkgs.system}.pi-local-auth
+  ];
 }

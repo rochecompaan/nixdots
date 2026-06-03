@@ -1819,16 +1819,16 @@
         "nixpkgs": "nixpkgs_8"
       },
       "locked": {
-        "lastModified": 1780344536,
-        "narHash": "sha256-eHpumf1zCzdR8aUIdue2wkHP32VVDpP7E455Dbe0nrU=",
+        "lastModified": 1780430574,
+        "narHash": "sha256-pVAjW28DpJGYb1XznPtbI4AIoTxS9qlSJo8k6/BUh/U=",
         "owner": "rochecompaan",
         "repo": "patchmill",
-        "rev": "de69e34dce4763c5e98b727653a41d9905b1b504",
+        "rev": "8d6262d4af6a3f2dd07ff9d1155588521c5ef469",
         "type": "github"
       },
       "original": {
         "owner": "rochecompaan",
-        "ref": "v0.5.1",
+        "ref": "v0.6.0",
         "repo": "patchmill",
         "type": "github"
       }
@@ -1918,11 +1918,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780196374,
-        "narHash": "sha256-tJL05sm/AUXKtbpYJvX1XFqdPiB3kZWELj2vg5JzBYk=",
+        "lastModified": 1780483406,
+        "narHash": "sha256-X73ZtIDRXquJnrNAN4Dk9h3KbELMOxcz1qb6cRiVXB8=",
         "ref": "refs/heads/main",
-        "rev": "6cf92f5dd9ae1470fa63019bff271f6c87b4c5b5",
-        "revCount": 54,
+        "rev": "b43d3e63603c110182fe85782375d8c495f9bece",
+        "revCount": 56,
         "type": "git",
         "url": "ssh://git@git.compaan/roche/pi-config.git"
       },

@@ -1478,11 +1478,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1776877367,
-        "narHash": "sha256-EHq1/OX139R1RvBzOJ0aMRT3xnWyqtHBRUBuO1gFzjI=",
+        "lastModified": 1780243769,
+        "narHash": "sha256-x5UQuRsH3MqI0U9afaXSNqzTPSeZlRLvFAav2Ux1pNw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "0726a0ecb6d4e08f6adced58726b95db924cef57",
+        "rev": "331800de5053fcebacf6813adb5db9c9dca22a0c",
         "type": "github"
       },
       "original": {
@@ -1918,11 +1918,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1780490902,
-        "narHash": "sha256-H1wiaPLdbFGah2dvLqcRlxlL2rklgnlHbmv/KcgGNGk=",
+        "lastModified": 1780653537,
+        "narHash": "sha256-tYTq6yM/UqlrGYnuV9sqwiSyIoMfEzPzIMioxR989mw=",
         "ref": "refs/heads/main",
-        "rev": "a3d140f0383db2cb434b9fa0aebf3843b3ec8c3c",
-        "revCount": 61,
+        "rev": "462a9e50a2c51cf2352b7db0e99637478b70ea56",
+        "revCount": 63,
         "type": "git",
         "url": "ssh://git@git.compaan/roche/pi-config.git"
       },

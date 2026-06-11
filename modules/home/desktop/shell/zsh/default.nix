@@ -25,6 +25,7 @@
       kgs = "kubectl get services";
       kgd = "kubectl get deploy,daemonsets";
       kge = "kubectl exec -it";
+      kns = "kubectl get namespaces";
 
       # Atuin
       asr = "atuin script run";

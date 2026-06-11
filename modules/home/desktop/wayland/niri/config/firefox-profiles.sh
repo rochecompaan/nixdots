@@ -105,6 +105,7 @@ sleep 1
 
 launch_profile 2 default
 launch_profile 6 clubhouse
+launch_profile 6 clubhouse_prod
 launch_profile 7 siyavula
 launch_profile 7 mycity
 launch_profile 7 homelab

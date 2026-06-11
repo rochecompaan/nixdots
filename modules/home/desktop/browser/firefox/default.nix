@@ -378,7 +378,7 @@ in
         id = 0;
         isDefault = true;
       };
-      clubhouse = sharedFirefoxProfile // {
+      clubhouse = accentedFirefoxProfile "#ffe450" // {
         id = 1;
         isDefault = false;
       };
@@ -404,6 +404,10 @@ in
       };
       agibase = accentedFirefoxProfile "#0abf53" // {
         id = 7;
+        isDefault = false;
+      };
+      clubhouse_prod = accentedFirefoxProfile "#FBF8EF" // {
+        id = 8;
         isDefault = false;
       };
     };

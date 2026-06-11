@@ -44,6 +44,7 @@
       };
       key-bindings = {
         show-urls-launch = "Control+Shift+u";
+        show-urls-copy = "Control+Shift+y";
         unicode-input = "Control+Shift+i";
       };
       mouse-bindings = {

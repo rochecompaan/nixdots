@@ -4,12 +4,12 @@ layout {
       plugin location="zellij:tab-bar"
     }
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/siyavula.deploy" command="nvim"
+      pane cwd="/home/roche/projects/siyavula.deploy" command="@zellijDirenvExec@" { args "nvim" }
       pane stacked=true {
-        pane cwd="/home/roche/projects/siyavula.deploy" expanded=true command="pi" {
-          args "-c"
+        pane cwd="/home/roche/projects/siyavula.deploy" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
         }
-        pane cwd="/home/roche/projects/siyavula.deploy"
+        pane cwd="/home/roche/projects/siyavula.deploy" command="@zellijDirenvExec@"
       }
     }
   }

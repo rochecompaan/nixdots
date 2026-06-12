@@ -6,6 +6,16 @@
 }:
 let
   declarativeSessions = import ./sessions.nix;
+  zellijDirenvExec = pkgs.writeShellApplication {
+    name = "zellij-direnv-exec";
+    text = ''
+      if [ "$#" -eq 0 ]; then
+        exec ${pkgs.direnv}/bin/direnv exec "$PWD" "''${SHELL:-${pkgs.zsh}/bin/zsh}"
+      fi
+
+      exec ${pkgs.direnv}/bin/direnv exec "$PWD" "$@"
+    '';
+  };
   switchSessionKeybinds = pkgs.lib.concatStringsSep "\n" (
     pkgs.lib.imap1 (
       slot: session:
@@ -23,7 +33,9 @@ let
   declarativeSessionLayouts = builtins.listToAttrs (
     map (session: {
       name = "zellij/layouts/sessions/${session.name}.kdl";
-      value.source = session.layout;
+      value.text =
+        builtins.replaceStrings [ "@zellijDirenvExec@" ] [ "${zellijDirenvExec}/bin/zellij-direnv-exec" ]
+          (builtins.readFile session.layout);
     }) declarativeSessions
   );
   firstDeclarativeSession = (builtins.head declarativeSessions).name;
@@ -100,6 +112,7 @@ assert lib.assertMsg (
   home.packages = [
     pkgs.tmate
     sesh
+    zellijDirenvExec
     zellijStartSessions
   ];
 
@@ -350,7 +363,7 @@ assert lib.assertMsg (
           // Choose the path to the default shell that zellij will use for opening new panes
           // Default: $SHELL
           //
-          // default_shell "fish"
+          default_shell "${zellijDirenvExec}/bin/zellij-direnv-exec"
 
           // Toggle between having pane frames around the panes
           // Options:

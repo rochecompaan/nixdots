@@ -4,12 +4,12 @@ layout {
       plugin location="zellij:tab-bar"
     }
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/scaf" command="nvim"
+      pane cwd="/home/roche/projects/scaf" command="@zellijDirenvExec@" { args "nvim" }
       pane stacked=true {
-        pane cwd="/home/roche/projects/scaf" expanded=true command="pi" {
-          args "-c"
+        pane cwd="/home/roche/projects/scaf" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
         }
-        pane cwd="/home/roche/projects/scaf"
+        pane cwd="/home/roche/projects/scaf" command="@zellijDirenvExec@"
       }
     }
   }

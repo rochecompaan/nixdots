@@ -11,10 +11,7 @@ in
   config = lib.mkIf cfg.enable {
     services = {
       xserver.enable = false;
-      asusd = {
-        enable = true;
-        enableUserService = true;
-      };
+      asusd.enable = true;
       blueman.enable = true;
       dbus = {
         enable = true;
@@ -24,10 +21,10 @@ in
       devmon.enable = true;
       gvfs.enable = true;
       udisks2.enable = true;
-      logind = {
-        powerKey = "suspend";
-        lidSwitch = "suspend";
-        lidSwitchExternalPower = "lock";
+      logind.settings.Login = {
+        HandlePowerKey = "suspend";
+        HandleLidSwitch = "suspend";
+        HandleLidSwitchExternalPower = "lock";
       };
       pipewire = lib.mkIf config.pipewire.enable {
         enable = true;

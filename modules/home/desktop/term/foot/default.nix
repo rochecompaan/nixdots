@@ -39,12 +39,16 @@
         label-letters = "sadfjklewcmpgh";
         osc8-underline = "url-mode";
       };
+      "regex:paths" = {
+        regex = "((/|~/|\\.{1,2}/|[[:alnum:]_.-]+/)[^[:space:]:'\"<>]*[[:alnum:]_.@%+=,~/-](:[0-9]+){0,2})";
+      };
       mouse = {
         hide-when-typing = "yes";
       };
       key-bindings = {
         show-urls-launch = "Control+Shift+u";
         show-urls-copy = "Control+Shift+y";
+        regex-copy = "[paths] Control+Shift+p";
         unicode-input = "Control+Shift+i";
       };
       mouse-bindings = {

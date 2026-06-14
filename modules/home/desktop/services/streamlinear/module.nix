@@ -57,7 +57,7 @@ in
 
     package = mkOption {
       type = types.package;
-      default = self.packages.${pkgs.system}.streamlinear;
+      default = self.packages.${pkgs.stdenv.hostPlatform.system}.streamlinear;
       description = "Raw Streamlinear package to wrap for this Home Manager profile.";
     };
 

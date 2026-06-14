@@ -11,7 +11,7 @@ in
   imports = [ inputs.noctalia.homeModules.default ];
 
   config = lib.mkIf (config.default.de == "niri") {
-    programs.noctalia-shell = {
+    programs.noctalia = {
       enable = true;
       settings = lib.mkForce (
         settings

@@ -34,7 +34,7 @@ in
       vlc
       wdisplays
       wlprop
-      xorg.xprop
+      xprop
       yazi
       ydotool
     ];

@@ -3,7 +3,7 @@ import threading
 
 import pytest
 
-from daemon import PassffBroker, metadata_cache_key, request_label
+from daemon import PassffBroker, default_runner, metadata_cache_key, request_label
 
 
 def run(coro):
@@ -105,6 +105,24 @@ def test_request_label_does_not_log_entry_names():
     assert request_label(["insert", "example.com/account", "secret"]) == "insert"
     assert request_label(["generate", "example.com/account", "20"]) == "generate"
     assert request_label(["FIREWORKS_API_KEY"]) == "show"
+
+
+def test_default_runner_answers_grep_meta_urls_from_index(monkeypatch, tmp_path):
+    index_path = tmp_path / "metadata-index.json"
+    index_path.write_text(
+        '{"version":1,"entries":[{"path":"private/login/example","fields":{"url":["https://example.com"]},"mtime":1}]}',
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("PASSFF_SHARED_INDEX_PATH", str(index_path))
+
+    response = run(default_runner(["grepMetaUrls", ["url"]]))
+
+    assert response == {
+        "exitCode": 0,
+        "stdout": "private/login/example:\nurl: https://example.com\n",
+        "stderr": "",
+        "version": "1.2.5",
+    }
 
 
 def test_canceled_secret_request_keeps_serialization_until_background_work_finishes():

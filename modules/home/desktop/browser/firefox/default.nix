@@ -30,15 +30,21 @@ let
             runHook preInstall
 
             mkdir -p $out/lib/passff-shared $out/bin $out/lib/mozilla/native-messaging-hosts $out/share/passff-host
-            cp native.py passff_logic.py daemon.py proxy.py $out/lib/passff-shared/
+            cp native.py passff_logic.py daemon.py proxy.py metadata_index.py $out/lib/passff-shared/
 
             substituteInPlace $out/lib/passff-shared/passff_logic.py \
+              --replace-fail '@PASS_COMMAND@' '${passWithOtp}/bin/pass'
+            substituteInPlace $out/lib/passff-shared/metadata_index.py \
               --replace-fail '@PASS_COMMAND@' '${passWithOtp}/bin/pass'
             substituteInPlace $out/lib/passff-shared/proxy.py \
               --replace-fail '@PASSFF_SHARED_DAEMON@' "$out/bin/passff-shared-daemon"
 
             makeWrapper ${pkgs.python3}/bin/python3 $out/bin/passff-shared-daemon \
               --add-flags "$out/lib/passff-shared/daemon.py" \
+              --set PASSFF_SHARED_PASS_COMMAND '${passWithOtp}/bin/pass'
+
+            makeWrapper ${pkgs.python3}/bin/python3 $out/bin/passff-shared-index \
+              --add-flags "$out/lib/passff-shared/metadata_index.py" \
               --set PASSFF_SHARED_PASS_COMMAND '${passWithOtp}/bin/pass'
 
             makeWrapper ${pkgs.python3}/bin/python3 $out/bin/passff-shared-proxy \
@@ -403,6 +409,8 @@ let
     };
 in
 {
+  home.packages = [ passffSharedHost ];
+
   programs.firefox = {
     enable = true;
     configPath = ".mozilla/firefox";

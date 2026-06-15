@@ -9,6 +9,7 @@ import time
 from collections.abc import Awaitable, Callable
 from typing import Any
 
+from metadata_index import run_metadata_request
 from native import NativeMessageError, read_async_message, write_async_message
 from passff_logic import PASS_COMMAND, VERSION, run_pass_request
 
@@ -28,6 +29,8 @@ def metadata_cache_key(message: list[Any]) -> tuple[str, tuple[str, ...]] | None
 
 
 async def default_runner(message: list[Any]) -> Response:
+    if metadata_cache_key(message) is not None:
+        return await asyncio.to_thread(run_metadata_request, message)
     return await asyncio.to_thread(run_pass_request, message, pass_command=PASS_COMMAND)
 
 

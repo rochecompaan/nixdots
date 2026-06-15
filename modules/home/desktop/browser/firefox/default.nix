@@ -30,7 +30,7 @@ let
             runHook preInstall
 
             mkdir -p $out/lib/passff-shared $out/bin $out/lib/mozilla/native-messaging-hosts $out/share/passff-host
-            cp native.py passff_logic.py daemon.py proxy.py metadata_index.py $out/lib/passff-shared/
+            cp native.py passff_logic.py daemon.py proxy.py metadata_hooks.py metadata_index.py $out/lib/passff-shared/
 
             substituteInPlace $out/lib/passff-shared/passff_logic.py \
               --replace-fail '@PASS_COMMAND@' '${passWithOtp}/bin/pass'

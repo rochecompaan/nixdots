@@ -1,7 +1,4 @@
-{
-  pkgs,
-  ...
-}:
+{ ... }:
 {
   programs.foot = {
     enable = true;
@@ -35,7 +32,7 @@
         command-focused = "no";
       };
       url = {
-        launch = "${pkgs.xdg-utils}/bin/xdg-open \${url}";
+        launch = "xdg-open \${url}";
         label-letters = "sadfjklewcmpgh";
         osc8-underline = "url-mode";
       };

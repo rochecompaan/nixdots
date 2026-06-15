@@ -1,7 +1,31 @@
-{ config, ... }:
+{ config, pkgs, ... }:
+let
+  firefox = "${config.programs.firefox.package}/bin/firefox";
+  realXdgOpen = "${pkgs.xdg-utils}/bin/xdg-open";
+in
 {
   home = {
     file = {
+      ".local/bin/xdg-open" = {
+        executable = true;
+        text = ''
+          #!${pkgs.bash}/bin/bash
+          set -euo pipefail
+
+          case "''${1-}" in
+            http://*|https://*)
+              if [ -n "''${FIREFOX_PROFILE:-}" ]; then
+                exec ${firefox} -P "''${FIREFOX_PROFILE}" "$1"
+              fi
+
+              exec ${firefox} "$1"
+              ;;
+            *)
+              exec ${realXdgOpen} "$@"
+              ;;
+          esac
+        '';
+      };
       ".local/bin/thisisfine" = {
         executable = true;
         text = import ./misc/thisisfine.nix { };

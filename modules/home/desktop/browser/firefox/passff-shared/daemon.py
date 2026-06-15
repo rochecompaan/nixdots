@@ -38,12 +38,14 @@ class PassffBroker:
         self._lock = asyncio.Lock()
         self._metadata_cache: dict[tuple[str, tuple[str, ...]], tuple[float, Response]] = {}
         self._inflight: dict[tuple[str, tuple[str, ...]], asyncio.Task[Response]] = {}
+        self._background_tasks: set[asyncio.Task[Response]] = set()
 
     async def handle(self, message: list[Any]) -> Response:
         key = metadata_cache_key(message)
         if key is None:
-            async with self._lock:
-                return await self._runner(message)
+            task = asyncio.create_task(self._run_serialized(message))
+            self._track_background_task(task)
+            return await asyncio.shield(task)
 
         now = time.monotonic()
         cached = self._metadata_cache.get(key)
@@ -57,12 +59,27 @@ class PassffBroker:
         if task is None:
             task = asyncio.create_task(self._run_metadata_scan(key, message))
             self._inflight[key] = task
+            task.add_done_callback(lambda done, cache_key=key: self._drop_inflight(cache_key, done))
         try:
             response = await asyncio.shield(task)
             return copy.deepcopy(response)
         finally:
             if task.done() and self._inflight.get(key) is task:
                 del self._inflight[key]
+
+    async def _run_serialized(self, message: list[Any]) -> Response:
+        async with self._lock:
+            return await self._runner(message)
+
+    def _track_background_task(self, task: asyncio.Task[Response]) -> None:
+        self._background_tasks.add(task)
+        task.add_done_callback(self._background_tasks.discard)
+        task.add_done_callback(_consume_task_exception)
+
+    def _drop_inflight(self, key: tuple[str, tuple[str, ...]], task: asyncio.Task[Response]) -> None:
+        if self._inflight.get(key) is task:
+            del self._inflight[key]
+        _consume_task_exception(task)
 
     async def _run_metadata_scan(self, key: tuple[str, tuple[str, ...]], message: list[Any]) -> Response:
         async with self._lock:
@@ -88,6 +105,24 @@ def error_response(message: str) -> Response:
     return {"exitCode": 1, "stdout": "", "stderr": f"passff-shared-daemon: {message}", "version": VERSION}
 
 
+def _consume_task_exception(task: asyncio.Task[Response]) -> None:
+    if task.cancelled():
+        return
+    try:
+        task.exception()
+    except asyncio.CancelledError:
+        return
+
+
+def request_label(message: list[Any]) -> str:
+    if not message:
+        return "root"
+    operation = message[0]
+    if operation in {"grepMetaUrls", "otp", "insert", "generate"}:
+        return str(operation)
+    return "show"
+
+
 async def handle_client(
     reader: asyncio.StreamReader,
     writer: asyncio.StreamWriter,
@@ -102,7 +137,7 @@ async def handle_client(
             start = time.monotonic()
             response = await asyncio.wait_for(broker.handle(message), timeout=request_timeout)
             duration_ms = int((time.monotonic() - start) * 1000)
-            request_type = message[0] if message else "root"
+            request_type = request_label(message)
             print(
                 f"passff-shared-daemon request={request_type} exit={response.get('exitCode')} duration_ms={duration_ms}",
                 file=sys.stderr,

@@ -1,6 +1,5 @@
 import os
 import socket
-import subprocess
 import sys
 import tempfile
 import time
@@ -27,19 +26,6 @@ def connect_socket(path: str) -> socket.socket:
     return client
 
 
-def start_daemon(path: str) -> None:
-    daemon = os.environ.get("PASSFF_SHARED_DAEMON", DEFAULT_DAEMON)
-    if not daemon or daemon.startswith("@"):
-        return
-    subprocess.Popen(
-        [daemon, "--socket", path],
-        stdin=subprocess.DEVNULL,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        start_new_session=True,
-    )
-
-
 def send_to_daemon(message: Any, path: str) -> Any:
     last_error: OSError | None = None
     for attempt in range(8):
@@ -51,13 +37,9 @@ def send_to_daemon(message: Any, path: str) -> Any:
                 return read_message(stream)
         except FileNotFoundError as exc:
             last_error = exc
-            if attempt == 0:
-                start_daemon(path)
             time.sleep(0.1)
         except ConnectionRefusedError as exc:
             last_error = exc
-            if attempt == 0:
-                start_daemon(path)
             time.sleep(0.1)
     if last_error is None:
         raise RuntimeError("daemon connection failed")

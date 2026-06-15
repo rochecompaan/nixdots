@@ -1,6 +1,9 @@
 import asyncio
+import threading
 
-from daemon import PassffBroker, metadata_cache_key
+import pytest
+
+from daemon import PassffBroker, metadata_cache_key, request_label
 
 
 def run(coro):
@@ -92,3 +95,54 @@ def test_broker_does_not_cache_show_requests():
     run(scenario())
 
     assert len(calls) == 2
+
+
+def test_request_label_does_not_log_entry_names():
+    assert request_label([]) == "root"
+    assert request_label(["example.com/account"]) == "show"
+    assert request_label(["grepMetaUrls", ["url"]]) == "grepMetaUrls"
+    assert request_label(["otp", "example.com/account"]) == "otp"
+    assert request_label(["insert", "example.com/account", "secret"]) == "insert"
+    assert request_label(["generate", "example.com/account", "20"]) == "generate"
+    assert request_label(["FIREWORKS_API_KEY"]) == "show"
+
+
+def test_canceled_secret_request_keeps_serialization_until_background_work_finishes():
+    events = []
+    slow_started = threading.Event()
+    release_slow = threading.Event()
+
+    def blocking_slow_response():
+        events.append(("start", "slow"))
+        slow_started.set()
+        release_slow.wait(timeout=1)
+        events.append(("end", "slow"))
+        return {"exitCode": 0, "stdout": "slow", "stderr": "", "version": "1.2.5"}
+
+    async def runner(message):
+        if message[0] == "slow":
+            return await asyncio.to_thread(blocking_slow_response)
+        events.append(("start", message[0]))
+        events.append(("end", message[0]))
+        return {"exitCode": 0, "stdout": message[0], "stderr": "", "version": "1.2.5"}
+
+    async def scenario():
+        broker = PassffBroker(runner=runner, metadata_ttl_seconds=60)
+        with pytest.raises(asyncio.TimeoutError):
+            await asyncio.wait_for(broker.handle(["slow"]), timeout=0.02)
+
+        assert await asyncio.to_thread(slow_started.wait, 1)
+        second = asyncio.create_task(broker.handle(["second"]))
+        await asyncio.sleep(0.05)
+        assert events == [("start", "slow")]
+
+        release_slow.set()
+        await second
+        assert events == [
+            ("start", "slow"),
+            ("end", "slow"),
+            ("start", "second"),
+            ("end", "second"),
+        ]
+
+    run(scenario())

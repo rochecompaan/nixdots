@@ -1,0 +1,165 @@
+# Noctalia v5 configuration.
+# Keep this in the native TOML schema used by noctalia 5.x; the older
+# noctalia.json file is a v4 export and most camelCase keys are ignored by v5.
+
+[shell]
+ui_scale = 1.0
+corner_radius_scale = 0.3
+font_family = "JetBrainsMono NF"
+avatar_path = "/home/roche/.face"
+telemetry_enabled = false
+show_location = true
+
+[shell.animation]
+enabled = true
+speed = 1.0
+
+[shell.shadow]
+direction = "down_right"
+
+[shell.panel]
+borders = false
+launcher_placement = "centered"
+clipboard_placement = "centered"
+control_center_placement = "attached"
+wallpaper_placement = "attached"
+session_placement = "centered"
+
+[wallpaper]
+enabled = true
+directory = "/home/roche/nixdots/home/shared/walls"
+fill_mode = "crop"
+fill_color = "#000000"
+transition = ["fade", "disc", "stripes", "wipe", "honeycomb"]
+transition_duration = 1500
+edge_smoothness = 0.05
+transition_on_startup = false
+
+[wallpaper.default]
+path = "/home/roche/nixdots/home/shared/walls/groove.jpg"
+
+[wallpaper.automation]
+enabled = false
+interval_seconds = 300
+order = "random"
+recursive = true
+
+[theme]
+mode = "dark"
+source = "builtin"
+builtin = "Gruvbox"
+wallpaper_scheme = "m3-tonal-spot"
+
+[notification]
+enable_daemon = true
+position = "top_right"
+layer = "overlay"
+background_opacity = 1.0
+show_app_name = true
+show_actions = true
+
+[osd]
+position = "top_right"
+background_opacity = 1.0
+
+[osd.kinds]
+volume = true
+volume_output = true
+volume_input = true
+brightness = true
+wifi = true
+bluetooth = true
+power_profile = true
+caffeine = true
+dnd = true
+lock_keys = true
+keyboard_layout = true
+
+[weather]
+enabled = true
+unit = "celsius"
+effects = true
+
+[location]
+auto_locate = false
+address = "Port Elizabeth, South Africa"
+
+[audio]
+enable_overdrive = false
+enable_sounds = false
+sound_volume = 0.5
+
+[brightness]
+enable_ddcutil = false
+
+[idle]
+pre_action_fade_seconds = 5.0
+behavior_order = ["lock", "screen-off", "lock-and-suspend"]
+
+[idle.behavior.lock]
+enabled = true
+timeout = 1800
+action = "lock"
+command = "noctalia:session lock"
+resume_command = ""
+
+[idle.behavior.screen-off]
+enabled = true
+timeout = 1800
+action = "screen_off"
+command = "noctalia:dpms-off"
+resume_command = "noctalia:dpms-on"
+
+[idle.behavior.lock-and-suspend]
+enabled = false
+timeout = 0
+action = "lock_and_suspend"
+command = ""
+resume_command = ""
+
+[bar]
+order = ["default"]
+
+[bar.default]
+enabled = true
+position = "top"
+background_opacity = 0.93
+capsule = true
+capsule_opacity = 1.0
+widget_spacing = 6
+padding = 2
+margin_edge = 4
+margin_ends = 4
+radius = 12
+reserve_space = true
+auto_hide = false
+start = ["launcher", "cpu", "active_window", "media"]
+center = ["workspaces"]
+end = ["tray", "notifications", "battery", "volume", "brightness", "control-center", "clock"]
+
+[dock]
+enabled = false
+position = "bottom"
+auto_hide = false
+reserve_space = false
+background_opacity = 1.0
+active_monitor_only = true
+launcher_position = "none"
+
+[desktop_widgets]
+enabled = false
+
+[control_center]
+sidebar = "compact"
+sidebar_section = "compact"
+shortcuts = [
+  { type = "wifi" },
+  { type = "bluetooth" },
+  { type = "wallpaper" },
+  { type = "notification" },
+  { type = "power_profile" },
+  { type = "nightlight" },
+]
+
+[widget.clock]
+format = "{:%H\\n%M}"

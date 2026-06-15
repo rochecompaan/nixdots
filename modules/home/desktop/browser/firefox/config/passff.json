@@ -21,7 +21,7 @@
   "filterPathRegex": "notes\nattributes\nattachments",
   "handleHttpAuth": true,
   "iconOffset": "0px",
-  "indexMetaUrls": true,
+  "indexMetaUrls": false,
   "inputAttributes": "id,name,placeholder,label,formcontrolname,autocomplete",
   "loginFieldNames": "login,user,username,id",
   "loginInputNames": "login,user,mail,email,tel,username,opt_login,log,usr_name",

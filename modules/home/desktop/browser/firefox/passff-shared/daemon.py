@@ -143,7 +143,9 @@ async def handle_client(
                 file=sys.stderr,
                 flush=True,
             )
-    except (asyncio.TimeoutError, EOFError, NativeMessageError) as exc:
+    except asyncio.TimeoutError:
+        response = error_response("request timed out")
+    except (EOFError, NativeMessageError) as exc:
         response = error_response(str(exc))
     except Exception as exc:
         response = error_response(f"unexpected error: {exc}")

@@ -7,7 +7,9 @@ layout {
   }
   tab name="infra" cwd="/home/roche/projects/clubhouse/clubhouse_infra/" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/clubhouse/clubhouse_infra/" command="@zellijDirenvExec@" { args "nvim" }
+      pane cwd="/home/roche/projects/clubhouse/clubhouse_infra/" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
       pane stacked=true {
         pane cwd="/home/roche/projects/clubhouse/clubhouse_infra/" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"
@@ -18,7 +20,9 @@ layout {
   }
   tab name="server" cwd="/home/roche/projects/clubhouse/clubhouse_server/" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/clubhouse/clubhouse_server/" command="@zellijDirenvExec@" { args "nvim" }
+      pane cwd="/home/roche/projects/clubhouse/clubhouse_server/" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
       pane stacked=true {
         pane cwd="/home/roche/projects/clubhouse/clubhouse_server/" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"

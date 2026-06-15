@@ -4,7 +4,9 @@ layout {
       plugin location="zellij:tab-bar"
     }
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/patchmill" command="@zellijDirenvExec@" { args "nvim" }
+      pane cwd="/home/roche/projects/patchmill" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
       pane stacked=true {
         pane cwd="/home/roche/projects/patchmill" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"

@@ -7,7 +7,9 @@ layout {
   }
   tab name="nixdots" cwd="/home/roche/nixdots" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/nixdots" command="@zellijDirenvExec@" { args "nvim" }
+      pane cwd="/home/roche/nixdots" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
       pane stacked=true {
         pane cwd="/home/roche/nixdots" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"
@@ -18,7 +20,9 @@ layout {
   }
   tab name="homelab-k8s" cwd="/home/roche/homelab-k8s" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/homelab-k8s" command="@zellijDirenvExec@" { args "nvim" }
+      pane cwd="/home/roche/homelab-k8s" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
       pane stacked=true {
         pane cwd="/home/roche/homelab-k8s" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"
@@ -29,7 +33,9 @@ layout {
   }
   tab name="roche-pi" cwd="/home/roche/projects/pi/roche-pi" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/pi/roche-pi" command="@zellijDirenvExec@" { args "nvim" }
+      pane cwd="/home/roche/projects/pi/roche-pi" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
       pane stacked=true {
         pane cwd="/home/roche/projects/pi/roche-pi" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"

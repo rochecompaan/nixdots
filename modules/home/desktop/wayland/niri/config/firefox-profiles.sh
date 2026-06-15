@@ -39,6 +39,11 @@ workspace_reference() {
   fi
 }
 
+profile_app_id() {
+  profile="$1"
+  printf 'firefox-profile-%s\n' "$profile"
+}
+
 focus_profile_workspace() {
   output="$1"
   workspace_ref="$2"
@@ -68,11 +73,13 @@ launch_profile() {
   target="$(resolve_profile_workspace "$workspace")"
   output="${target%:*}"
   workspace_ref="${target#*:}"
+  app_id="$(profile_app_id "$profile")"
   before="$(mktemp)"
 
-  focus_profile_workspace "$output" "$workspace_ref"
   window_ids > "$before"
-  firefox --new-instance -P "$profile" >/dev/null 2>&1 &
+  MOZ_APP_REMOTINGNAME="$app_id" \
+    MOZ_APP_LAUNCHER="$app_id" \
+    firefox --new-instance -P "$profile" >/dev/null 2>&1 &
 
   deadline=$((SECONDS + 15))
   saw_window=0

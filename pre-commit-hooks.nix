@@ -9,7 +9,7 @@
       deadnix.enable = true;
       flake-checker.enable = false;
       nil.enable = true;
-      nixfmt-rfc-style.enable = true;
+      nixfmt.enable = true;
     };
   };
 }

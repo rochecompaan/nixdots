@@ -19,6 +19,6 @@
   };
 
   home.packages = [
-    inputs.roche-pi.packages.${pkgs.system}.pi-local-auth
+    inputs.roche-pi.packages.${pkgs.stdenv.hostPlatform.system}.pi-local-auth
   ];
 }

@@ -1,9 +1,12 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }:
 let
+  noctalia = lib.getExe config.programs.noctalia.package;
+
   firefoxProfiles = pkgs.writeShellApplication {
     name = "niri-firefox-profiles";
     runtimeInputs = [
@@ -22,7 +25,7 @@ in
     spawn-at-startup "blueman-applet"
     spawn-at-startup "element-desktop" "--hidden"
     spawn-at-startup "nextcloud" "--background"
-    spawn-at-startup "noctalia-shell"
+    spawn-at-startup "${noctalia}"
     spawn-at-startup "${firefoxProfiles}/bin/niri-firefox-profiles"
   '';
 }

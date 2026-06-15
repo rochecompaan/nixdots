@@ -11,10 +11,7 @@ in
   config = lib.mkIf cfg.enable {
     services = {
       xserver.enable = false;
-      asusd = {
-        enable = true;
-        enableUserService = true;
-      };
+      asusd.enable = true;
       blueman.enable = true;
       dbus = {
         enable = true;
@@ -24,10 +21,10 @@ in
       devmon.enable = true;
       gvfs.enable = true;
       udisks2.enable = true;
-      logind = {
-        powerKey = "suspend";
-        lidSwitch = "suspend";
-        lidSwitchExternalPower = "lock";
+      logind.settings.Login = {
+        HandlePowerKey = "suspend";
+        HandleLidSwitch = "suspend";
+        HandleLidSwitchExternalPower = "lock";
       };
       pipewire = lib.mkIf config.pipewire.enable {
         enable = true;
@@ -65,12 +62,21 @@ in
           };
         };
       };
-      udev.packages = [
-        pkgs.libu2f-host
-        pkgs.yubikey-personalization
-        pkgs.platformio-core.udev
-        pkgs.openocd
-      ];
+      udev = {
+        packages = [
+          pkgs.libu2f-host
+          pkgs.yubikey-personalization
+          pkgs.platformio-core.udev
+          pkgs.openocd
+        ];
+        extraRules = ''
+          # pcscd runs unprivileged as the pcscd user/group. The upstream CCID
+          # rule sets GROUP="pcscd" but leaves the device mode at the default,
+          # which can produce ACLs where group::--- prevents pcscd from opening
+          # YubiKey/OpenPGP CCID devices after uaccess is applied.
+          ACTION=="add|change", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ENV{ID_USB_INTERFACES}=="*:0b0000:*", GROUP="pcscd", MODE="0660"
+        '';
+      };
       pcscd.enable = true;
       supergfxd.enable = true;
       power-profiles-daemon.enable = true;

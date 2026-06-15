@@ -1,12 +1,14 @@
 { inputs, ... }:
 {
   nixpkgs.overlays = [
+    # Compatibility for flake inputs that have not yet migrated from pkgs.system.
+    (_: prev: { system = prev.stdenv.hostPlatform.system; })
     inputs.nur.overlays.default
     (_: prev: {
       devenv =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
           };
         in
         unstable.devenv;
@@ -15,17 +17,17 @@
       zellij =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
           };
         in
         unstable.zellij;
     })
-    (_: prev: { zjstatus = inputs.zjstatus.packages.${prev.system}.default; })
+    (_: prev: { zjstatus = inputs.zjstatus.packages.${prev.stdenv.hostPlatform.system}.default; })
     (_: prev: {
       zoom-us =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
             config = {
               allowUnfree = true;
             };
@@ -37,7 +39,7 @@
       _1password-gui =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
             config = {
               allowUnfree = true;
             };
@@ -49,7 +51,7 @@
       aider-chat =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
           };
         in
         unstable.aider-chat;
@@ -58,7 +60,7 @@
       k8sgpt =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
           };
         in
         unstable.k8sgpt;
@@ -67,7 +69,7 @@
       signal-desktop =
         let
           unstable = import inputs.nixpkgs-unstable {
-            inherit (prev) system;
+            system = prev.stdenv.hostPlatform.system;
           };
         in
         unstable.signal-desktop;

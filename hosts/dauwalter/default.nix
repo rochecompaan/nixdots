@@ -48,13 +48,8 @@
   ];
 
   # Disable suspend on lid close
-  services.logind = {
-    lidSwitch = "ignore";
-    settings = {
-      Login = {
-        HandleLidSwitch = "ignore";
-      };
-    };
+  services.logind.settings.Login = {
+    HandleLidSwitch = "ignore";
   };
 
   # Turn off screen backlight when lid closes

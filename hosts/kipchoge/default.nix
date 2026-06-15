@@ -97,6 +97,7 @@
   services.flatpak.enable = true;
 
   environment.systemPackages = with pkgs; [
+    android-tools
     fuse3
     rclone
   ];
@@ -189,11 +190,9 @@
   #   TLS_DEBUG = "1";
   # };
 
-  programs.adb.enable = true;
-
   services.caddy = {
     enable = true;
-    config = ''
+    extraConfig = ''
       :8096 {
         reverse_proxy https://jellyfin.compaan {
           header_up Host jellyfin.compaan

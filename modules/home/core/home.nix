@@ -19,7 +19,7 @@
     };
 
     packages = with pkgs; [
-      inputs.zjstatus.packages.${system}.default
+      inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default
       _1password-cli
       _1password-gui
       argocd
@@ -27,6 +27,7 @@
       bemoji
       bore-cli
       bruno
+      brightnessctl
       charm
       charm-freeze
       chatterino2
@@ -74,7 +75,6 @@
       kubeseal
       kubernetes-helm
       lapce
-      light
       magic-wormhole
       marksman
       mods
@@ -86,7 +86,7 @@
       nix-inspect
       nix-output-monitor
       nix-update
-      nixfmt-rfc-style
+      nixfmt
       obsidian
       onefetch
       openssl

@@ -9,6 +9,7 @@
 
   programs.zsh = {
     enable = true;
+    dotDir = config.home.homeDirectory;
     enableCompletion = true;
     history.size = 1000000;
     history.path = "${config.xdg.dataHome}/zsh/history";

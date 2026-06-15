@@ -8,11 +8,11 @@
     flake-parts.url = "github:hercules-ci/flake-parts";
 
     # Nixpkgs Stable
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
     # Home-manager
-    hm.url = "github:nix-community/home-manager/release-25.11";
+    hm.url = "github:nix-community/home-manager/release-26.05";
     hm.inputs.nixpkgs.follows = "nixpkgs";
 
     # secret management
@@ -27,7 +27,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
 
     # Stylix, nix-colors alertnative
-    stylix.url = "github:danth/stylix/release-25.11";
+    stylix.url = "github:danth/stylix/release-26.05";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
 
     # Zellij plugin for statusbar
@@ -114,7 +114,7 @@
           devShells.default = pkgs.mkShell {
             packages = [
               pkgs.deploy-rs
-              pkgs.nixfmt-rfc-style
+              pkgs.nixfmt
               pkgs.git
               pkgs.nh
               pkgs.nixos-anywhere
@@ -126,7 +126,7 @@
             '';
           };
 
-          formatter = pkgs.nixfmt-rfc-style;
+          formatter = pkgs.nixfmt;
         };
     };
 }

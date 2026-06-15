@@ -13,6 +13,7 @@ in
           "context.modules" = [
             {
               "name" = "libpipewire-module-filter-chain";
+              "flags" = [ "nofail" ];
               "args" = {
                 "node.description" = "Noise Canceling source";
                 "media.name" = "Noise Canceling source";
@@ -21,7 +22,7 @@ in
                     {
                       "type" = "ladspa";
                       "name" = "rnnoise";
-                      "plugin" = "${pkgs.rnnoise-plugin}/lib/ladspa/librnnoise_ladspa.so";
+                      "plugin" = "librnnoise_ladspa";
                       "label" = "noise_suppressor_mono"; # or "noise_suppressor_stereo", consumes twice the resources
                       "control" = {
                         "VAD Threshold (%)" = 50.0;

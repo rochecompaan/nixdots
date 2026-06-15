@@ -28,6 +28,7 @@ in
       };
       pipewire = lib.mkIf config.pipewire.enable {
         enable = true;
+        extraLadspaPackages = [ pkgs.rnnoise-plugin ];
         pulse.enable = true;
       };
       gnome = {

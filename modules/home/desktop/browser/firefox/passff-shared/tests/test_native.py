@@ -42,3 +42,11 @@ def test_read_message_rejects_truncated_payload():
 
     with pytest.raises(NativeMessageError):
         read_message(stream)
+
+
+def test_decode_two_messages_from_separate_streams():
+    first = io.BytesIO(encode_message(["example/site"]))
+    second = io.BytesIO(encode_message({"exitCode": 0, "stdout": "secret", "stderr": "", "version": "1.2.5"}))
+
+    assert read_message(first) == ["example/site"]
+    assert read_message(second)["stdout"] == "secret"

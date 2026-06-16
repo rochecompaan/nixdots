@@ -6,6 +6,7 @@
 }:
 let
   declarativeSessions = import ./sessions.nix;
+  autoStartSessions = builtins.filter (session: session.autoStart or true) declarativeSessions;
   zellijDirenvExec = pkgs.writeShellApplication {
     name = "zellij-direnv-exec";
     text = ''
@@ -28,7 +29,7 @@ let
         "            SwitchToMode \"Normal\""
         "        }"
       ]
-    ) declarativeSessions
+    ) autoStartSessions
   );
   declarativeSessionLayouts = builtins.listToAttrs (
     map (session: {
@@ -38,10 +39,10 @@ let
           (builtins.readFile session.layout);
     }) declarativeSessions
   );
-  firstDeclarativeSession = (builtins.head declarativeSessions).name;
+  firstAutoStartSession = (builtins.head autoStartSessions).name;
   createDeclarativeSessionCommands = pkgs.lib.concatMapStringsSep "\n" (session: ''
     create_session ${pkgs.lib.escapeShellArg session.name} ${pkgs.lib.escapeShellArg "${config.xdg.configHome}/zellij/layouts/sessions/${session.name}.kdl"}
-  '') declarativeSessions;
+  '') autoStartSessions;
   zellijStartSessions = pkgs.writeShellApplication {
     name = "zellij-start-sessions";
     runtimeInputs = [
@@ -70,9 +71,9 @@ let
       ${createDeclarativeSessionCommands}
 
       if [ -n "''${ZELLIJ:-}" ]; then
-        zellij action switch-session ${pkgs.lib.escapeShellArg firstDeclarativeSession}
+        zellij action switch-session ${pkgs.lib.escapeShellArg firstAutoStartSession}
       else
-        exec zellij attach ${pkgs.lib.escapeShellArg firstDeclarativeSession}
+        exec zellij attach ${pkgs.lib.escapeShellArg firstAutoStartSession}
       fi
     '';
   };
@@ -106,7 +107,7 @@ let
   '';
 in
 assert lib.assertMsg (
-  builtins.length declarativeSessions <= 8
+  builtins.length autoStartSessions <= 8
 ) "zellij session keybinds skip slot 6 and support up to 8 sessions";
 {
   home.packages = [

@@ -39,4 +39,10 @@
     workingDir = "/home/roche/projects/scaf";
     layout = ./sessions/scaf.kdl;
   }
+  {
+    name = "hightower";
+    workingDir = "/home/roche/projects/hightower-ifda";
+    layout = ./sessions/hightower.kdl;
+    autoStart = false;
+  }
 ]

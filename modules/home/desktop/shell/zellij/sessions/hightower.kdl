@@ -1,0 +1,19 @@
+layout {
+  default_tab_template {
+    pane size=1 borderless=true {
+      plugin location="zellij:tab-bar"
+    }
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/hightower-ifda" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
+      pane stacked=true {
+        pane cwd="/home/roche/projects/hightower-ifda" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
+        }
+        pane cwd="/home/roche/projects/hightower-ifda" command="@zellijDirenvExec@"
+      }
+    }
+  }
+  tab name="hightower"
+}

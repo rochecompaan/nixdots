@@ -29,27 +29,5 @@
         };
       };
     };
-
-    disk.data = {
-      device = lib.mkDefault "/dev/disk/by-id/wwn-0x5000c500c95cc5b0";
-      type = "disk";
-      content = {
-        type = "gpt";
-        partitions = {
-          data = {
-            name = "data";
-            size = "100%";
-            content = {
-              type = "filesystem";
-              format = "ext4";
-              mountpoint = "/srv/data";
-              mountOptions = [
-                "noatime"
-              ];
-            };
-          };
-        };
-      };
-    };
   };
 }

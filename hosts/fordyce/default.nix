@@ -66,15 +66,6 @@
     ];
   };
 
-  systemd.services.k3s = {
-    after = [ "srv-data.mount" ];
-    requires = [ "srv-data.mount" ];
-    unitConfig = {
-      ConditionPathIsMountPoint = "/srv/data";
-      RequiresMountsFor = "/srv/data";
-    };
-  };
-
   programs.ziti-edge-tunnel = {
     enable = true;
     service.enable = true;

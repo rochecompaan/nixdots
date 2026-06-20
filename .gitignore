@@ -7,3 +7,4 @@ result
 /node_modules/
 kubeconfig
 modules/home/desktop/utils/codex-sessions/__pycache__
+.worktrees/

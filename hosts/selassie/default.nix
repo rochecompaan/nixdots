@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   inputs,
   ...
 }:
@@ -48,6 +47,19 @@
     BindPaths = "/run/current-system/sw/bin:/bin";
   };
 
+  homelab.storage = {
+    linstor = {
+      enable = true;
+      nodeLabel.enable = true;
+    };
+
+    mayastor = {
+      enable = true;
+      enableMultipath = true;
+      nodeLabel.enable = true;
+    };
+  };
+
   # homelab.k3s.reset.enable = true;
 
   services.k3s = {
@@ -56,7 +68,7 @@
     serverAddr = "https://192.168.1.100:6443"; # XXX: Change to load balancer address
     tokenFile = config.sops.secrets."cluster-token".path;
 
-    extraFlags = lib.concatStringsSep " " [
+    extraFlags = [
       "--node-ip=192.168.1.104"
       "--disable=local-storage"
       "--disable=traefik"

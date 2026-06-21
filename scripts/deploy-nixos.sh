@@ -4,6 +4,7 @@ set -euo pipefail
 # Default values
 HOSTNAME=""
 IP_ADDRESS=""
+DEPLOY_USER="${DEPLOY_USER:-roche}"
 EXTRA_ARGS=()
 
 # Parse command line arguments
@@ -30,6 +31,7 @@ done
 if [ -z "$HOSTNAME" ] || [ -z "$IP_ADDRESS" ]; then
     echo "Usage: deploy-nixos <hostname> <ip-address> [extra nixos-anywhere args...]" >&2
     echo "Example: deploy-nixos myserver 192.168.1.100" >&2
+    echo "Set DEPLOY_USER to override the SSH user (default: roche)." >&2
     exit 1
 fi
 
@@ -45,7 +47,7 @@ if [ -z "$IP_ADDRESS" ]; then
 fi
 
 # Set target host and flake
-TARGET_HOST="root@${IP_ADDRESS}"
+TARGET_HOST="${DEPLOY_USER}@${IP_ADDRESS}"
 FLAKE_TARGET=".#${HOSTNAME}"
 
 # Create a temporary directory for secrets

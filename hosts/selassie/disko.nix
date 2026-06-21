@@ -17,13 +17,12 @@
               mountpoint = "/boot";
             };
           };
-          root = {
-            name = "root";
+          lvm = {
+            name = "lvm";
             size = "100%";
             content = {
-              type = "filesystem";
-              format = "ext4";
-              mountpoint = "/";
+              type = "lvm_pv";
+              vg = "vg-nvme";
             };
           };
         };
@@ -47,6 +46,27 @@
                 "noatime"
               ];
             };
+          };
+        };
+      };
+    };
+
+    lvm_vg."vg-nvme" = {
+      type = "lvm_vg";
+      lvs = {
+        "linstor-bench-thin" = {
+          size = "30G";
+          lvm_type = "thin-pool";
+        };
+        "mayastor-bench" = {
+          size = "30G";
+        };
+        root = {
+          size = "100%FREE";
+          content = {
+            type = "filesystem";
+            format = "ext4";
+            mountpoint = "/";
           };
         };
       };

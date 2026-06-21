@@ -1,6 +1,5 @@
 {
   config,
-  lib,
   inputs,
   ...
 }:
@@ -56,7 +55,7 @@
     serverAddr = "https://192.168.1.100:6443"; # XXX: Change to load balancer address
     tokenFile = config.sops.secrets."cluster-token".path;
 
-    extraFlags = lib.concatStringsSep " " [
+    extraFlags = [
       "--node-ip=192.168.1.103"
       "--disable=local-storage"
       "--disable=traefik"

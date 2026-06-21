@@ -1,9 +1,11 @@
 {
   imports = [
-    ./fonts
     ./desktop
-    ./vpn
+    ./fonts
     ./k3s-reset
+    ./linstor
+    ./mayastor
     ./options.nix
+    ./vpn
   ];
 }

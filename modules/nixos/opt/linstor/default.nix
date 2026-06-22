@@ -17,6 +17,9 @@ in
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
       {
+        boot.extraModprobeConfig = ''
+          options drbd usermode_helper=disabled
+        '';
         boot.extraModulePackages = [ config.boot.kernelPackages.drbd ];
         boot.initrd.services.lvm.enable = true;
         boot.kernelModules = [ "drbd" ];

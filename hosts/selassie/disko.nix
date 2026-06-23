@@ -30,7 +30,7 @@
     };
 
     disk.data = {
-      device = lib.mkDefault "/dev/disk/by-id/ata-ST16000NM001G-2KK103_ZL2FS4RR";
+      device = lib.mkDefault "/dev/disk/by-id/ata-ST8000DM004-2U9188_ZR16ATHH";
       type = "disk";
       content = {
         type = "gpt";

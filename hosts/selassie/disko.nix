@@ -39,13 +39,26 @@
             name = "data";
             size = "100%";
             content = {
-              type = "filesystem";
-              format = "ext4";
-              mountpoint = "/srv/data";
-              mountOptions = [
-                "noatime"
-              ];
+              type = "lvm_pv";
+              vg = "vg-data";
             };
+          };
+        };
+      };
+    };
+
+    lvm_vg."vg-data" = {
+      type = "lvm_vg";
+      lvs = {
+        "srv-data" = {
+          size = "100%FREE";
+          content = {
+            type = "filesystem";
+            format = "ext4";
+            mountpoint = "/srv/data";
+            mountOptions = [
+              "noatime"
+            ];
           };
         };
       };

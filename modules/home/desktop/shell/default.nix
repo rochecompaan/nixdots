@@ -1,7 +1,7 @@
 {
   imports = [
+    ../../shell
     ./zellij
-    ./zsh
     ./fish
   ];
 }

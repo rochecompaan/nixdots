@@ -4,6 +4,18 @@
   lib,
   ...
 }:
+let
+  stylixColors = config.lib.stylix.colors or { };
+  colors = {
+    base01 = stylixColors.base01 or "1e1e2e";
+    base03 = stylixColors.base03 or "45475a";
+    base05 = stylixColors.base05 or "cdd6f4";
+    base08 = stylixColors.base08 or "f38ba8";
+    base09 = stylixColors.base09 or "fab387";
+    base0C = stylixColors.base0C or "94e2d5";
+    base0D = stylixColors.base0D or "89b4fa";
+  };
+in
 {
   imports = [ ./run-as-service.nix ];
 
@@ -59,7 +71,7 @@
 
       cat = "bat -pp --theme \"Visual Studio Dark+\"";
       catt = "bat --theme \"Visual Studio Dark+\"";
-      ls = "exa";
+      ls = "eza";
       ll = "ls -alF";
       la = "ls -A";
       l = "ls -CF";
@@ -94,14 +106,23 @@
     };
 
     initContent = ''
-      PROMPT_EOL_MARK=\'\'
-      source <(kubectl completion zsh)
-      eval "$(zoxide init zsh)"
+      PROMPT_EOL_MARK=""
+      if command -v kubectl >/dev/null 2>&1; then
+        source <(kubectl completion zsh)
+      fi
+      if command -v zoxide >/dev/null 2>&1; then
+        eval "$(zoxide init zsh)"
+      fi
 
       kn() {
         local ns="$1"
         [ -n "$ns" ] || {
           echo "usage: kn <namespace>" >&2
+          return 1
+        }
+
+        command -v kubectl >/dev/null 2>&1 || {
+          echo "kubectl not found" >&2
           return 1
         }
 
@@ -134,8 +155,21 @@
       mkdir -p "''${NV_DIR}"
       NVIM_LISTEN_ADDRESS="$(mktemp -u "''${NV_DIR}/nvim-''${USER}-XXXXXX.sock")"
       export NVIM_LISTEN_ADDRESS
-      # Use the user's nix-profile nvim (nixvim) instead of nixpkgs.neovim to honor the configured nixvim build
-      exec -a nvim "$HOME/.nix-profile/bin/nvim" --listen "''${NVIM_LISTEN_ADDRESS}" "$@"
+
+      candidates=(
+        "$HOME/.nix-profile/bin/nvim"
+        "/etc/profiles/per-user/''${USER}/bin/nvim"
+        "/run/current-system/sw/bin/nvim"
+      )
+
+      for candidate in "''${candidates[@]}"; do
+        if [ -x "''${candidate}" ]; then
+          exec -a nvim "''${candidate}" --listen "''${NVIM_LISTEN_ADDRESS}" "$@"
+        fi
+      done
+
+      echo "nvim executable not found; install neovim or nixvim" >&2
+      exit 127
     '';
     executable = true;
   };
@@ -153,9 +187,9 @@
     };
   };
 
-  programs.starship = with config.lib.stylix.colors; {
+  programs.starship = {
     enable = true;
-    settings = {
+    settings = with colors; {
       format = "$nix_shell$username$hostname$directory$git_branch$git_state$git_status$line_break$\{custom.aws\}$kubernetes$python$line_break$character";
 
       add_newline = true;

@@ -3,7 +3,7 @@
   flake = {
     nixosConfigurations =
       let
-        inherit (inputs.nixpkgs.lib) nixosSystem;
+        inherit (inputs.nixpkgs.lib) nixosSystem optional;
         inherit (import "${self}/modules/nixos") default;
 
         specialArgs = {
@@ -11,25 +11,48 @@
         };
 
         mkHost =
-          hostname:
+          {
+            hostname,
+            homelabHome ? false,
+          }:
           nixosSystem {
             inherit specialArgs;
-            modules = default ++ [
-              # Provide openziti overlay + modules to all hosts
-              inputs.openziti-nix.nixosModules.default
-              inputs.disko.nixosModules.disko
-              ./${hostname}
-            ];
+            modules =
+              default
+              ++ [
+                # Provide openziti overlay + modules to all hosts
+                inputs.openziti-nix.nixosModules.default
+                inputs.disko.nixosModules.disko
+              ]
+              ++ optional homelabHome ../modules/nixos/opt/homelab-home
+              ++ [
+                ./${hostname}
+              ];
           };
       in
       {
-        kiptum = mkHost "kiptum";
-        kipchoge = mkHost "kipchoge";
-        dauwalter = mkHost "dauwalter";
-        kipsang = mkHost "kipsang";
-        fordyce = mkHost "fordyce";
-        selassie = mkHost "selassie";
-        walmsley = mkHost "walmsley";
+        kiptum = mkHost { hostname = "kiptum"; };
+        kipchoge = mkHost { hostname = "kipchoge"; };
+        dauwalter = mkHost {
+          hostname = "dauwalter";
+          homelabHome = true;
+        };
+        kipsang = mkHost {
+          hostname = "kipsang";
+          homelabHome = true;
+        };
+        fordyce = mkHost {
+          hostname = "fordyce";
+          homelabHome = true;
+        };
+        selassie = mkHost {
+          hostname = "selassie";
+          homelabHome = true;
+        };
+        walmsley = mkHost {
+          hostname = "walmsley";
+          homelabHome = true;
+        };
       };
 
     # homelab nodes

@@ -3,17 +3,32 @@ layout {
     pane size=1 borderless=true {
       plugin location="zellij:tab-bar"
     }
+    children
+  }
+  tab name="cli" cwd="/home/roche/projects/scaf/scafjcli" {
     pane split_direction="vertical" {
-      pane cwd="/home/roche/projects/scaf" command="@zellijDirenvExec@" {
+      pane cwd="/home/roche/projects/scaf/scaf-cli" command="@zellijDirenvExec@" {
         args "nvim"
       }
       pane stacked=true {
-        pane cwd="/home/roche/projects/scaf" expanded=true command="@zellijDirenvExec@" {
+        pane cwd="/home/roche/projects/scaf/scaf-cli" expanded=true command="@zellijDirenvExec@" {
           args "pi" "-c"
         }
-        pane cwd="/home/roche/projects/scaf" command="@zellijDirenvExec@"
+        pane cwd="/home/roche/projects/scaf/scaf-cli" command="@zellijDirenvExec@"
       }
     }
   }
-  tab name="scaf"
+  tab name="fullstack-template" cwd="/home/roche/projects/scaf/scaf-templates/sfu-fullstack-template" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/scaf/scaf-templates/sfu-fullstack-template" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
+      pane stacked=true {
+        pane cwd="/home/roche/projects/scaf/scaf-templates/sfu-fullstack-template" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
+        }
+        pane cwd="/home/roche/projects/scaf/scaf-templates/sfu-fullstack-template" command="@zellijDirenvExec@"
+      }
+    }
+  }
 }

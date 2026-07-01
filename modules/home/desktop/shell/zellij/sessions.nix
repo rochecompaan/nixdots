@@ -40,6 +40,11 @@
     layout = ./sessions/scaf.kdl;
   }
   {
+    name = "sfu";
+    workingDir = "/home/roche/projects/controlplane";
+    layout = ./sessions/sfu.kdl;
+  }
+  {
     name = "hightower";
     workingDir = "/home/roche/projects/hightower-ifda";
     layout = ./sessions/hightower.kdl;

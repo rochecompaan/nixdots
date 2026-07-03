@@ -43,6 +43,7 @@
     name = "sfu";
     workingDir = "/home/roche/projects/controlplane";
     layout = ./sessions/sfu.kdl;
+    autoStart = false;
   }
   {
     name = "hightower";

@@ -1809,11 +1809,11 @@
         "nixpkgs": "nixpkgs_9"
       },
       "locked": {
-        "lastModified": 1782548911,
-        "narHash": "sha256-xG1R4WwoasIstRGtF2E6V9+IpTmWXVnKQNXcNFlNPaE=",
+        "lastModified": 1783159728,
+        "narHash": "sha256-vGD/3DfbKcSrUO361yHgQXjo1barw0y+hBzAwo/Y6Fo=",
         "owner": "rochecompaan",
         "repo": "patchmill",
-        "rev": "f6f687a154841a27e7818ac6e6b2ed366b7dea80",
+        "rev": "1fbfa223919f082f0f10ab4a947472a1895a3c86",
         "type": "github"
       },
       "original": {

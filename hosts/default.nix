@@ -20,7 +20,8 @@
             modules =
               default
               ++ [
-                # Provide openziti overlay + modules to all hosts
+                # Provide shared external modules to all hosts
+                inputs._1password-shell-plugins.nixosModules.default
                 inputs.openziti-nix.nixosModules.default
                 inputs.disko.nixosModules.disko
               ]

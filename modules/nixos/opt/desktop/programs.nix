@@ -12,7 +12,7 @@ in
     programs = {
       thunar = {
         enable = true;
-        plugins = with pkgs.xfce; [
+        plugins = with pkgs; [
           thunar-archive-plugin
           thunar-media-tags-plugin
           thunar-volman
@@ -27,8 +27,19 @@ in
         enable = true;
         polkitPolicyOwners = [ "roche" ];
       };
+      _1password-shell-plugins = {
+        # enable 1Password shell plugins for bash, zsh, and fish shell
+        enable = true;
+        # the specified packages as well as 1Password CLI will be
+        # automatically installed and configured to use shell plugins
+        plugins = with pkgs; [
+          gh
+          awscli2
+          cachix
+        ];
+      };
     }
-    // lib.mkIf (config.desktop.de == "niri") {
+    // lib.optionalAttrs (cfg.de == "niri") {
       niri.enable = true;
     };
   };

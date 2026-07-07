@@ -20,8 +20,6 @@
 
     packages = with pkgs; [
       inputs.zjstatus.packages.${pkgs.stdenv.hostPlatform.system}.default
-      _1password-cli
-      _1password-gui
       argocd
       awscli
       bemoji

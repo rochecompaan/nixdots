@@ -21,7 +21,6 @@
               default
               ++ [
                 # Provide shared external modules to all hosts
-                inputs._1password-shell-plugins.nixosModules.default
                 inputs.openziti-nix.nixosModules.default
                 inputs.disko.nixosModules.disko
               ]

@@ -90,8 +90,6 @@
 
     deploy-rs.inputs.nixpkgs.follows = "nixpkgs";
     deploy-rs.url = "github:serokell/deploy-rs";
-
-    _1password-shell-plugins.url = "github:1Password/shell-plugins";
   };
 
   outputs =

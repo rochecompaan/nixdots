@@ -13,7 +13,7 @@
     settings = {
       agentHomeDir = "~/.pi/agent";
       defaultProvider = "openai-codex";
-      defaultModel = "gpt-5.5";
+      defaultModel = "gpt-5.6-sol";
       defaultThinkingLevel = "xhigh";
     };
   };

@@ -18,58 +18,7 @@ let
   };
   envStr = concatStringsSep " " (mapAttrsToList (n: v: "${n}=${escapeShellArg v}") env);
 
-  passWithOtp = pkgs.pass.withExtensions (exts: with exts; [ pass-otp ]);
-  passffSharedHost = pkgs.stdenvNoCC.mkDerivation {
-    pname = "passff-shared-host";
-    version = "0.1.0";
-    src = ./passff-shared;
-
-    nativeBuildInputs = [ pkgs.makeWrapper ];
-
-    installPhase = ''
-            runHook preInstall
-
-            mkdir -p $out/lib/passff-shared $out/bin $out/lib/mozilla/native-messaging-hosts $out/share/passff-host
-            cp native.py passff_logic.py daemon.py proxy.py metadata_hooks.py metadata_index.py $out/lib/passff-shared/
-
-            substituteInPlace $out/lib/passff-shared/passff_logic.py \
-              --replace-fail '@PASS_COMMAND@' '${passWithOtp}/bin/pass'
-            substituteInPlace $out/lib/passff-shared/metadata_index.py \
-              --replace-fail '@PASS_COMMAND@' '${passWithOtp}/bin/pass'
-            substituteInPlace $out/lib/passff-shared/proxy.py \
-              --replace-fail '@PASSFF_SHARED_DAEMON@' "$out/bin/passff-shared-daemon"
-
-            makeWrapper ${pkgs.python3}/bin/python3 $out/bin/passff-shared-daemon \
-              --add-flags "$out/lib/passff-shared/daemon.py" \
-              --set PASSFF_SHARED_PASS_COMMAND '${passWithOtp}/bin/pass'
-
-            makeWrapper ${pkgs.python3}/bin/python3 $out/bin/passff-shared-index \
-              --add-flags "$out/lib/passff-shared/metadata_index.py" \
-              --set PASSFF_SHARED_PASS_COMMAND '${passWithOtp}/bin/pass'
-
-            makeWrapper ${pkgs.python3}/bin/python3 $out/bin/passff-shared-proxy \
-              --add-flags "$out/lib/passff-shared/proxy.py" \
-              --set PASSFF_SHARED_DAEMON "$out/bin/passff-shared-daemon"
-
-            cat > $out/lib/mozilla/native-messaging-hosts/passff.json <<JSON
-            {
-              "name": "passff",
-              "description": "Shared host for communicating with zx2c4 pass",
-              "path": "$out/bin/passff-shared-proxy",
-              "type": "stdio",
-              "allowed_extensions": [ "passff@invicem.pro" ]
-            }
-      JSON
-            ln -s $out/lib/mozilla/native-messaging-hosts/passff.json $out/share/passff-host/passff.json
-
-            runHook postInstall
-    '';
-  };
-
-  firefoxWithPassff = pkgs.firefox.override {
-    nativeMessagingHosts = [ passffSharedHost ];
-  };
-  firefoxPackage = firefoxWithPassff.overrideAttrs (old: {
+  firefoxPackage = pkgs.firefox.overrideAttrs (old: {
     buildCommand = old.buildCommand + ''
       substituteInPlace $out/bin/firefox \
         --replace "exec -a" ${escapeShellArg envStr}" exec -a"
@@ -83,7 +32,6 @@ let
     hash = "sha256-Xbe9gHO8Kf9C+QnWhZr21kl42rXUQzqSDIn99thO1kE=";
   };
 
-  passffSettings = builtins.fromJSON (builtins.readFile ./config/passff.json);
   sanitizeFirefoxPrefs =
     builtins.replaceStrings
       [
@@ -210,12 +158,10 @@ let
       force = true;
       packages = with pkgs.nur.repos.rycee.firefox-addons; [
         onepassword-password-manager
-        passff
         sponsorblock
         ublock-origin
         vimium
       ];
-      settings."passff@invicem.pro".settings = passffSettings;
     };
 
     search = {
@@ -410,8 +356,6 @@ let
     };
 in
 {
-  home.packages = [ passffSharedHost ];
-
   programs.firefox = {
     enable = true;
     configPath = ".mozilla/firefox";
@@ -454,28 +398,6 @@ in
         id = 8;
         isDefault = false;
       };
-    };
-  };
-
-  systemd.user.sockets.passff-shared = {
-    Unit.Description = "Shared PassFF daemon socket";
-    Socket = {
-      ListenStream = "%t/passff-shared.sock";
-      RemoveOnStop = true;
-      SocketMode = "0600";
-    };
-    Install.WantedBy = [ "sockets.target" ];
-  };
-
-  systemd.user.services.passff-shared = {
-    Unit.Description = "Shared PassFF daemon";
-    Service = {
-      Environment = [
-        "PASSFF_SHARED_METADATA_TTL=60"
-        "PASSFF_SHARED_PASS_COMMAND=${passWithOtp}/bin/pass"
-        "PASSFF_SHARED_REQUEST_TIMEOUT=60"
-      ];
-      ExecStart = "${passffSharedHost}/bin/passff-shared-daemon";
     };
   };
 

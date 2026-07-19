@@ -21,6 +21,7 @@ in
 {
   xdg.configFile."niri/config.kdl".text = ''
     // Autostart common desktop components
+    spawn-at-startup "1password"
     spawn-at-startup "nm-applet"
     spawn-at-startup "blueman-applet"
     spawn-at-startup "element-desktop" "--hidden"

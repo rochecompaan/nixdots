@@ -23,7 +23,7 @@
         // preset-window-heights { }
 
         // You can change the default width of the new windows.
-        default-column-width { proportion 0.5; }
+        default-column-width { proportion 1; }
 
         focus-ring {
             // Uncomment this line to disable the focus ring.

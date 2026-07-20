@@ -66,6 +66,9 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    # Numtide LLM agent packages
+    llm-agents.url = "github:numtide/llm-agents.nix";
+
     # OpenZiti packages + modules
     openziti-nix = {
       url = "github:rochecompaan/openziti-nix";

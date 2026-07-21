@@ -445,6 +445,8 @@ assert lib.assertMsg (
           //
           default_layout "default"
 
+          show_startup_tips false
+
           // Choose the mode that zellij uses when starting up.
           // Default: normal
           //

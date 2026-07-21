@@ -123,23 +123,6 @@ assert lib.assertMsg (
   };
 
   xdg.configFile = declarativeSessionLayouts // {
-    "zellij/layouts/roche-stacked.kdl".text = ''
-      layout {
-        default_tab_template {
-          pane size=1 borderless=true {
-            plugin location="zellij:tab-bar"
-          }
-          pane split_direction="vertical" {
-            pane
-            pane stacked=true {
-              pane expanded=true
-              pane
-              pane
-            }
-          }
-        }
-      }
-    '';
     "zellij/config.kdl".text = ''
           // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
           ui {
@@ -460,7 +443,7 @@ assert lib.assertMsg (
           // The name of the default layout to load on startup
           // Default: "default"
           //
-          default_layout "roche-stacked"
+          default_layout "default"
 
           // Choose the mode that zellij uses when starting up.
           // Default: normal

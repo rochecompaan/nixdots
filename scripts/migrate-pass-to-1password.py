@@ -18,7 +18,7 @@ import sys
 import unicodedata
 from collections import defaultdict
 from collections.abc import Callable, Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path, PurePosixPath
 from urllib.parse import SplitResult, urlsplit, urlunsplit
@@ -194,36 +194,78 @@ def run_command(
     return completed.stdout
 
 
+def _parse_since_epoch(raw: str) -> int:
+    lines = [line for line in raw.splitlines() if line]
+    if len(lines) != 1 or not lines[0].startswith("--max-age="):
+        raise CommandError("git returned an invalid --since cutoff")
+    value = lines[0].removeprefix("--max-age=")
+    try:
+        return int(value)
+    except ValueError as error:
+        raise CommandError("git returned an invalid --since cutoff") from error
+
+
+def _parse_added_paths(raw: str, cutoff: int) -> set[str]:
+    selected: set[str] = set()
+    author_timestamp: int | None = None
+    first_path_after_marker = False
+    for raw_token in raw.split("\0"):
+        if not raw_token:
+            continue
+        if raw_token.startswith("ENTRY:"):
+            try:
+                author_timestamp = int(raw_token.removeprefix("ENTRY:"))
+            except ValueError as error:
+                raise CommandError(
+                    "git returned an invalid addition timestamp"
+                ) from error
+            first_path_after_marker = True
+            continue
+        if author_timestamp is None:
+            raise CommandError("git returned a path without an addition timestamp")
+        token = raw_token
+        if first_path_after_marker:
+            if not token.startswith("\n"):
+                raise CommandError("git returned an invalid addition path stream")
+            token = token.removeprefix("\n")
+            first_path_after_marker = False
+        if token and author_timestamp >= cutoff:
+            selected.add(token)
+    return selected
+
+
 def discover_entries(
     store: Path,
     since: str,
     *,
     runner: Runner = run_command,
 ) -> list[str]:
+    cutoff = _parse_since_epoch(
+        runner(["git", "-C", str(store), "rev-parse", f"--since={since}"])
+    )
     raw = runner(
         [
             "git",
             "-C",
             str(store),
             "log",
-            f"--since={since}",
+            "--find-renames",
             "--diff-filter=A",
             "--name-only",
-            "--format=",
+            "--format=ENTRY:%at",
             "-z",
             "--",
             "*.gpg",
         ]
     )
     entries: set[str] = set()
-    for relative in raw.split("\0"):
-        if not relative or not relative.endswith(".gpg"):
+    for relative in _parse_added_paths(raw, cutoff):
+        if not relative.endswith(".gpg"):
             continue
         path = PurePosixPath(relative)
         if path.is_absolute() or ".." in path.parts:
             continue
-        current_file = store.joinpath(*path.parts)
-        if current_file.is_file():
+        if store.joinpath(*path.parts).is_file():
             entries.add(relative.removesuffix(".gpg"))
     return sorted(entries)
 
@@ -272,6 +314,7 @@ class ItemSummary:
     id: str
     title: str
     category: str
+    urls: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -309,14 +352,17 @@ def canonicalize_url(value: str) -> str:
         return normalize_title(stripped)
     scheme = parsed.scheme.casefold()
     hostname = parsed.hostname.casefold()
+    host = f"[{hostname}]" if ":" in hostname else hostname
+    userinfo, separator, _ = parsed.netloc.rpartition("@")
+    authority = f"{userinfo}{separator}{host}" if separator else host
     port = parsed.port
     if port is not None and not (
         (scheme == "http" and port == 80) or (scheme == "https" and port == 443)
     ):
-        hostname = f"{hostname}:{port}"
+        authority = f"{authority}:{port}"
     normalized = SplitResult(
         scheme,
-        hostname,
+        authority,
         parsed.path or "/",
         parsed.query,
         "",
@@ -443,28 +489,46 @@ def existing_item_from_json(raw: dict[str, object]) -> ExistingItem:
 
 
 def match_existing(entry: SourceEntry, items: list[ExistingItem]) -> MatchResult:
-    path_matches = sorted({item.id for item in items if entry.path in item.pass_paths})
+    normalized_title = normalize_title(entry.title)
+    same_title = [
+        item for item in items if normalize_title(item.title) == normalized_title
+    ]
+    path_matches = sorted(
+        {item.id for item in same_title if entry.path in item.pass_paths}
+    )
     if path_matches:
         kind = MatchKind.MATCH if len(path_matches) == 1 else MatchKind.AMBIGUOUS
         return MatchResult(kind, tuple(path_matches))
 
-    same_title = [
-        item for item in items if normalize_title(item.title) == normalize_title(entry.title)
-    ]
     source_usernames = {normalize_username(value) for value in entry.usernames}
     source_urls = {canonicalize_url(value) for value in entry.urls}
-    if not source_usernames and not source_urls:
-        identifier_matches = same_title
-    else:
-        identifier_matches = [
-            item
+    identifier_ids: set[str] = set()
+    if source_usernames:
+        identifier_ids.update(
+            item.id
             for item in same_title
             if source_usernames.intersection(
                 normalize_username(value) for value in item.usernames
             )
-            or source_urls.intersection(canonicalize_url(value) for value in item.urls)
-        ]
-    ids = tuple(sorted({item.id for item in identifier_matches}))
+        )
+    if source_urls:
+        identifier_ids.update(
+            item.id
+            for item in items
+            if source_urls.intersection(
+                canonicalize_url(value) for value in item.urls
+            )
+            and (
+                not source_usernames
+                or source_usernames.intersection(
+                    normalize_username(value) for value in item.usernames
+                )
+            )
+        )
+    if not source_usernames and not source_urls:
+        identifier_ids.update(item.id for item in same_title)
+
+    ids = tuple(sorted(identifier_ids))
     if not ids:
         return MatchResult(MatchKind.NONE)
     if len(ids) == 1:
@@ -510,7 +574,14 @@ def list_item_summaries(
             raise CommandError("op returned invalid item list response")
         if not isinstance(category, str):
             raise CommandError("op returned invalid item list response")
-        summaries.append(ItemSummary(item_id, title, category))
+        urls: list[str] = []
+        for url in _object_list(item.get("urls", []), "item list URL"):
+            href = url.get("href", "")
+            if not isinstance(href, str):
+                raise CommandError("op returned invalid item list URL response")
+            if href:
+                urls.append(href)
+        summaries.append(ItemSummary(item_id, title, category, tuple(urls)))
     return summaries
 
 
@@ -568,6 +639,7 @@ class MigrationContext:
     templates: dict[Category, dict[str, object]]
     summaries: dict[str, list[ItemSummary]]
     details: dict[str, ExistingItem]
+    url_summaries: dict[str, list[ItemSummary]] = field(default_factory=dict)
 
 
 def parse_args(argv: Sequence[str] | None = None) -> Options:
@@ -593,11 +665,16 @@ def parse_args(argv: Sequence[str] | None = None) -> Options:
     )
 
 
-def _index_summaries(items: list[ItemSummary]) -> dict[str, list[ItemSummary]]:
-    index: dict[str, list[ItemSummary]] = defaultdict(list)
+def _index_summaries(
+    items: list[ItemSummary],
+) -> tuple[dict[str, list[ItemSummary]], dict[str, list[ItemSummary]]]:
+    title_index: dict[str, list[ItemSummary]] = defaultdict(list)
+    url_index: dict[str, list[ItemSummary]] = defaultdict(list)
     for item in items:
-        index[normalize_title(item.title)].append(item)
-    return dict(index)
+        title_index[normalize_title(item.title)].append(item)
+        for url in item.urls:
+            url_index[canonicalize_url(url)].append(item)
+    return dict(title_index), dict(url_index)
 
 
 def preflight(
@@ -618,8 +695,10 @@ def preflight(
         raise MigrationError("password store is not a Git working tree")
     runner(["op", "vault", "get", options.vault, "--format", "json"])
     templates = load_templates(runner=runner)
-    summaries = _index_summaries(list_item_summaries(options.vault, runner=runner))
-    return MigrationContext(templates, summaries, {})
+    summaries, url_summaries = _index_summaries(
+        list_item_summaries(options.vault, runner=runner)
+    )
+    return MigrationContext(templates, summaries, {}, url_summaries)
 
 
 def _source_as_existing(entry: SourceEntry, item_id: str) -> ExistingItem:
@@ -638,8 +717,10 @@ def _add_in_memory_item(
     category: Category,
     item_id: str,
 ) -> None:
-    summary = ItemSummary(item_id, entry.title, category.value)
+    summary = ItemSummary(item_id, entry.title, category.value, entry.urls)
     context.summaries.setdefault(normalize_title(entry.title), []).append(summary)
+    for url in entry.urls:
+        context.url_summaries.setdefault(canonicalize_url(url), []).append(summary)
     context.details[item_id] = _source_as_existing(entry, item_id)
 
 
@@ -663,13 +744,26 @@ def _candidate_items(
     vault: str,
     runner: Runner,
 ) -> list[ExistingItem]:
+    title_summaries = context.summaries.get(normalize_title(entry.title), [])
+    title_ids = {summary.id for summary in title_summaries}
+    candidate_summaries = {summary.id: summary for summary in title_summaries}
+    for url in entry.urls:
+        for summary in context.url_summaries.get(canonicalize_url(url), []):
+            candidate_summaries.setdefault(summary.id, summary)
+
     candidates: list[ExistingItem] = []
-    for summary in context.summaries.get(normalize_title(entry.title), []):
-        if summary.id not in context.details:
+    for summary in candidate_summaries.values():
+        needs_detail = summary.id in title_ids or bool(entry.usernames)
+        if needs_detail and summary.id not in context.details:
             context.details[summary.id] = get_existing_item(
                 summary.id, vault, runner=runner
             )
-        candidates.append(context.details[summary.id])
+        if summary.id in context.details:
+            candidates.append(context.details[summary.id])
+        else:
+            candidates.append(
+                ExistingItem(summary.id, summary.title, (), summary.urls, ())
+            )
     return candidates
 
 

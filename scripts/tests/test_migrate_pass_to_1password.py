@@ -73,30 +73,51 @@ class DiscoveryAndCommandTests(unittest.TestCase):
             store = Path(directory)
             (store / "private").mkdir()
             (store / "private" / "new.gpg").write_bytes(b"synthetic encrypted bytes")
+            (store / "private" / "old.gpg").write_bytes(b"synthetic encrypted bytes")
             calls: list[tuple[list[str], dict[str, object]]] = []
+            responses = iter(
+                [
+                    "--max-age=1760000000\n",
+                    "ENTRY:1760000001\0\nprivate/new.gpg\0"
+                    "private/new.gpg\0private/deleted.gpg\0"
+                    "ENTRY:1759999999\0\nprivate/old.gpg\0",
+                ]
+            )
 
             def fake_runner(args, **kwargs):
                 calls.append((list(args), kwargs))
-                return "private/new.gpg\0private/new.gpg\0private/deleted.gpg\0"
+                return next(responses)
 
             found = migration.discover_entries(store, "2026-01-01", runner=fake_runner)
 
         self.assertEqual(found, ["private/new"])
         self.assertEqual(
             calls[0][0],
+            ["git", "-C", str(store), "rev-parse", "--since=2026-01-01"],
+        )
+        self.assertEqual(
+            calls[1][0],
             [
                 "git",
                 "-C",
                 str(store),
                 "log",
-                "--since=2026-01-01",
+                "--find-renames",
                 "--diff-filter=A",
                 "--name-only",
-                "--format=",
+                "--format=ENTRY:%at",
                 "-z",
                 "--",
                 "*.gpg",
             ],
+        )
+
+    def test_git_stream_preserves_a_leading_newline_in_a_filename(self) -> None:
+        self.assertEqual(
+            migration._parse_added_paths(
+                "ENTRY:200\0\n\nleading.gpg\0ordinary.gpg\0", 100
+            ),
+            {"\nleading.gpg", "ordinary.gpg"},
         )
 
     def test_real_git_history_selects_recent_additions_not_modifications(self) -> None:
@@ -108,17 +129,24 @@ class DiscoveryAndCommandTests(unittest.TestCase):
                 capture_output=True,
                 text=True,
             )
-            old = int(datetime(2025, 1, 1, tzinfo=timezone.utc).timestamp())
-            recent = int(datetime(2026, 2, 1, tzinfo=timezone.utc).timestamp())
-            deleted = int(datetime(2026, 2, 2, tzinfo=timezone.utc).timestamp())
+            old_author = int(
+                datetime(2025, 1, 1, tzinfo=timezone.utc).timestamp()
+            )
+            rewritten_committer = int(
+                datetime(2026, 2, 7, tzinfo=timezone.utc).timestamp()
+            )
+            recent = int(datetime(2026, 2, 10, tzinfo=timezone.utc).timestamp())
+            deleted = int(datetime(2026, 2, 11, tzinfo=timezone.utc).timestamp())
             stream = (
                 "commit refs/heads/main\n"
                 "mark :1\n"
-                f"author Test <test@example.com> {old} +0000\n"
-                f"committer Test <test@example.com> {old} +0000\n"
+                f"author Test <test@example.com> {old_author} +0000\n"
+                f"committer Test <test@example.com> {rewritten_committer} +0000\n"
                 "data 7\ninitial\n"
                 "M 100644 inline old.gpg\n"
                 "data 4\nold\n"
+                "M 100644 inline private/renamed-old.gpg\n"
+                "data 8\nrenamed\n"
                 "\n"
                 "commit refs/heads/main\n"
                 "mark :2\n"
@@ -132,6 +160,7 @@ class DiscoveryAndCommandTests(unittest.TestCase):
                 "data 4\nnew\n"
                 "M 100644 inline private/deleted.gpg\n"
                 "data 5\ngone\n"
+                "R private/renamed-old.gpg private/renamed-current.gpg\n"
                 "\n"
                 "commit refs/heads/main\n"
                 "mark :3\n"
@@ -161,6 +190,28 @@ class DiscoveryAndCommandTests(unittest.TestCase):
             found = migration.discover_entries(store, "2026-01-01")
 
         self.assertEqual(found, ["private/new"])
+
+    def test_discovery_rejects_malformed_cutoff_and_author_stream(self) -> None:
+        cases = {
+            "missing cutoff": ["\n"],
+            "invalid cutoff": ["--max-age=not-a-number\n"],
+            "path before marker": ["--max-age=1\n", "private/new.gpg\0"],
+            "invalid marker": [
+                "--max-age=1\n",
+                "ENTRY:nope\0\nprivate/new.gpg\0",
+            ],
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            store = Path(directory)
+            for label, responses in cases.items():
+                with self.subTest(label=label):
+                    answers = iter(responses)
+                    with self.assertRaises(migration.MigrationError):
+                        migration.discover_entries(
+                            store,
+                            "6 months ago",
+                            runner=lambda args, **kwargs: next(answers),
+                        )
 
     def test_decrypt_entry_sets_only_the_store_path_in_environment(self) -> None:
         calls: list[tuple[list[str], dict[str, object]]] = []
@@ -338,6 +389,20 @@ class OnePasswordMappingTests(unittest.TestCase):
             migration.canonicalize_url("https://example.com/login"),
             migration.canonicalize_url("https://example.com/admin"),
         )
+        self.assertEqual(
+            migration.canonicalize_url(
+                "HTTPS://alice:credential-one@Example.COM:443/login"
+            ),
+            "https://alice:credential-one@example.com/login",
+        )
+        self.assertNotEqual(
+            migration.canonicalize_url(
+                "https://alice:credential-one@example.com/login"
+            ),
+            migration.canonicalize_url(
+                "https://alice:credential-two@example.com/login"
+            ),
+        )
 
     def test_matching_prefers_path_then_identifiers_and_reports_ambiguity(self) -> None:
         entry = migration.parse_pass_output(
@@ -384,6 +449,139 @@ class OnePasswordMappingTests(unittest.TestCase):
             migration.match_existing(title_only_entry, [title_only_item]).kind,
             migration.MatchKind.MATCH,
         )
+
+    def test_vault_wide_url_matching_uses_username_when_available(self) -> None:
+        source = migration.parse_pass_output(
+            "private/source-title",
+            "synthetic\nusername: alice@example.com\n"
+            "url: https://example.com/login\n",
+        )
+        matching = migration.ExistingItem(
+            "match",
+            "Different title",
+            ("alice@example.com",),
+            ("https://example.com/login",),
+            (),
+        )
+        wrong_username = migration.ExistingItem(
+            "wrong-user",
+            "Different title",
+            ("bob@example.com",),
+            ("https://example.com/login",),
+            (),
+        )
+        same_title_wrong_username = migration.ExistingItem(
+            "same-title-wrong-user",
+            "source-title",
+            ("bob@example.com",),
+            ("https://example.com/login",),
+            (),
+        )
+        hostname_only = migration.ExistingItem(
+            "wrong-path",
+            "Different title",
+            ("alice@example.com",),
+            ("https://example.com/admin",),
+            (),
+        )
+
+        self.assertEqual(
+            migration.match_existing(source, [matching]).item_ids,
+            ("match",),
+        )
+        self.assertEqual(
+            migration.match_existing(source, [wrong_username]).kind,
+            migration.MatchKind.NONE,
+        )
+        self.assertEqual(
+            migration.match_existing(source, [same_title_wrong_username]).kind,
+            migration.MatchKind.NONE,
+        )
+        self.assertEqual(
+            migration.match_existing(source, [hostname_only]).kind,
+            migration.MatchKind.NONE,
+        )
+
+    def test_vault_wide_url_matches_without_source_username(self) -> None:
+        source = migration.parse_pass_output(
+            "private/source-title",
+            "synthetic\nurl: https://example.com/login\n",
+        )
+        first = migration.ExistingItem(
+            "first", "Other", (), ("https://example.com/login",), ()
+        )
+        second = migration.ExistingItem(
+            "second", "Another", (), ("https://example.com/login",), ()
+        )
+
+        self.assertEqual(
+            migration.match_existing(source, [first]).kind,
+            migration.MatchKind.MATCH,
+        )
+        self.assertEqual(
+            migration.match_existing(source, [first, second]).kind,
+            migration.MatchKind.AMBIGUOUS,
+        )
+
+    def test_exact_pass_path_is_terminal_before_vault_url_matches(self) -> None:
+        source = migration.parse_pass_output(
+            "private/source-title",
+            "synthetic\nusername: alice@example.com\n"
+            "url: https://example.com/login\n",
+        )
+        path_match = migration.ExistingItem(
+            "path", "source-title", (), (), ("private/source-title",)
+        )
+        url_match = migration.ExistingItem(
+            "url",
+            "Different title",
+            ("alice@example.com",),
+            ("https://example.com/login",),
+            (),
+        )
+
+        self.assertEqual(
+            migration.match_existing(source, [path_match, url_match]).item_ids,
+            ("path",),
+        )
+
+    def test_item_summaries_include_urls_and_reject_malformed_urls(self) -> None:
+        summary = migration.list_item_summaries(
+            "Private",
+            runner=lambda args, **kwargs: json.dumps(
+                [
+                    {
+                        "id": "item-id",
+                        "title": "Different title",
+                        "category": "LOGIN",
+                        "urls": [
+                            {
+                                "href": "https://example.com/login",
+                                "primary": True,
+                            }
+                        ],
+                    }
+                ]
+            ),
+        )[0]
+        self.assertEqual(summary.urls, ("https://example.com/login",))
+
+        malformed = [
+            {"id": "item-id", "title": "Title", "category": "LOGIN", "urls": {}},
+            {
+                "id": "item-id",
+                "title": "Title",
+                "category": "LOGIN",
+                "urls": [{"href": 123}],
+            },
+        ]
+        for item in malformed:
+            with self.subTest(item=item):
+                with self.assertRaises(migration.MigrationError):
+                    migration.list_item_summaries(
+                        "Private",
+                        runner=lambda args, item=item, **kwargs: json.dumps([item]),
+                    )
 
     def test_existing_secondary_username_participates_in_matching(self) -> None:
         source = migration.parse_pass_output(
@@ -566,11 +764,10 @@ class OrchestrationTests(unittest.TestCase):
             def fake_runner(args, **kwargs):
                 command = list(args)
                 calls.append(command)
-                if (
-                    command[0:3] == ["git", "-C", str(store)]
-                    and "rev-parse" in command
-                ):
-                    return "true\n"
+                if command[0:3] == ["git", "-C", str(store)] and "rev-parse" in command:
+                    if "--is-inside-work-tree" in command:
+                        return "true\n"
+                    return "--max-age=1\n"
                 if command[:3] == ["op", "vault", "get"]:
                     return "{}"
                 if command[:4] == ["op", "item", "template", "get"]:
@@ -584,7 +781,7 @@ class OrchestrationTests(unittest.TestCase):
                 if command[:3] == ["op", "item", "list"]:
                     return "[]"
                 if command[0] == "git" and "log" in command:
-                    return "private/github.gpg\0"
+                    return "ENTRY:2\0\nprivate/github.gpg\0"
                 if command[:2] == ["pass", "show"]:
                     return (
                         "SYNTHETIC-PASSWORD\nusername: alice\n"
@@ -653,6 +850,63 @@ class OrchestrationTests(unittest.TestCase):
             output,
             ["ERROR preflight: op returned invalid Login template response"],
         )
+
+    def test_url_candidates_fetch_details_only_for_username_comparison(self) -> None:
+        url = "https://example.com/login"
+        summary = migration.ItemSummary(
+            "item-id", "Different title", "LOGIN", (url,)
+        )
+        url_index = {migration.canonicalize_url(url): [summary]}
+        source_without_username = migration.parse_pass_output(
+            "private/source", f"synthetic\nurl: {url}\n"
+        )
+        context = migration.MigrationContext({}, {}, {}, url_index)
+
+        candidates = migration._candidate_items(
+            context,
+            source_without_username,
+            "Private",
+            runner=lambda args, **kwargs: self.fail(
+                "summary-only URL match fetched item details"
+            ),
+        )
+        self.assertEqual(candidates[0].id, "item-id")
+        self.assertEqual(candidates[0].urls, (url,))
+
+        calls: list[list[str]] = []
+
+        def fake_runner(args, **kwargs):
+            calls.append(list(args))
+            return json.dumps(
+                {
+                    "id": "item-id",
+                    "title": "Different title",
+                    "urls": [{"href": url, "primary": True}],
+                    "fields": [
+                        {
+                            "id": "username",
+                            "type": "STRING",
+                            "purpose": "USERNAME",
+                            "label": "username",
+                            "value": "alice@example.com",
+                        }
+                    ],
+                }
+            )
+
+        source_with_username = migration.parse_pass_output(
+            "private/source",
+            f"synthetic\nusername: alice@example.com\nurl: {url}\n",
+        )
+        context = migration.MigrationContext({}, {}, {}, url_index)
+        candidates = migration._candidate_items(
+            context, source_with_username, "Private", runner=fake_runner
+        )
+
+        self.assertEqual(candidates[0].usernames, ("alice@example.com",))
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(calls[0][:3], ["op", "item", "get"])
+        self.assertNotIn("--reveal", calls[0])
 
     def test_ambiguity_returns_one_and_continues_to_later_entries(self) -> None:
         options = migration.Options(
@@ -730,9 +984,15 @@ def template(category):
 
 if name == "git":
     if "rev-parse" in args:
-        print("true")
+        if "--is-inside-work-tree" in args:
+            print("true")
+        else:
+            print("--max-age=1")
     elif "log" in args:
-        sys.stdout.write("private/github.gpg\0api/service-token.gpg\0")
+        sys.stdout.write(
+            "ENTRY:2\0\nprivate/github.gpg\0private/newsite.gpg\0"
+            "api/service-token.gpg\0"
+        )
     else:
         raise SystemExit(3)
 elif name == "pass":
@@ -742,6 +1002,12 @@ elif name == "pass":
             "username: alice@example.com\n"
             "url: https://example.com/login\n"
             "otp: otpauth://totp/Example:alice?secret=TESTFIXTURE\n"
+        ),
+        "private/newsite": (
+            "SYNTHETIC-NEW-SITE-SECRET\n"
+            "username: bob@example.com\n"
+            "url: https://new.example.com/login\n"
+            "otp: otpauth://totp/New:Bob?secret=TESTFIXTURE\n"
         ),
         "api/service-token": "SYNTHETIC-API-SECRET\n",
     }
@@ -758,7 +1024,12 @@ elif name == "op":
         print(json.dumps(template(category)))
     elif args[:2] == ["item", "list"]:
         print(json.dumps([
-            {"id": item["id"], "title": item["title"], "category": item["category"]}
+            {
+                "id": item["id"],
+                "title": item["title"],
+                "category": item["category"],
+                "urls": item.get("urls", []),
+            }
             for item in state["items"]
         ]))
     elif args[:2] == ["item", "get"]:
@@ -787,6 +1058,7 @@ class EndToEndTests(unittest.TestCase):
             (store / "private").mkdir(parents=True)
             (store / "api").mkdir()
             (store / "private" / "github.gpg").write_bytes(b"encrypted")
+            (store / "private" / "newsite.gpg").write_bytes(b"encrypted")
             (store / "api" / "service-token.gpg").write_bytes(b"encrypted")
 
             dispatcher = fake_bin / "dispatcher"
@@ -812,7 +1084,27 @@ class EndToEndTests(unittest.TestCase):
                                         "value": "api/service-token",
                                     }
                                 ],
-                            }
+                            },
+                            {
+                                "id": "existing-login",
+                                "title": "Different title",
+                                "category": "LOGIN",
+                                "urls": [
+                                    {
+                                        "href": "https://example.com/login",
+                                        "primary": True,
+                                    }
+                                ],
+                                "fields": [
+                                    {
+                                        "id": "username",
+                                        "type": "STRING",
+                                        "purpose": "USERNAME",
+                                        "label": "username",
+                                        "value": "alice@example.com",
+                                    }
+                                ],
+                            },
                         ]
                     }
                 )
@@ -829,12 +1121,13 @@ class EndToEndTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(dry_run.returncode, 0, dry_run.stderr)
-            self.assertIn("CREATE private/github [Login]", dry_run.stdout)
+            self.assertIn("SKIP private/github [Login]", dry_run.stdout)
+            self.assertIn("CREATE private/newsite [Login]", dry_run.stdout)
             self.assertIn(
                 "SKIP api/service-token [API Credential]", dry_run.stdout
             )
             self.assertNotIn("SYNTHETIC-LOGIN-SECRET", dry_run.stdout)
-            self.assertEqual(len(json.loads(state_path.read_text())["items"]), 1)
+            self.assertEqual(len(json.loads(state_path.read_text())["items"]), 2)
 
             apply = subprocess.run(
                 [str(SCRIPT), "--store", str(store), "--apply"],
@@ -844,14 +1137,15 @@ class EndToEndTests(unittest.TestCase):
                 check=False,
             )
             self.assertEqual(apply.returncode, 0, apply.stderr)
-            self.assertIn("CREATED private/github [Login]", apply.stdout)
+            self.assertIn("CREATED private/newsite [Login]", apply.stdout)
+            self.assertNotIn("CREATED private/github", apply.stdout)
             state = json.loads(state_path.read_text())
-            self.assertEqual(len(state["items"]), 2)
+            self.assertEqual(len(state["items"]), 3)
             created = next(
                 item for item in state["items"] if item["id"].startswith("created-")
             )
             fields = {field["label"]: field for field in created["fields"]}
-            self.assertEqual(fields["pass path"]["value"], "private/github")
+            self.assertEqual(fields["pass path"]["value"], "private/newsite")
             self.assertEqual(fields["one-time password"]["type"], "OTP")
             self.assertEqual(created["tags"], ["migrated-from-pass"])
 
@@ -864,7 +1158,7 @@ class EndToEndTests(unittest.TestCase):
             )
             self.assertEqual(rerun.returncode, 0, rerun.stderr)
             self.assertNotIn("CREATED", rerun.stdout)
-            self.assertEqual(len(json.loads(state_path.read_text())["items"]), 2)
+            self.assertEqual(len(json.loads(state_path.read_text())["items"]), 3)
 
 
 if __name__ == "__main__":

@@ -5,6 +5,7 @@
     ./hypridle
     ./hyprpaper
     ./low-battery
+    ./meeting-notifier
     ./noctalia
     ./notes
     ./streamlinear

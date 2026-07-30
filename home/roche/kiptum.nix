@@ -17,6 +17,15 @@
   };
   lowBatteryAlert.enable = true;
 
+  services.meetingNotifier = {
+    enable = true;
+    accounts = {
+      alpha.firefoxProfile = "clubhouse";
+      sixfeetup.firefoxProfile = "sixfeetup";
+      upfront.firefoxProfile = "default";
+    };
+  };
+
   # Idle suspend after 30 minutes
   services.hypridle.settings.listener = [
     {

@@ -20,6 +20,15 @@
     terminal = "kitty";
   };
 
+  services.meetingNotifier = {
+    enable = true;
+    accounts = {
+      alpha.firefoxProfile = "clubhouse";
+      sixfeetup.firefoxProfile = "sixfeetup";
+      upfront.firefoxProfile = "default";
+    };
+  };
+
   # Niri: host-specific output mode, scale, and named workspaces.
   # Append to the main Niri config in a single block to avoid duplicate option definitions.
   xdg.configFile."niri/config.kdl".text = lib.mkAfter ''

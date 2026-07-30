@@ -7,14 +7,12 @@
 let
   noctalia = lib.getExe config.programs.noctalia.package;
 
+  firefoxLauncher = pkgs.callPackage ../firefox-launcher/package.nix {
+    firefox = config.programs.firefox.package;
+  };
   firefoxProfiles = pkgs.writeShellApplication {
     name = "niri-firefox-profiles";
-    runtimeInputs = [
-      config.programs.firefox.package
-      pkgs.coreutils
-      pkgs.jq
-      pkgs.niri
-    ];
+    runtimeInputs = [ firefoxLauncher ];
     text = builtins.readFile ./firefox-profiles.sh;
   };
 in

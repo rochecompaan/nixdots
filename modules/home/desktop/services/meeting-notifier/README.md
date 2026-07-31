@@ -6,6 +6,14 @@ names only. OAuth clients, tokens, account identities, selected calendar IDs,
 event snapshots, and notification state stay in the user's XDG data/state
 directories and never enter this repository or the Nix store.
 
+## Zoom web-client joins
+
+When **Join** receives a standard `https://<zoom-host>/j/<numeric-id>` URL,
+meeting-notifier opens `https://<zoom-host>/wc/<numeric-id>/start` directly in
+the configured Firefox profile. It preserves the Zoom `pwd` value and sets the
+browser-client launch parameters. Other validated Zoom URL shapes and Google
+Meet URLs open unchanged.
+
 ## Google OAuth setup
 
 1. In a Google Cloud project, enable the Google Calendar API.

@@ -30,6 +30,7 @@ type Client struct {
 	workspace    string
 	allowedHosts []string
 	runner       Runner
+	transformURL func(string) (string, error)
 }
 
 func NewClient(cfg config.Config, runner Runner) Client {
@@ -38,6 +39,7 @@ func NewClient(cfg config.Config, runner Runner) Client {
 		workspace:    cfg.Workspace,
 		allowedHosts: append([]string(nil), cfg.AllowedHosts...),
 		runner:       runner,
+		transformURL: meeting.ZoomWebClientURL,
 	}
 }
 
@@ -51,7 +53,15 @@ func (c Client) Open(ctx context.Context, profile, rawURL string) error {
 	if err != nil {
 		return fmt.Errorf("validate meeting URL: %w", err)
 	}
-	if err := c.runner.Run(ctx, c.launcherBin, append(args, validatedURL)...); err != nil {
+	launchURL, err := c.transformURL(validatedURL)
+	if err != nil {
+		return fmt.Errorf("prepare meeting launch URL: %w", err)
+	}
+	launchURL, err = meeting.ValidateURL(launchURL, c.allowedHosts)
+	if err != nil {
+		return fmt.Errorf("validate meeting launch URL: %w", err)
+	}
+	if err := c.runner.Run(ctx, c.launcherBin, append(args, launchURL)...); err != nil {
 		if ctx.Err() != nil {
 			return ctx.Err()
 		}

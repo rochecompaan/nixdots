@@ -149,6 +149,9 @@ func (a Authorizer) Authorize(ctx context.Context, credentialsJSON []byte) (*oau
 	for {
 		select {
 		case result := <-results:
+			if err := server.Shutdown(flowCtx); err != nil && !errors.Is(err, net.ErrClosed) {
+				return nil, nil, fmt.Errorf("shut down OAuth callback server: %w", err)
+			}
 			if result.err != nil {
 				return nil, nil, result.err
 			}

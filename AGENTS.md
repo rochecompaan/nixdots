@@ -44,6 +44,10 @@
 - If signing/hooks fail because of sandbox limits, always request escalated
   sandbox permissions and retry the commit properly.
 
+## VERY IMPORTANT: No Intervals Time Tracking
+
+- This repository contains personal work. Never start an Intervals timer or create an Intervals time entry for work in this repository.
+
 ## Coding Style & Naming Conventions
 
 - Nix: 2-space indent, trailing commas, one attr per line.

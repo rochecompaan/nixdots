@@ -1527,11 +1527,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1781074563,
-        "narHash": "sha256-md8WlXOlfnIeHeOScMTTHFyf2d6iaTwPl2apR5EQ3P4=",
+        "lastModified": 1785828668,
+        "narHash": "sha256-8fsyqeO+mJqvIzeO4xIpgJe/f7MTbbVTEC6RT6WSXNs=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "9ae611a455b90cf061d8f332b977e387bda8e1ca",
+        "rev": "e72e4f299401a3689d4b3d5fc6496b11db7064eb",
         "type": "github"
       },
       "original": {
@@ -1668,11 +1668,11 @@
     },
     "nixpkgs_7": {
       "locked": {
-        "lastModified": 1781216227,
-        "narHash": "sha256-9mUW6gNwoN2SWc/l0fW4svPNOulXLl8ijqKyeSOGgJE=",
+        "lastModified": 1785858998,
+        "narHash": "sha256-fKCq5jphd6l/Ms6gc3dptkw/TcKLYub9lQE5g6rbbkc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "a0374025a863d007d98e3297f6aa46cc3141c2f0",
+        "rev": "04607e1165ac22c5fde6dcc54c9e0b3c0487c555",
         "type": "github"
       },
       "original": {
@@ -1971,11 +1971,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1785752513,
-        "narHash": "sha256-smSsJ2i/lWy7ztVQCMY4fQzM5Wpx6I6iheZoThvsI20=",
+        "lastModified": 1785934013,
+        "narHash": "sha256-48SWQ6mGqPrFO/++9qAhckolNGRrrkB9GCcW2/m9ck8=",
         "ref": "refs/heads/main",
-        "rev": "fa410548abe77eff8f0572808038810189594a2a",
-        "revCount": 127,
+        "rev": "4246ff80f874e446632a4e4915e7b137bf7df40c",
+        "revCount": 128,
         "type": "git",
         "url": "ssh://git@git.compaan/roche/pi-config.git"
       },

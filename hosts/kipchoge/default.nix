@@ -198,6 +198,12 @@
           header_up Host jellyfin.compaan
         }
       }
+
+      :8123 {
+        reverse_proxy https://ha.compaan {
+          header_up Host ha.compaan
+        }
+      }
     '';
   };
 

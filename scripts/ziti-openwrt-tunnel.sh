@@ -103,8 +103,13 @@ resolve_ipk() {
 copy_and_install() {
   require_cmd ssh
   require_cmd scp
+  local base
+  base=$(basename -- "$ipk_path")
+  # Install the exact file: stale packages in /tmp plus a glob match make
+  # opkg report the installed release as up to date without upgrading.
+  ssh "$router" 'rm -f /tmp/ziti-edge-tunnel_*.ipk'
   scp "$ipk_path" "$router:/tmp/"
-  ssh "$router" 'opkg update && opkg install /tmp/ziti-edge-tunnel_*.ipk'
+  ssh "$router" "opkg update && opkg install '/tmp/$base' && rm -f '/tmp/$base'"
 }
 
 cmd_install() {

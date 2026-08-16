@@ -206,8 +206,10 @@ case_enroll_timeout_reports_logs() {
 case_install_with_ipk_skips_build() {
   printf 'fake-ipk\n' >"$root/given.ipk"
   run_script install --ipk "$root/given.ipk"
+  assert_contains "$TEST_LOG" 'rm -f /tmp/ziti-edge-tunnel_*.ipk'
   assert_contains "$TEST_LOG" "scp $root/given.ipk"
-  assert_contains "$TEST_LOG" 'opkg update && opkg install /tmp/ziti-edge-tunnel_*.ipk'
+  assert_contains "$TEST_LOG" "opkg install '/tmp/given.ipk'"
+  assert_not_contains "$TEST_LOG" 'opkg install /tmp/ziti-edge-tunnel_*'
   assert_contains "$TEST_LOG" 'ziti-edge-tunnel version'
   assert_not_contains "$TEST_LOG" 'nix build'
 }
@@ -217,7 +219,8 @@ case_install_builds_ipk() {
   assert_contains "$TEST_LOG" 'nix build'
   assert_contains "$TEST_LOG" 'scp '
   assert_contains "$TEST_LOG" 'result/ziti-edge-tunnel_1.15.1-1_mipsel_24kc.ipk'
-  assert_contains "$TEST_LOG" 'opkg install'
+  assert_contains "$TEST_LOG" "opkg install '/tmp/ziti-edge-tunnel_1.15.1-1_mipsel_24kc.ipk'"
+  assert_not_contains "$TEST_LOG" 'opkg install /tmp/ziti-edge-tunnel_*'
 }
 
 case_install_rejects_missing_ipk() {

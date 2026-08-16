@@ -1,0 +1,11 @@
+#!/bin/sh
+# Supervised entrypoint for the ziti-edge-tunnel procd instance.
+#
+# This must not run through rc.common: rc.common sources procd.sh, whose
+# _procd_wrapper takes the service flock on fd 1000 the moment it is
+# sourced. A long-lived supervised process started that way holds the
+# service lock for its whole lifetime and deadlocks every later init.d
+# action (running/stop/restart, and package prerm/postinst).
+. "${ZITI_FUNCTIONS_SH:-/lib/functions.sh}"
+. "${ZITI_INIT_SCRIPT:-/etc/init.d/ziti-edge-tunnel}"
+run_managed

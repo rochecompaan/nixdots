@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ziti-edge-tunnel
 PKG_VERSION:=1.15.1
-PKG_RELEASE:=2
+PKG_RELEASE:=3
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Roché Compaan
@@ -80,6 +80,8 @@ define Package/ziti-edge-tunnel/install
 	$(INSTALL_CONF) ./files/etc/config/ziti-edge-tunnel $(1)/etc/config/ziti-edge-tunnel
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/etc/init.d/ziti-edge-tunnel $(1)/etc/init.d/ziti-edge-tunnel
+	$(INSTALL_DIR) $(1)/usr/lib/ziti-edge-tunnel
+	$(INSTALL_BIN) ./files/usr/lib/ziti-edge-tunnel/run-managed $(1)/usr/lib/ziti-edge-tunnel/run-managed
 	$(INSTALL_DIR) $(1)/etc/openziti/identities
 	chmod 0700 $(1)/etc/openziti/identities
 endef

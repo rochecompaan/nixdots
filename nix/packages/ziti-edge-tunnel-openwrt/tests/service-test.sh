@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-init_script=${1:?usage: service-test.sh /path/to/init-script [shell-command ...]}
-shift || true
+init_script=${1:?usage: service-test.sh /path/to/init-script /path/to/run-managed [shell-command ...]}
+wrapper_script=${2:?missing wrapper script path}
+shift 2 || true
 shells=("$@")
 [ "${#shells[@]}" -gt 0 ] || shells=(bash)
 
@@ -144,8 +145,9 @@ exit 64
 MOCK
   chmod 0755 "$ZITI_PROG"
 
-  # POSIX-only mocks: the wrapper must also run under BusyBox ash.
-  cat >"$root/wrapper" <<'WRAPPER'
+  # Mocks for the shipped supervised wrapper, sourced via ZITI_FUNCTIONS_SH.
+  # POSIX-only: the wrapper must also run under BusyBox ash.
+  cat >"$root/mocks" <<'WRAPPER'
 config_load() { [ "$1" = ziti-edge-tunnel ]; }
 config_get_bool() { eval "$1=\"$TEST_ENABLED\""; }
 config_get() {
@@ -160,11 +162,10 @@ procd_open_instance() { :; }
 procd_set_param() { :; }
 procd_close_instance() { :; }
 procd_add_reload_trigger() { :; }
-. "$ZITI_INIT_SCRIPT"
-run_managed
 WRAPPER
+  export ZITI_FUNCTIONS_SH="$root/mocks"
 
-  $shell_cmd "$root/wrapper" >"$root/wrapper.out" 2>&1 &
+  $shell_cmd "$wrapper_script" >"$root/wrapper.out" 2>&1 &
   tracked=$!
   started=0
   for _ in $(seq 1 100); do
@@ -205,7 +206,8 @@ case_existing_identity() {
   printf '{}\n' >"$TEST_IDENTITY"
   chmod 0644 "$TEST_IDENTITY"
   start_service
-  assert_contains "$root/procd-command" "$init_script run_managed"
+  assert_contains "$root/procd-command" '/usr/lib/ziti-edge-tunnel/run-managed'
+  if ( run_managed ); then fail 'managed run succeeded'; fi
   [[ $(stat -c %a "$TEST_IDENTITY") = 600 ]] || fail 'identity mode was not corrected'
 }
 
@@ -218,7 +220,11 @@ case_failed_enrollment() {
   printf 'signed.jwt\n' >"$TEST_JWT"
   chmod 0600 "$TEST_JWT"
   export TEST_ENROLL_RESULT=failure
-  if start_service; then fail 'failed enrollment succeeded'; fi
+  # start_service validates local material only; enrollment runs in the
+  # supervised process so package maintainer scripts never block on it.
+  start_service
+  assert_contains "$root/procd-command" '/usr/lib/ziti-edge-tunnel/run-managed'
+  if ( run_managed ); then fail 'failed enrollment succeeded'; fi
   assert_file "$TEST_JWT"
   assert_no_file "$TEST_IDENTITY"
 }
@@ -227,9 +233,12 @@ case_successful_enrollment() {
   printf 'signed.jwt\n' >"$TEST_JWT"
   chmod 0600 "$TEST_JWT"
   start_service
+  assert_file "$TEST_JWT"
+  assert_no_file "$TEST_IDENTITY"
+  assert_contains "$root/procd-command" '/usr/lib/ziti-edge-tunnel/run-managed'
+  if ( run_managed ); then fail 'managed run succeeded'; fi
   assert_file "$TEST_IDENTITY"
   assert_no_file "$TEST_JWT"
-  assert_contains "$root/procd-command" "$init_script run_managed"
 }
 
 case_existing_identity_preserves_jwt() {
@@ -237,6 +246,7 @@ case_existing_identity_preserves_jwt() {
   printf 'unused.jwt\n' >"$TEST_JWT"
   chmod 0600 "$TEST_JWT"
   start_service
+  if ( run_managed ); then fail 'managed run succeeded'; fi
   assert_file "$TEST_JWT"
   assert_contains "$root/log" 'identity already exists; leaving JWT untouched'
 }
@@ -264,7 +274,8 @@ case_identity_symlink_rejected() {
   ln -s "$root/elsewhere.json" "$TEST_IDENTITY"
   printf 'signed.jwt\n' >"$TEST_JWT"
   chmod 0600 "$TEST_JWT"
-  if start_service; then fail 'identity symlink succeeded'; fi
+  start_service
+  if ( run_managed ); then fail 'identity symlink succeeded'; fi
   assert_file "$TEST_JWT"
   assert_no_file "$root/elsewhere.json"
 }
@@ -335,9 +346,7 @@ MOCK
     ln -s "$busybox_bin" "$root/bb/$app"
   done
 
-  cat >"$root/wrapper" <<'WRAPPER'
-PATH=$TEST_BB_DIR
-export PATH
+  cat >"$root/mocks" <<'WRAPPER'
 config_load() { [ "$1" = ziti-edge-tunnel ]; }
 config_get_bool() { eval "$1=\"$TEST_ENABLED\""; }
 config_get() {
@@ -358,6 +367,12 @@ procd_set_param() {
 }
 procd_close_instance() { :; }
 procd_add_reload_trigger() { :; }
+WRAPPER
+
+  cat >"$root/start-driver" <<'WRAPPER'
+PATH=$TEST_BB_DIR
+export PATH
+. "$TEST_MOCKS"
 . "$ZITI_INIT_SCRIPT"
 start_service
 WRAPPER
@@ -368,12 +383,20 @@ WRAPPER
 case_busybox_enrollment_without_stat() {
   printf 'signed.jwt\n' >"$TEST_JWT"
   chmod 0600 "$TEST_JWT"
-  if ! "$busybox_bin" ash "$root/wrapper"; then
-    fail 'enrollment failed under BusyBox without stat'
+  export TEST_MOCKS="$root/mocks"
+  if ! "$busybox_bin" ash "$root/start-driver"; then
+    fail 'start_service failed under BusyBox without stat'
+  fi
+  assert_contains "$TEST_PROCD_COMMAND" '/usr/lib/ziti-edge-tunnel/run-managed'
+  assert_file "$TEST_JWT"
+  assert_no_file "$TEST_IDENTITY"
+  # The supervised entrypoint performs enrollment under the same userland.
+  if PATH="$TEST_BB_DIR" ZITI_FUNCTIONS_SH="$root/mocks" \
+    "$busybox_bin" ash "$wrapper_script"; then
+    fail 'supervised run succeeded unexpectedly'
   fi
   assert_file "$TEST_IDENTITY"
   assert_no_file "$TEST_JWT"
-  assert_contains "$TEST_PROCD_COMMAND" "$init_script run_managed"
   [[ $(stat -c %a "$TEST_IDENTITY") = 600 ]] || fail 'identity mode was not corrected'
 }
 
@@ -405,4 +428,16 @@ else
   printf 'skipping busybox environment tests: busybox not found\n'
 fi
 
-printf 'service tests: %s passed\n' "$((11 + signal_cases + busybox_cases))"
+# The supervised entrypoint must never source rc.common/procd.sh: sourcing
+# procd.sh takes the service flock, and a long-lived supervised process
+# holding it deadlocks every later init.d action.
+case_wrapper_avoids_procd_lock() {
+  if grep -E '^[[:space:]]*\.[[:space:]].*(rc\.common|procd\.sh)' "$wrapper_script" >/dev/null; then
+    fail 'supervised wrapper sources rc.common/procd.sh'
+  fi
+  assert_contains "$wrapper_script" '/lib/functions.sh'
+  assert_contains "$wrapper_script" 'run_managed'
+}
+case_wrapper_avoids_procd_lock
+
+printf 'service tests: %s passed\n' "$((11 + signal_cases + busybox_cases + 1))"

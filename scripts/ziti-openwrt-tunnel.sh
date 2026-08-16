@@ -125,14 +125,12 @@ cmd_update() {
   parse_common "$@"
   resolve_ipk
   copy_and_install
-  # The package ships no postinst, so a running tunnel keeps the old
-  # binary until restarted.
-  if ssh "$router" '/etc/init.d/ziti-edge-tunnel running'; then
-    ssh "$router" '/etc/init.d/ziti-edge-tunnel restart'
-    ssh "$router" '/etc/init.d/ziti-edge-tunnel running' ||
-      die "tunnel did not come back after restart; check: ssh $router 'logread -e ziti-edge-tunnel'"
-  else
-    printf 'tunnel not running on %s; leaving it stopped\n' "$router"
+  # OpenWrt's package maintainer scripts stop and start the service around
+  # the upgrade, so a running tunnel comes back on the new version by
+  # itself. Only an enabled service that ended up stopped needs a nudge.
+  if ssh "$router" '/etc/init.d/ziti-edge-tunnel enabled && ! /etc/init.d/ziti-edge-tunnel running'; then
+    ssh "$router" '/etc/init.d/ziti-edge-tunnel start' ||
+      die "tunnel did not start after upgrade; check: ssh $router 'logread -e ziti-edge-tunnel'"
   fi
   ssh "$router" 'ziti-edge-tunnel version'
 }

@@ -81,6 +81,10 @@ case "$cmd" in
     cat >"$TEST_SSH_STDIN" ;;
 esac
 case "$cmd" in
+  *'enabled && ! /etc/init.d/ziti-edge-tunnel running'*)
+    [ "${TEST_SVC_ENABLED:-1}" = 1 ] || exit 1
+    [ "${TEST_RUNNING:-1}" = 1 ] && exit 1
+    exit 0 ;;
   *'identities/router.json'*)
     [ "${TEST_ENROLL_OK:-1}" = 1 ] || exit 1 ;;
   *'/etc/init.d/ziti-edge-tunnel running'*)
@@ -231,21 +235,32 @@ case_install_rejects_missing_ipk() {
   assert_not_contains "$TEST_LOG" 'scp '
 }
 
-case_update_restarts_running_tunnel() {
+case_update_leaves_running_tunnel_alone() {
   printf 'fake-ipk\n' >"$root/given.ipk"
   export TEST_RUNNING=1
   run_script update --ipk "$root/given.ipk"
   assert_contains "$TEST_LOG" 'opkg install'
-  assert_contains "$TEST_LOG" '/etc/init.d/ziti-edge-tunnel restart'
+  # OpenWrt maintainer scripts already stop/start the service on upgrade.
+  assert_not_contains "$TEST_LOG" '/etc/init.d/ziti-edge-tunnel start'
   assert_contains "$TEST_LOG" 'ziti-edge-tunnel version'
 }
 
-case_update_leaves_stopped_tunnel_stopped() {
+case_update_starts_enabled_stopped_tunnel() {
   printf 'fake-ipk\n' >"$root/given.ipk"
   export TEST_RUNNING=0
+  export TEST_SVC_ENABLED=1
   run_script update --ipk "$root/given.ipk"
   assert_contains "$TEST_LOG" 'opkg install'
-  assert_not_contains "$TEST_LOG" '/etc/init.d/ziti-edge-tunnel restart'
+  assert_contains "$TEST_LOG" '/etc/init.d/ziti-edge-tunnel start'
+}
+
+case_update_leaves_disabled_tunnel_stopped() {
+  printf 'fake-ipk\n' >"$root/given.ipk"
+  export TEST_RUNNING=0
+  export TEST_SVC_ENABLED=0
+  run_script update --ipk "$root/given.ipk"
+  assert_contains "$TEST_LOG" 'opkg install'
+  assert_not_contains "$TEST_LOG" '/etc/init.d/ziti-edge-tunnel start'
 }
 
 run_case usage-error case_usage_error_without_subcommand
@@ -259,6 +274,7 @@ run_case enroll-timeout case_enroll_timeout_reports_logs
 run_case install-with-ipk case_install_with_ipk_skips_build
 run_case install-builds case_install_builds_ipk
 run_case install-missing-ipk case_install_rejects_missing_ipk
-run_case update-restarts case_update_restarts_running_tunnel
-run_case update-stopped case_update_leaves_stopped_tunnel_stopped
-printf 'operator script tests: 13 passed\n'
+run_case update-running case_update_leaves_running_tunnel_alone
+run_case update-enabled-stopped case_update_starts_enabled_stopped_tunnel
+run_case update-disabled case_update_leaves_disabled_tunnel_stopped
+printf 'operator script tests: 14 passed\n'

@@ -103,6 +103,7 @@
       imports = [
         ./hosts
         ./home
+        ./modules/packages/ziti-edge-tunnel-openwrt.nix
         ./modules/packages/streamlinear.nix
         ./pre-commit-hooks.nix
       ];

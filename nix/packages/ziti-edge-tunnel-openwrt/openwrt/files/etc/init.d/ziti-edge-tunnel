@@ -1,0 +1,188 @@
+#!/bin/sh /etc/rc.common
+
+USE_PROCD=1
+START=95
+STOP=10
+EXTRA_COMMANDS="run_managed"
+EXTRA_HELP="\trun_managed\tRun the supervised tunnel process"
+
+PROG=${ZITI_PROG:-/usr/bin/ziti-edge-tunnel}
+INIT_SCRIPT=${ZITI_INIT_SCRIPT:-/etc/init.d/ziti-edge-tunnel}
+RUNTIME_DIR=${ZITI_RUNTIME_DIR:-/tmp/ziti-edge-tunnel}
+RESOLV_CONF=${ZITI_RESOLV_CONF:-/etc/resolv.conf}
+# Grace period for the tunnel to exit after SIGTERM before SIGKILL.
+# Must stay below the procd term_timeout (10s) so procd cannot SIGKILL
+# this wrapper first and skip resolver cleanup.
+STOP_TIMEOUT=${ZITI_STOP_TIMEOUT:-8}
+DNS_CIDR=100.64.0.1/10
+ZITI_DNS=100.64.0.2
+
+log() {
+        logger -t ziti-edge-tunnel -- "$*"
+}
+
+load_ziti_config() {
+        config_load ziti-edge-tunnel
+        config_get_bool enabled main enabled 0
+        config_get jwt_path main jwt /etc/openziti/enroll.jwt
+        config_get identity_path main identity /etc/openziti/identities/router.json
+        config_get verbose main verbose 3
+
+        [ -n "$jwt_path" ] || { log 'JWT path is empty'; return 1; }
+        [ -n "$identity_path" ] || { log 'identity path is empty'; return 1; }
+        case "$verbose" in
+                ''|*[!0-9]*) log 'verbose must be numeric'; return 1 ;;
+        esac
+}
+
+validate_jwt() {
+        [ -f "$jwt_path" ] && [ ! -L "$jwt_path" ] || {
+                log "JWT is missing or is not a regular file: $jwt_path"
+                return 1
+        }
+
+        mode=$(stat -c %a "$jwt_path") || return 1
+        permissions=$((0$mode))
+        [ $((permissions & 0077)) -eq 0 ] || {
+                log "JWT permissions are too broad: $jwt_path"
+                return 1
+        }
+        [ $((permissions & 0400)) -ne 0 ] || {
+                log "JWT is not owner-readable: $jwt_path"
+                return 1
+        }
+}
+
+prepare_identity() {
+        identity_dir=${identity_path%/*}
+        [ "$identity_dir" != "$identity_path" ] || {
+                log "identity path has no parent directory: $identity_path"
+                return 1
+        }
+
+        umask 077
+        mkdir -p "$identity_dir" || return 1
+        chmod 0700 "$identity_dir" || return 1
+
+        [ ! -L "$identity_path" ] || {
+                log "identity must not be a symbolic link: $identity_path"
+                return 1
+        }
+
+        if [ -f "$identity_path" ]; then
+                chmod 0600 "$identity_path" || return 1
+                if [ -e "$jwt_path" ]; then
+                        log 'identity already exists; leaving JWT untouched'
+                fi
+                return 0
+        fi
+
+        [ ! -e "$identity_path" ] || {
+                log "identity exists but is not a regular file: $identity_path"
+                return 1
+        }
+        validate_jwt || return 1
+
+        if ! "$PROG" enroll --jwt "$jwt_path" --identity "$identity_path"; then
+                rm -f "$identity_path"
+                log 'enrollment failed; JWT preserved'
+                return 1
+        fi
+        [ -s "$identity_path" ] || {
+                rm -f "$identity_path"
+                log 'enrollment produced no identity; JWT preserved'
+                return 1
+        }
+
+        chmod 0600 "$identity_path" || return 1
+        rm -f "$jwt_path" || {
+                log 'identity created but JWT removal failed'
+                return 1
+        }
+        log 'enrollment completed and JWT removed'
+}
+
+snapshot_resolver() {
+        umask 077
+        mkdir -p "$RUNTIME_DIR" || return 1
+        chmod 0700 "$RUNTIME_DIR" || return 1
+        if [ -r "$RESOLV_CONF" ]; then
+                cp -L "$RESOLV_CONF" "$RUNTIME_DIR/resolv.conf.before" || return 1
+                chmod 0600 "$RUNTIME_DIR/resolv.conf.before" || return 1
+        fi
+}
+
+cleanup_resolver() {
+        [ -f "$RESOLV_CONF" ] || return 0
+        mkdir -p "$RUNTIME_DIR" || return 1
+        cleaned="$RUNTIME_DIR/resolv.conf.cleaned"
+        awk -v dns="$ZITI_DNS" '$0 != "nameserver " dns { print }' \
+                "$RESOLV_CONF" >"$cleaned" || return 1
+        cat "$cleaned" >"$RESOLV_CONF" || return 1
+        rm -f "$cleaned" "$RUNTIME_DIR/resolv.conf.before"
+}
+
+stop_tunnel() {
+        kill -TERM "$tunnel_pid" 2>/dev/null || return 0
+        # Bounded grace period: SIGKILL the tunnel if it ignores SIGTERM so
+        # the wrapper exits before procd's term_timeout SIGKILL, which would
+        # orphan the tunnel and skip resolver cleanup.
+        (
+                sleep "$STOP_TIMEOUT"
+                kill -KILL "$tunnel_pid" 2>/dev/null || true
+        ) &
+        watchdog_pid=$!
+        wait "$tunnel_pid" 2>/dev/null || true
+        kill "$watchdog_pid" 2>/dev/null || true
+        wait "$watchdog_pid" 2>/dev/null || true
+}
+
+# run_managed must run in the same process procd supervises: procd signals
+# only the PID it started (no process-group signal), so a subshell body here
+# would orphan the tunnel and skip resolver cleanup on stop/restart.
+run_managed() {
+        trap 'cleanup_resolver' EXIT
+        load_ziti_config || exit 1
+        [ "$enabled" -eq 1 ] || exit 0
+        prepare_identity || exit 1
+
+        "$PROG" run \
+                --identity "$identity_path" \
+                --verbose "$verbose" \
+                --dns-ip-range "$DNS_CIDR" &
+        tunnel_pid=$!
+        trap 'stop_tunnel' TERM INT
+        if wait "$tunnel_pid"; then
+                status=0
+        else
+                status=$?
+        fi
+        trap - TERM INT
+        exit "$status"
+}
+
+start_service() {
+        load_ziti_config || return 1
+        [ "$enabled" -eq 1 ] || return 0
+        prepare_identity || return 1
+        snapshot_resolver || return 1
+
+        procd_open_instance ziti-edge-tunnel
+        procd_set_param command "$INIT_SCRIPT" run_managed
+        procd_set_param respawn 3600 5 5
+        procd_set_param term_timeout 10
+        procd_set_param stdout 1
+        procd_set_param stderr 1
+        procd_close_instance || {
+                cleanup_resolver
+                return 1
+        }
+}
+
+stop_service() {
+        cleanup_resolver
+}
+
+service_triggers() {
+        procd_add_reload_trigger ziti-edge-tunnel
+}

@@ -1,5 +1,6 @@
 config ziti 'main'
         option enabled '0'
+        option dns_upstream '127.0.0.1'
         option jwt '/etc/openziti/enroll.jwt'
         option identity '/etc/openziti/identities/router.json'
         option verbose '3'

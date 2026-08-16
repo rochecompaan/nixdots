@@ -37,6 +37,7 @@ run_case() (
   export ZITI_RUNTIME_DIR="$root/run"
   export ZITI_RESOLV_CONF="$root/resolv.conf"
   export TEST_ENABLED=1
+  export TEST_DNS_UPSTREAM=
   export TEST_JWT="$root/etc/openziti/enroll.jwt"
   export TEST_IDENTITY="$root/etc/openziti/identities/router.json"
   export TEST_VERBOSE=3
@@ -77,6 +78,7 @@ MOCK
   config_get_bool() { printf -v "$1" '%s' "$TEST_ENABLED"; }
   config_get() {
     case "$3" in
+      dns_upstream) printf -v "$1" '%s' "${TEST_DNS_UPSTREAM:-${4-}}" ;;
       jwt) printf -v "$1" '%s' "$TEST_JWT" ;;
       identity) printf -v "$1" '%s' "$TEST_IDENTITY" ;;
       verbose) printf -v "$1" '%s' "$TEST_VERBOSE" ;;
@@ -266,8 +268,27 @@ case_managed_exit_cleans_resolver() {
   if ( run_managed ); then fail 'failed tunnel run succeeded'; fi
   assert_contains "$TEST_RUN_COMMAND" "run --identity $TEST_IDENTITY"
   assert_contains "$TEST_RUN_COMMAND" '--dns-ip-range 100.64.0.1/10'
+  assert_contains "$TEST_RUN_COMMAND" '--dns-upstream 127.0.0.1'
   assert_not_contains "$ZITI_RESOLV_CONF" 'nameserver 100.64.0.2'
   assert_contains "$ZITI_RESOLV_CONF" 'nameserver 192.0.2.53'
+}
+
+case_configured_dns_upstream() {
+  export TEST_DNS_UPSTREAM=192.0.2.54
+  printf '{}\n' >"$TEST_IDENTITY"
+  if ( run_managed ); then fail 'failed tunnel run succeeded'; fi
+  assert_contains "$TEST_RUN_COMMAND" '--dns-upstream 192.0.2.54'
+}
+
+case_invalid_dns_upstream_rejected() {
+  printf '{}\n' >"$TEST_IDENTITY"
+  for invalid in 999.2.3.4 127.0.0 127.0.0.1. 127..0.1 010.000.000.001 resolver; do
+    export TEST_DNS_UPSTREAM=$invalid
+    : >"$TEST_RUN_COMMAND"
+    if ( run_managed ); then fail 'invalid dns_upstream succeeded'; fi
+    [[ ! -s $TEST_RUN_COMMAND ]] || fail "invalid dns_upstream launched tunnel: $invalid"
+  done
+  assert_contains "$root/log" 'dns_upstream must be an IPv4 address'
 }
 
 case_identity_symlink_rejected() {
@@ -408,6 +429,8 @@ run_case successful-enrollment case_successful_enrollment
 run_case existing-identity-jwt case_existing_identity_preserves_jwt
 run_case resolver-cleanup case_resolver_cleanup
 run_case managed-exit-cleanup case_managed_exit_cleans_resolver
+run_case configured-dns-upstream case_configured_dns_upstream
+run_case invalid-dns-upstream case_invalid_dns_upstream_rejected
 run_case identity-symlink case_identity_symlink_rejected
 run_case broad-jwt case_broad_jwt_rejected
 run_case unreadable-jwt case_unreadable_jwt_rejected
@@ -440,4 +463,4 @@ case_wrapper_avoids_procd_lock() {
 }
 case_wrapper_avoids_procd_lock
 
-printf 'service tests: %s passed\n' "$((11 + signal_cases + busybox_cases + 1))"
+printf 'service tests: %s passed\n' "$((13 + signal_cases + busybox_cases + 1))"

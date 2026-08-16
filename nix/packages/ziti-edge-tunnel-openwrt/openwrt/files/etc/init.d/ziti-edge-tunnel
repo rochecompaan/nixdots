@@ -20,15 +20,40 @@ log() {
         logger -t ziti-edge-tunnel -- "$*"
 }
 
+validate_dns_upstream() {
+        dns_address=$1
+        case "$dns_address" in
+                ''|.*|*.|*..*|*[!0-9.]*) return 1 ;;
+        esac
+
+        dns_old_ifs=$IFS
+        IFS=.
+        set -- $dns_address
+        IFS=$dns_old_ifs
+        [ "$#" -eq 4 ] || return 1
+
+        for dns_octet; do
+                case "$dns_octet" in
+                        0|[1-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]) ;;
+                        *) return 1 ;;
+                esac
+        done
+}
+
 load_ziti_config() {
         config_load ziti-edge-tunnel
         config_get_bool enabled main enabled 0
         config_get jwt_path main jwt /etc/openziti/enroll.jwt
         config_get identity_path main identity /etc/openziti/identities/router.json
+        config_get dns_upstream main dns_upstream 127.0.0.1
         config_get verbose main verbose 3
 
         [ -n "$jwt_path" ] || { log 'JWT path is empty'; return 1; }
         [ -n "$identity_path" ] || { log 'identity path is empty'; return 1; }
+        validate_dns_upstream "$dns_upstream" || {
+                log "dns_upstream must be an IPv4 address: $dns_upstream"
+                return 1
+        }
         case "$verbose" in
                 ''|*[!0-9]*) log 'verbose must be numeric'; return 1 ;;
         esac
@@ -155,7 +180,8 @@ run_managed() {
         "$PROG" run \
                 --identity "$identity_path" \
                 --verbose "$verbose" \
-                --dns-ip-range "$DNS_CIDR" &
+                --dns-ip-range "$DNS_CIDR" \
+                --dns-upstream "$dns_upstream" &
         tunnel_pid=$!
         trap 'stop_tunnel' TERM INT
         if wait "$tunnel_pid"; then

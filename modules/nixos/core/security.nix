@@ -3,6 +3,7 @@
     pki.certificateFiles = [
       ./certs/compaan-ca.crt
       ./certs/ctrl-siyavula-com.crt
+      ./certs/ziti-controller-compaan-cloud.crt
       ./certs/ziti-controller-siyavula-com.crt
     ];
 

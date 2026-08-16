@@ -41,14 +41,21 @@ validate_jwt() {
                 return 1
         }
 
-        mode=$(stat -c %a "$jwt_path") || return 1
-        permissions=$((0$mode))
-        [ $((permissions & 0077)) -eq 0 ] || {
+        # OpenWRT BusyBox has no stat applet; the first field of ls -ld is
+        # the mode string under both BusyBox and coreutils. Word-splitting
+        # is intentional and safe: the mode string is always field one.
+        listing=$(ls -ld "$jwt_path") || return 1
+        set -- $listing
+        modes=$1
+        case "$modes" in
+                -r*) ;;
+                *)
+                        log "JWT is not owner-readable: $jwt_path"
+                        return 1
+                        ;;
+        esac
+        [ "${modes#????}" = "------" ] || {
                 log "JWT permissions are too broad: $jwt_path"
-                return 1
-        }
-        [ $((permissions & 0400)) -ne 0 ] || {
-                log "JWT is not owner-readable: $jwt_path"
                 return 1
         }
 }

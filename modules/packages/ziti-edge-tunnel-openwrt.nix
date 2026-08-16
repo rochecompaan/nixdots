@@ -38,6 +38,7 @@
             ];
           }
           ''
+            BUSYBOX=${pkgs.busybox}/bin/busybox \
             bash ${../../nix/packages/ziti-edge-tunnel-openwrt/tests/service-test.sh} \
               ${../../nix/packages/ziti-edge-tunnel-openwrt/openwrt/files/etc/init.d/ziti-edge-tunnel} \
               bash "${pkgs.busybox}/bin/busybox ash"

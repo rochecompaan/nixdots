@@ -6,6 +6,11 @@ shift || true
 shells=("$@")
 [ "${#shells[@]}" -gt 0 ] || shells=(bash)
 
+busybox_bin=${BUSYBOX:-}
+if [ -z "$busybox_bin" ]; then
+  busybox_bin=$(command -v busybox || true)
+fi
+
 test_root=$(mktemp -d)
 trap 'rm -rf "$test_root"' EXIT
 
@@ -264,6 +269,114 @@ case_identity_symlink_rejected() {
   assert_no_file "$root/elsewhere.json"
 }
 
+case_broad_jwt_rejected() {
+  printf 'signed.jwt\n' >"$TEST_JWT"
+  chmod 0644 "$TEST_JWT"
+  if start_service; then fail 'group/world-readable JWT succeeded'; fi
+  assert_file "$TEST_JWT"
+  assert_no_file "$TEST_IDENTITY"
+  assert_contains "$root/log" 'JWT permissions are too broad'
+}
+
+case_unreadable_jwt_rejected() {
+  printf 'signed.jwt\n' >"$TEST_JWT"
+  chmod 0200 "$TEST_JWT"
+  if start_service; then fail 'owner-unreadable JWT succeeded'; fi
+  assert_file "$TEST_JWT"
+  assert_no_file "$TEST_IDENTITY"
+  assert_contains "$root/log" 'JWT is not owner-readable'
+}
+
+# Run the enrollment path under BusyBox ash with PATH restricted to
+# BusyBox applets minus stat, matching the OpenWRT router userland
+# (OpenWRT's BusyBox build has no stat applet).
+run_busybox_env_case() (
+  set -euo pipefail
+  name=$1
+  shift
+  root="$test_root/$name"
+  mkdir -p "$root/bin" "$root/bb" "$root/etc/openziti/identities" "$root/run"
+
+  export ZITI_PROG="$root/bin/ziti-edge-tunnel"
+  export ZITI_INIT_SCRIPT="$init_script"
+  export ZITI_RUNTIME_DIR="$root/run"
+  export ZITI_RESOLV_CONF="$root/resolv.conf"
+  export TEST_BB_DIR="$root/bb"
+  export TEST_PROCD_COMMAND="$root/procd-command"
+  export TEST_ENABLED=1
+  export TEST_JWT="$root/etc/openziti/enroll.jwt"
+  export TEST_IDENTITY="$root/etc/openziti/identities/router.json"
+  export TEST_VERBOSE=3
+  : >"$TEST_PROCD_COMMAND"
+  printf 'nameserver 192.0.2.53\n' >"$ZITI_RESOLV_CONF"
+
+  cat >"$ZITI_PROG" <<'MOCK'
+#!/bin/sh
+set -eu
+if [ "$1" = enroll ]; then
+  shift
+  identity=
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --identity) identity=$2; shift 2 ;;
+      --jwt) shift 2 ;;
+      *) shift ;;
+    esac
+  done
+  printf '{"ztAPI":"https://controller.invalid"}\n' >"$identity"
+  exit 0
+fi
+exit 64
+MOCK
+  chmod 0755 "$ZITI_PROG"
+
+  # BusyBox applet symlinks, deliberately without stat.
+  for app in mkdir chmod cp rm awk cat ls sleep kill; do
+    ln -s "$busybox_bin" "$root/bb/$app"
+  done
+
+  cat >"$root/wrapper" <<'WRAPPER'
+PATH=$TEST_BB_DIR
+export PATH
+config_load() { [ "$1" = ziti-edge-tunnel ]; }
+config_get_bool() { eval "$1=\"$TEST_ENABLED\""; }
+config_get() {
+  case "$3" in
+    jwt) eval "$1=\"$TEST_JWT\"" ;;
+    identity) eval "$1=\"$TEST_IDENTITY\"" ;;
+    verbose) eval "$1=\"$TEST_VERBOSE\"" ;;
+    *) eval "$1=\"${4-}\"" ;;
+  esac
+}
+logger() { :; }
+procd_open_instance() { :; }
+procd_set_param() {
+  if [ "$1" = command ]; then
+    shift
+    printf '%s\n' "$*" >"$TEST_PROCD_COMMAND"
+  fi
+}
+procd_close_instance() { :; }
+procd_add_reload_trigger() { :; }
+. "$ZITI_INIT_SCRIPT"
+start_service
+WRAPPER
+
+  "$@"
+)
+
+case_busybox_enrollment_without_stat() {
+  printf 'signed.jwt\n' >"$TEST_JWT"
+  chmod 0600 "$TEST_JWT"
+  if ! "$busybox_bin" ash "$root/wrapper"; then
+    fail 'enrollment failed under BusyBox without stat'
+  fi
+  assert_file "$TEST_IDENTITY"
+  assert_no_file "$TEST_JWT"
+  assert_contains "$TEST_PROCD_COMMAND" "$init_script run_managed"
+  [[ $(stat -c %a "$TEST_IDENTITY") = 600 ]] || fail 'identity mode was not corrected'
+}
+
 run_case disabled case_disabled
 run_case existing-identity case_existing_identity
 run_case missing-material case_missing_material
@@ -273,6 +386,8 @@ run_case existing-identity-jwt case_existing_identity_preserves_jwt
 run_case resolver-cleanup case_resolver_cleanup
 run_case managed-exit-cleanup case_managed_exit_cleans_resolver
 run_case identity-symlink case_identity_symlink_rejected
+run_case broad-jwt case_broad_jwt_rejected
+run_case unreadable-jwt case_unreadable_jwt_rejected
 
 signal_cases=0
 for shell_cmd in "${shells[@]}"; do
@@ -282,4 +397,12 @@ for shell_cmd in "${shells[@]}"; do
   signal_cases=$((signal_cases + 2))
 done
 
-printf 'service tests: %s passed\n' "$((9 + signal_cases))"
+busybox_cases=0
+if [ -n "$busybox_bin" ]; then
+  run_busybox_env_case busybox-enrollment-no-stat case_busybox_enrollment_without_stat
+  busybox_cases=1
+else
+  printf 'skipping busybox environment tests: busybox not found\n'
+fi
+
+printf 'service tests: %s passed\n' "$((11 + signal_cases + busybox_cases))"

@@ -36,6 +36,7 @@ run_case() (
   export ZITI_INIT_SCRIPT="$init_script"
   export ZITI_RUNTIME_DIR="$root/run"
   export ZITI_RESOLV_CONF="$root/resolv.conf"
+  export ZITI_CA_BUNDLE_HELPER="$root/bin/update-ca-bundle"
   export TEST_ENABLED=1
   export TEST_DNS_UPSTREAM=
   export TEST_JWT="$root/etc/openziti/enroll.jwt"
@@ -44,8 +45,13 @@ run_case() (
   export TEST_ENROLL_RESULT=success
   export TEST_RUN_RESULT=64
   export TEST_RUN_COMMAND="$root/run-command"
+  export TEST_CA_RESULT=success
+  export TEST_CA_COMMAND="$root/ca-command"
+  export TEST_START_ORDER="$root/start-order"
   : >"$root/procd-command"
   : >"$TEST_RUN_COMMAND"
+  : >"$TEST_CA_COMMAND"
+  : >"$TEST_START_ORDER"
   printf 'nameserver 192.0.2.53\n' >"$ZITI_RESOLV_CONF"
 
   cat >"$ZITI_PROG" <<'MOCK'
@@ -74,6 +80,15 @@ exit 64
 MOCK
   chmod 0755 "$ZITI_PROG"
 
+  cat >"$ZITI_CA_BUNDLE_HELPER" <<'MOCK'
+#!/bin/sh
+set -eu
+printf '%s\n' "$*" >"$TEST_CA_COMMAND"
+printf 'ca\n' >>"$TEST_START_ORDER"
+[ "${TEST_CA_RESULT:-failure}" = success ]
+MOCK
+  chmod 0755 "$ZITI_CA_BUNDLE_HELPER"
+
   config_load() { [ "$1" = ziti-edge-tunnel ]; }
   config_get_bool() { printf -v "$1" '%s' "$TEST_ENABLED"; }
   config_get() {
@@ -86,7 +101,7 @@ MOCK
     esac
   }
   logger() { printf '%s\n' "$*" >>"$root/log"; }
-  procd_open_instance() { :; }
+  procd_open_instance() { printf 'procd\n' >>"$TEST_START_ORDER"; }
   procd_set_param() {
     if [ "$1" = command ]; then
       shift
@@ -202,6 +217,28 @@ case_disabled() {
   TEST_ENABLED=0
   start_service
   [[ ! -s $root/procd-command ]] || fail 'disabled service started a process'
+  [[ ! -s $TEST_CA_COMMAND ]] || fail 'disabled service refreshed the CA bundle'
+}
+
+case_ca_refresh_precedes_procd() {
+  printf '{}\n' >"$TEST_IDENTITY"
+  start_service
+  assert_contains "$TEST_CA_COMMAND" 'ensure'
+  [[ $(sed -n '1p' "$TEST_START_ORDER") = ca ]] ||
+    fail 'CA refresh did not run first'
+  [[ $(sed -n '2p' "$TEST_START_ORDER") = procd ]] ||
+    fail 'procd did not run after CA refresh'
+}
+
+case_ca_refresh_failure_blocks_start() {
+  printf '{}\n' >"$TEST_IDENTITY"
+  export TEST_CA_RESULT=failure
+  if start_service; then
+    fail 'CA refresh failure started the service'
+  fi
+  assert_contains "$TEST_CA_COMMAND" 'ensure'
+  [[ ! -s $root/procd-command ]] || fail 'CA refresh failure configured procd'
+  assert_no_file "$ZITI_RUNTIME_DIR/resolv.conf.before"
 }
 
 case_existing_identity() {
@@ -333,13 +370,17 @@ run_busybox_env_case() (
   export ZITI_INIT_SCRIPT="$init_script"
   export ZITI_RUNTIME_DIR="$root/run"
   export ZITI_RESOLV_CONF="$root/resolv.conf"
+  export ZITI_CA_BUNDLE_HELPER="$root/bin/update-ca-bundle"
   export TEST_BB_DIR="$root/bb"
   export TEST_PROCD_COMMAND="$root/procd-command"
+  export TEST_CA_COMMAND="$root/ca-command"
+  export TEST_CA_RESULT=success
   export TEST_ENABLED=1
   export TEST_JWT="$root/etc/openziti/enroll.jwt"
   export TEST_IDENTITY="$root/etc/openziti/identities/router.json"
   export TEST_VERBOSE=3
   : >"$TEST_PROCD_COMMAND"
+  : >"$TEST_CA_COMMAND"
   printf 'nameserver 192.0.2.53\n' >"$ZITI_RESOLV_CONF"
 
   cat >"$ZITI_PROG" <<'MOCK'
@@ -361,6 +402,14 @@ fi
 exit 64
 MOCK
   chmod 0755 "$ZITI_PROG"
+
+  cat >"$ZITI_CA_BUNDLE_HELPER" <<'MOCK'
+#!/bin/sh
+set -eu
+printf '%s\n' "$*" >"$TEST_CA_COMMAND"
+[ "${TEST_CA_RESULT:-failure}" = success ]
+MOCK
+  chmod 0755 "$ZITI_CA_BUNDLE_HELPER"
 
   # BusyBox applet symlinks, deliberately without stat.
   for app in mkdir chmod cp rm awk cat ls sleep kill; do
@@ -409,6 +458,7 @@ case_busybox_enrollment_without_stat() {
     fail 'start_service failed under BusyBox without stat'
   fi
   assert_contains "$TEST_PROCD_COMMAND" '/usr/lib/ziti-edge-tunnel/run-managed'
+  assert_contains "$TEST_CA_COMMAND" 'ensure'
   assert_file "$TEST_JWT"
   assert_no_file "$TEST_IDENTITY"
   # The supervised entrypoint performs enrollment under the same userland.
@@ -422,6 +472,8 @@ case_busybox_enrollment_without_stat() {
 }
 
 run_case disabled case_disabled
+run_case ca-refresh-before-procd case_ca_refresh_precedes_procd
+run_case ca-refresh-failure case_ca_refresh_failure_blocks_start
 run_case existing-identity case_existing_identity
 run_case missing-material case_missing_material
 run_case failed-enrollment case_failed_enrollment
@@ -463,4 +515,4 @@ case_wrapper_avoids_procd_lock() {
 }
 case_wrapper_avoids_procd_lock
 
-printf 'service tests: %s passed\n' "$((13 + signal_cases + busybox_cases + 1))"
+printf 'service tests: %s passed\n' "$((15 + signal_cases + busybox_cases + 1))"

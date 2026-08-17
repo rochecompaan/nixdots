@@ -47,8 +47,8 @@ in a temporary `0700` directory. It copies the JWT over SSH with
 enables and starts the service and waits for
 `/etc/openziti/identities/router.json` to appear and for the router to
 consume and remove the JWT. The JWT is never written to this repository.
-`enroll` refuses to recreate an existing identity, because that would
-invalidate the old enrollment; delete one deliberately first:
+`enroll` refuses to recreate an existing identity because that invalidates
+the old enrollment. Delete one deliberately first:
 
 ```sh
 ziti edge delete identity "<name>"
@@ -60,6 +60,43 @@ restarted only if it is currently running:
 ```sh
 scripts/ziti-openwrt-tunnel.sh update
 ```
+
+## Compaan CA trust
+
+Package release r5 installs the Compaan CA at
+`/etc/ssl/certs/compaan-ca.crt`. The package adds one marked block to the
+start of `/etc/ssl/certs/ca-certificates.crt`.
+
+The package refreshes the block after installation and before each service
+start. The service does not start if this refresh fails. The package removes
+the block before an upgrade, a downgrade, or package removal. A new r5
+installation restores the block after an upgrade.
+
+An `/etc/hosts` entry takes priority over Ziti DNS for router applications.
+For example, an old `ha.compaan` entry makes `curl` bypass the Ziti address.
+`nslookup` can still show the Ziti address because it queries DNS directly.
+
+Make sure that no obsolete host entry exists:
+
+```sh
+grep -nF 'ha.compaan' /etc/hosts
+ping -c 1 ha.compaan
+```
+
+Then inspect the certificate from the Ziti service:
+
+```sh
+openssl s_client -connect ha.compaan:443 -servername ha.compaan </dev/null \
+  | openssl x509 -noout -issuer -fingerprint -sha256 -ext subjectAltName
+```
+
+Finally, request the service with the system CA bundle:
+
+```sh
+curl -fsS https://ha.compaan/ -o /dev/null
+```
+
+Do not use `--cacert`, `--resolve`, or `-k` for this trust test.
 
 ## Inspect status and logs
 

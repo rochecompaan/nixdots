@@ -109,6 +109,10 @@ let
       --subst-var-by llhttpSrc ${pkgs.llhttp.src} \
       --subst-var-by subcommandSrc ${subcommandSrc} \
       --subst-var-by tlsuvSrc ${tlsuvSrc}
+    mkdir -p $out/files/etc/ssl/certs
+    install -m0644 \
+      ${../../../modules/nixos/core/certs/compaan-ca.crt} \
+      $out/files/etc/ssl/certs/compaan-ca.crt
   '';
 
   prepareSdkTree = ''

@@ -1,0 +1,143 @@
+#!/bin/sh
+set -eu
+
+CA_SOURCE=${ZITI_CA_SOURCE:-/etc/ssl/certs/compaan-ca.crt}
+CA_BUNDLE=${ZITI_CA_BUNDLE:-/etc/ssl/certs/ca-certificates.crt}
+CA_LOCK=${ZITI_CA_LOCK:-/tmp/lock/ziti-edge-tunnel-ca.lock}
+CA_LOCK_OWNER=${ZITI_CA_LOCK_OWNER:-0}
+EXPECTED_FILE_SHA256='f0559a622ea96f65ce96b8e148aa1ceff104ad9852fe0f9dfcb1885815fce127'
+EXPECTED_FINGERPRINT='63:93:BC:6D:23:7E:19:14:0A:A2:4F:97:55:09:99:7A:D9:97:D5:EF:59:A5:61:18:E7:BF:0D:EA:33:F2:DD:06'
+BEGIN_MARKER='# BEGIN ziti-edge-tunnel managed compaan-ca'
+END_MARKER='# END ziti-edge-tunnel managed compaan-ca'
+
+action=${1:-}
+case "$action" in
+        ensure | remove) ;;
+        *)
+                printf 'usage: %s ensure|remove\n' "$0" >&2
+                exit 2
+                ;;
+esac
+
+fail() {
+        printf 'ziti-edge-tunnel CA bundle: %s\n' "$*" >&2
+        exit 1
+}
+
+validate_ca() {
+        [ -f "$CA_SOURCE" ] && [ ! -L "$CA_SOURCE" ] ||
+                fail "invalid CA source: $CA_SOURCE"
+
+        if ! file_hash=$(openssl dgst -sha256 "$CA_SOURCE"); then
+                fail 'cannot hash Compaan CA'
+        fi
+        file_hash=${file_hash##* }
+        [ "$file_hash" = "$EXPECTED_FILE_SHA256" ] ||
+                fail 'Compaan CA file hash mismatch'
+
+        if ! fingerprint=$(openssl x509 -in "$CA_SOURCE" -noout -fingerprint -sha256); then
+                fail 'cannot parse Compaan CA'
+        fi
+        fingerprint=${fingerprint#*=}
+        [ "$fingerprint" = "$EXPECTED_FINGERPRINT" ] ||
+                fail 'Compaan CA fingerprint mismatch'
+
+        if ! openssl x509 -in "$CA_SOURCE" -noout -text | awk '
+                /X509v3 Basic Constraints/ {
+                        getline
+                        if ($0 ~ /CA:TRUE/) found=1
+                }
+                END { exit found ? 0 : 1 }
+        '; then
+                fail 'Compaan certificate is not a CA'
+        fi
+
+        openssl verify -CAfile "$CA_SOURCE" "$CA_SOURCE" >/dev/null 2>&1 ||
+                fail 'Compaan CA is not self-verifying'
+}
+
+strip_managed_blocks() {
+        awk -v begin="$BEGIN_MARKER" -v end="$END_MARKER" '
+                $0 == begin {
+                        if (inside) exit 2
+                        inside=1
+                        next
+                }
+                $0 == end {
+                        if (!inside) exit 2
+                        inside=0
+                        next
+                }
+                !inside { print }
+                END { if (inside) exit 2 }
+        ' "$CA_BUNDLE"
+}
+
+case "$CA_LOCK_OWNER" in
+        '' | *[!0-9]*) fail "invalid CA bundle lock owner: $CA_LOCK_OWNER" ;;
+esac
+
+lock_dir=${CA_LOCK%/*}
+[ "$lock_dir" != "$CA_LOCK" ] || fail "lock has no parent directory: $CA_LOCK"
+mkdir -p "$lock_dir" || fail "cannot create lock directory: $lock_dir"
+if [ -e "$CA_LOCK" ] || [ -L "$CA_LOCK" ]; then
+        [ -f "$CA_LOCK" ] && [ ! -L "$CA_LOCK" ] ||
+                fail "invalid CA bundle lock: $CA_LOCK"
+fi
+umask 077
+exec 9>>"$CA_LOCK" || fail "cannot open CA bundle lock: $CA_LOCK"
+
+fd_listing=$(ls -idnL /proc/self/fd/9) || fail 'cannot inspect open CA bundle lock'
+set -- $fd_listing
+fd_inode=$1
+fd_mode=$2
+fd_owner=$4
+[ "$fd_owner" = "$CA_LOCK_OWNER" ] || fail 'CA bundle lock has the wrong owner'
+[ "$fd_mode" = '-rw-------' ] || fail 'CA bundle lock mode is not 0600'
+
+[ -f "$CA_LOCK" ] && [ ! -L "$CA_LOCK" ] ||
+        fail "invalid CA bundle lock: $CA_LOCK"
+path_listing=$(ls -idn "$CA_LOCK") || fail 'cannot inspect CA bundle lock path'
+set -- $path_listing
+path_inode=$1
+path_mode=$2
+path_owner=$4
+[ "$path_inode" = "$fd_inode" ] || fail 'CA bundle lock path changed during open'
+[ "$path_owner" = "$CA_LOCK_OWNER" ] || fail 'CA bundle lock path has the wrong owner'
+[ "$path_mode" = '-rw-------' ] || fail 'CA bundle lock path mode is not 0600'
+
+flock 9 || fail 'cannot acquire CA bundle lock'
+
+[ -f "$CA_BUNDLE" ] && [ ! -L "$CA_BUNDLE" ] ||
+        fail "invalid CA bundle: $CA_BUNDLE"
+
+if [ "$action" = ensure ]; then
+        validate_ca
+fi
+
+bundle_dir=${CA_BUNDLE%/*}
+replacement=$(mktemp "$bundle_dir/.ca-certificates.crt.XXXXXX") ||
+        fail 'cannot create bundle replacement'
+content=$(mktemp "$bundle_dir/.ca-certificates.content.XXXXXX") || {
+        rm -f "$replacement"
+        fail 'cannot create bundle content file'
+}
+trap 'rm -f "$replacement" "$content"' 0 1 2 15
+
+strip_managed_blocks >"$content" || fail 'malformed Compaan CA bundle markers'
+cp -p "$CA_BUNDLE" "$replacement" || fail 'cannot preserve CA bundle metadata'
+
+if [ "$action" = ensure ]; then
+        printf '%s\n' "$BEGIN_MARKER" >"$replacement"
+        cat "$CA_SOURCE" >>"$replacement"
+        printf '%s\n' "$END_MARKER" >>"$replacement"
+        cat "$content" >>"$replacement" || fail 'cannot append stock CA bundle'
+        openssl verify -CAfile "$replacement" "$CA_SOURCE" >/dev/null 2>&1 ||
+                fail 'updated CA bundle does not trust Compaan CA'
+else
+        cat "$content" >"$replacement" || fail 'cannot write CA bundle replacement'
+fi
+
+mv -f "$replacement" "$CA_BUNDLE" || fail 'cannot replace CA bundle'
+rm -f "$content"
+trap - 0 1 2 15

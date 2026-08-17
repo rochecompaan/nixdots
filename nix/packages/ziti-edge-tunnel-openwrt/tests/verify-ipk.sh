@@ -57,6 +57,56 @@ with tarfile.open(archive, mode="r:") as package:
                 f"non-root package ownership: {entry.name} {entry.uid}:{entry.gid}"
             )
 PY
+
+  local archive_kind=${destination##*/}
+  local actual_members=$tmp/$archive_kind.members
+  local expected_members=$tmp/$archive_kind.expected
+  tar -tf "$archive" | LC_ALL=C sort >"$actual_members"
+  case "$archive_kind" in
+    control)
+      cat <<'EOF' | LC_ALL=C sort >"$expected_members"
+./
+./conffiles
+./control
+./postinst
+./postinst-pkg
+./prerm
+./prerm-pkg
+EOF
+      ;;
+    data)
+      cat <<'EOF' | LC_ALL=C sort >"$expected_members"
+./
+./etc/
+./etc/config/
+./etc/config/ziti-edge-tunnel
+./etc/init.d/
+./etc/init.d/ziti-edge-tunnel
+./etc/openziti/
+./etc/openziti/identities/
+./etc/ssl/
+./etc/ssl/certs/
+./etc/ssl/certs/compaan-ca.crt
+./usr/
+./usr/bin/
+./usr/bin/ziti-edge-tunnel
+./usr/lib/
+./usr/lib/ziti-edge-tunnel/
+./usr/lib/ziti-edge-tunnel/run-managed
+./usr/lib/ziti-edge-tunnel/update-ca-bundle
+./usr/lib/ziti-edge-tunnel/update-dnsmasq
+EOF
+      ;;
+    *)
+      printf 'unknown package archive kind: %s\n' "$archive_kind" >&2
+      exit 1
+      ;;
+  esac
+  if ! diff -u "$expected_members" "$actual_members"; then
+    printf 'unexpected %s archive contents\n' "$archive_kind" >&2
+    exit 1
+  fi
+
   tar -xf "$archive" -C "$destination"
 }
 
@@ -74,10 +124,11 @@ init=$tmp/data/etc/init.d/ziti-edge-tunnel
 config=$tmp/data/etc/config/ziti-edge-tunnel
 ca=$tmp/data/etc/ssl/certs/compaan-ca.crt
 helper=$tmp/data/usr/lib/ziti-edge-tunnel/update-ca-bundle
+dnsmasq_helper=$tmp/data/usr/lib/ziti-edge-tunnel/update-dnsmasq
 wrapper=$tmp/data/usr/lib/ziti-edge-tunnel/run-managed
 identity_dir=$tmp/data/etc/openziti/identities
 
-for path in "$control" "$postinst" "$prerm" "$binary" "$init" "$config" "$ca" "$helper" "$wrapper"; do
+for path in "$control" "$postinst" "$prerm" "$binary" "$init" "$config" "$ca" "$helper" "$dnsmasq_helper" "$wrapper"; do
   [[ -f $path ]] || { printf 'missing package file: %s\n' "$path" >&2; exit 1; }
 done
 [[ -d $identity_dir ]] || { printf 'missing identity directory\n' >&2; exit 1; }
@@ -94,7 +145,7 @@ has_dependency() {
 }
 
 for dependency in \
-  ca-bundle kmod-tun libatomic1 libjson-c5 libopenssl3 libpcap1 libprotobuf-c \
+  ca-bundle dnsmasq kmod-tun libatomic1 libjson-c5 libopenssl3 libpcap1 libprotobuf-c \
   libsodium libstdcpp6 libuv1 openssl-util zlib; do
   has_dependency "$dependency" || {
     printf 'missing declared dependency: %s\n' "$dependency" >&2
@@ -107,6 +158,7 @@ done
 [[ $(stat -c %a "$config") = 600 ]] || { printf 'config mode is not 0600\n' >&2; exit 1; }
 [[ $(stat -c %a "$ca") = 644 ]] || { printf 'Compaan CA mode is not 0644\n' >&2; exit 1; }
 [[ $(stat -c %a "$helper") = 755 ]] || { printf 'CA helper mode is not 0755\n' >&2; exit 1; }
+[[ $(stat -c %a "$dnsmasq_helper") = 755 ]] || { printf 'dnsmasq helper mode is not 0755\n' >&2; exit 1; }
 [[ $(stat -c %a "$wrapper") = 755 ]] || { printf 'managed wrapper mode is not 0755\n' >&2; exit 1; }
 [[ $(stat -c %a "$identity_dir") = 700 ]] || { printf 'identity directory mode is not 0700\n' >&2; exit 1; }
 
@@ -125,54 +177,81 @@ openssl x509 -in "$ca" -noout -text | \
 openssl verify -CAfile "$ca" "$ca" >/dev/null
 
 lifecycle_log=$tmp/lifecycle.log
-lifecycle_helper=$tmp/lifecycle-helper
-cat >"$lifecycle_helper" <<'HELPER'
+ca_lifecycle_helper=$tmp/ca-lifecycle-helper
+dnsmasq_lifecycle_helper=$tmp/dnsmasq-lifecycle-helper
+cat >"$ca_lifecycle_helper" <<'HELPER'
 #!/bin/sh
 set -eu
-printf '%s\n' "$1" >>"$LIFECYCLE_LOG"
-[ "${LIFECYCLE_RESULT:-failure}" = success ]
+printf 'ca:%s\n' "$1" >>"$LIFECYCLE_LOG"
+[ "${LIFECYCLE_FAIL_KIND:-}" != ca ]
 HELPER
-chmod 0755 "$lifecycle_helper"
+cat >"$dnsmasq_lifecycle_helper" <<'HELPER'
+#!/bin/sh
+set -eu
+printf 'dnsmasq:%s\n' "$1" >>"$LIFECYCLE_LOG"
+[ "${LIFECYCLE_FAIL_KIND:-}" != dnsmasq ]
+HELPER
+chmod 0755 "$ca_lifecycle_helper" "$dnsmasq_lifecycle_helper"
 
-run_lifecycle() {
-  local script=$1 action=$2
-  : >"$lifecycle_log"
-  IPKG_INSTROOT= \
+run_lifecycle_script() {
+  local script=$1 instroot=$2 upgrade=$3 fail_kind=$4
+  IPKG_INSTROOT="$instroot" \
+  PKG_UPGRADE="$upgrade" \
   LIFECYCLE_LOG="$lifecycle_log" \
-  LIFECYCLE_RESULT=success \
-  ZITI_CA_BUNDLE_HELPER="$lifecycle_helper" \
+  LIFECYCLE_FAIL_KIND="$fail_kind" \
+  ZITI_CA_BUNDLE_HELPER="$ca_lifecycle_helper" \
+  ZITI_DNSMASQ_HELPER="$dnsmasq_lifecycle_helper" \
     sh "$script"
-  grep -Fx "$action" "$lifecycle_log" >/dev/null || {
-    printf '%s did not request CA action: %s\n' "${script##*/}" "$action" >&2
-    exit 1
-  }
 }
 
-run_lifecycle "$postinst" ensure
-run_lifecycle "$prerm" remove
+assert_lifecycle_log() {
+  local expected=$1
+  printf '%s' "$expected" >"$tmp/lifecycle.expected"
+  if ! cmp -s "$tmp/lifecycle.expected" "$lifecycle_log"; then
+    printf 'unexpected lifecycle log:\n' >&2
+    diff -u "$tmp/lifecycle.expected" "$lifecycle_log" >&2 || true
+    exit 1
+  fi
+}
+
+: >"$lifecycle_log"
+run_lifecycle_script "$postinst" '' 0 ''
+assert_lifecycle_log $'ca:ensure\ndnsmasq:ensure\n'
+
+: >"$lifecycle_log"
+run_lifecycle_script "$prerm" '' 1 ''
+assert_lifecycle_log $'ca:remove\n'
+
+: >"$lifecycle_log"
+run_lifecycle_script "$prerm" '' 0 ''
+assert_lifecycle_log $'ca:remove\ndnsmasq:remove\n'
 
 for script in "$postinst" "$prerm"; do
   : >"$lifecycle_log"
-  IPKG_INSTROOT="$tmp/offline-root" \
-  LIFECYCLE_LOG="$lifecycle_log" \
-  LIFECYCLE_RESULT=success \
-  ZITI_CA_BUNDLE_HELPER="$lifecycle_helper" \
-    sh "$script"
-  [[ ! -s $lifecycle_log ]] || {
-    printf '%s changed host trust during offline install\n' "${script##*/}" >&2
-    exit 1
-  }
+  run_lifecycle_script "$script" "$tmp/offline-root" 0 ''
+  assert_lifecycle_log ''
 done
 
 : >"$lifecycle_log"
-if IPKG_INSTROOT= \
-  LIFECYCLE_LOG="$lifecycle_log" \
-  LIFECYCLE_RESULT=failure \
-  ZITI_CA_BUNDLE_HELPER="$lifecycle_helper" \
-    sh "$postinst"; then
+if run_lifecycle_script "$postinst" '' 0 ca; then
   printf 'postinst ignored CA helper failure\n' >&2
   exit 1
 fi
+assert_lifecycle_log $'ca:ensure\n'
+
+: >"$lifecycle_log"
+if run_lifecycle_script "$postinst" '' 0 dnsmasq; then
+  printf 'postinst ignored dnsmasq helper failure\n' >&2
+  exit 1
+fi
+assert_lifecycle_log $'ca:ensure\ndnsmasq:ensure\n'
+
+: >"$lifecycle_log"
+if run_lifecycle_script "$prerm" '' 0 dnsmasq; then
+  printf 'prerm ignored dnsmasq helper failure\n' >&2
+  exit 1
+fi
+assert_lifecycle_log $'ca:remove\ndnsmasq:remove\n'
 
 secret_file=$(find "$tmp/data/etc/openziti" -mindepth 1 ! -type d -print -quit)
 [[ -z $secret_file ]] || { printf 'unexpected OpenZiti material: %s\n' "$secret_file" >&2; exit 1; }

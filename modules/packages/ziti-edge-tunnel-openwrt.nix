@@ -6,6 +6,9 @@
       ca-bundle-helper = ../../nix/packages/ziti-edge-tunnel-openwrt/openwrt/files/usr/lib/ziti-edge-tunnel/update-ca-bundle;
       ca-bundle-test = ../../nix/packages/ziti-edge-tunnel-openwrt/tests/ca-bundle-test.sh;
       compaan-ca = ../../modules/nixos/core/certs/compaan-ca.crt;
+      dnsmasq-helper = ../../nix/packages/ziti-edge-tunnel-openwrt/openwrt/files/usr/lib/ziti-edge-tunnel/update-dnsmasq;
+      dnsmasq-helper-test = ../../nix/packages/ziti-edge-tunnel-openwrt/tests/update-dnsmasq-test.sh;
+      dnsmasq-test = ../../nix/packages/ziti-edge-tunnel-openwrt/tests/dnsmasq-test.sh;
       validator-test = ../../nix/packages/ziti-edge-tunnel-openwrt/tests/validator-test.sh;
       verify-ipk = ../../nix/packages/ziti-edge-tunnel-openwrt/tests/verify-ipk.sh;
       ziti-edge-tunnel-openwrt = import ../../nix/packages/ziti-edge-tunnel-openwrt { inherit pkgs; };
@@ -28,6 +31,34 @@
               bash "${pkgs.busybox}/bin/busybox ash"
             touch $out
           '';
+      checks.ziti-edge-tunnel-openwrt-dnsmasq-helper =
+        pkgs.runCommand "ziti-edge-tunnel-openwrt-dnsmasq-helper-test"
+          {
+            nativeBuildInputs = [
+              pkgs.bash
+              pkgs.busybox
+              pkgs.python3
+              pkgs.util-linux
+            ];
+          }
+          ''
+            bash ${dnsmasq-helper-test} ${dnsmasq-helper} \
+              bash "${pkgs.busybox}/bin/busybox ash"
+            touch $out
+          '';
+      checks.ziti-edge-tunnel-openwrt-dnsmasq-routing =
+        pkgs.runCommand "ziti-edge-tunnel-openwrt-dnsmasq-routing-test"
+          {
+            nativeBuildInputs = [
+              pkgs.bash
+              pkgs.dnsmasq
+              pkgs.python3
+            ];
+          }
+          ''
+            bash ${dnsmasq-test} ${pkgs.dnsmasq}/bin/dnsmasq
+            touch $out
+          '';
       checks.ziti-edge-tunnel-openwrt-ipk =
         pkgs.runCommand "ziti-edge-tunnel-openwrt-ipk-test"
           {
@@ -44,8 +75,8 @@
           }
           ''
             ipk=$(printf '%s\n' ${ziti-edge-tunnel-openwrt}/*.ipk)
-            bash ${verify-ipk} "$ipk" mipsel_24kc 1.15.1 5
-            bash ${validator-test} "$ipk" ${verify-ipk} 5
+            bash ${verify-ipk} "$ipk" mipsel_24kc 1.15.1 6
+            bash ${validator-test} "$ipk" ${verify-ipk} 6
             touch $out
           '';
       checks.ziti-edge-tunnel-openwrt-service =

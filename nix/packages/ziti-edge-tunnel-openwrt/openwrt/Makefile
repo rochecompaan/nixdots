@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ziti-edge-tunnel
 PKG_VERSION:=1.15.1
-PKG_RELEASE:=5
+PKG_RELEASE:=6
 PKG_LICENSE:=Apache-2.0
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Roché Compaan
@@ -25,7 +25,7 @@ define Package/ziti-edge-tunnel
   CATEGORY:=Network
   TITLE:=OpenZiti edge tunneler
   URL:=https://openziti.io/
-  DEPENDS:=+ca-bundle +kmod-tun +libatomic +libjson-c +libopenssl +libpcap +libprotobuf-c +libsodium +libstdcpp +libuv +openssl-util +zlib
+  DEPENDS:=+ca-bundle +dnsmasq +kmod-tun +libatomic +libjson-c +libopenssl +libpcap +libprotobuf-c +libsodium +libstdcpp +libuv +openssl-util +zlib
 endef
 
 define Package/ziti-edge-tunnel/description
@@ -83,6 +83,7 @@ define Package/ziti-edge-tunnel/install
 	$(INSTALL_DIR) $(1)/usr/lib/ziti-edge-tunnel
 	$(INSTALL_BIN) ./files/usr/lib/ziti-edge-tunnel/run-managed $(1)/usr/lib/ziti-edge-tunnel/run-managed
 	$(INSTALL_BIN) ./files/usr/lib/ziti-edge-tunnel/update-ca-bundle $(1)/usr/lib/ziti-edge-tunnel/update-ca-bundle
+	$(INSTALL_BIN) ./files/usr/lib/ziti-edge-tunnel/update-dnsmasq $(1)/usr/lib/ziti-edge-tunnel/update-dnsmasq
 	$(INSTALL_DIR) $(1)/etc/ssl/certs
 	$(INSTALL_DATA) ./files/etc/ssl/certs/compaan-ca.crt $(1)/etc/ssl/certs/compaan-ca.crt
 	$(INSTALL_DIR) $(1)/etc/openziti/identities
@@ -92,15 +93,20 @@ endef
 define Package/ziti-edge-tunnel/postinst
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT:-}" ] && exit 0
-helper="$${ZITI_CA_BUNDLE_HELPER:-/usr/lib/ziti-edge-tunnel/update-ca-bundle}"
-"$$helper" ensure
+ca_helper="$${ZITI_CA_BUNDLE_HELPER:-/usr/lib/ziti-edge-tunnel/update-ca-bundle}"
+dnsmasq_helper="$${ZITI_DNSMASQ_HELPER:-/usr/lib/ziti-edge-tunnel/update-dnsmasq}"
+"$$ca_helper" ensure || exit $$?
+"$$dnsmasq_helper" ensure
 endef
 
 define Package/ziti-edge-tunnel/prerm
 #!/bin/sh
 [ -n "$${IPKG_INSTROOT:-}" ] && exit 0
-helper="$${ZITI_CA_BUNDLE_HELPER:-/usr/lib/ziti-edge-tunnel/update-ca-bundle}"
-"$$helper" remove
+ca_helper="$${ZITI_CA_BUNDLE_HELPER:-/usr/lib/ziti-edge-tunnel/update-ca-bundle}"
+dnsmasq_helper="$${ZITI_DNSMASQ_HELPER:-/usr/lib/ziti-edge-tunnel/update-dnsmasq}"
+"$$ca_helper" remove || exit $$?
+[ "$${PKG_UPGRADE:-0}" = 1 ] && exit 0
+"$$dnsmasq_helper" remove
 endef
 
 $(eval $(call BuildPackage,ziti-edge-tunnel))

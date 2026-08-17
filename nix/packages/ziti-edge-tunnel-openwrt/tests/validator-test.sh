@@ -38,6 +38,10 @@ mutate_missing_ca_helper() {
   rm -f "$1/usr/lib/ziti-edge-tunnel/update-ca-bundle"
 }
 
+mutate_missing_dnsmasq_helper() {
+  rm -f "$1/usr/lib/ziti-edge-tunnel/update-dnsmasq"
+}
+
 mutate_appended_ca() {
   cat "$substitute_ca" >>"$1/etc/ssl/certs/compaan-ca.crt"
 }
@@ -81,7 +85,8 @@ run_case symlink-payload mutate_symlink_payload
 run_case missing-ca mutate_missing_ca
 run_case substituted-ca mutate_substituted_ca
 run_case missing-ca-helper mutate_missing_ca_helper
+run_case missing-dnsmasq-helper mutate_missing_dnsmasq_helper
 run_case appended-ca mutate_appended_ca
 run_case missing-wrapper mutate_missing_wrapper
 run_case nonroot-ownership mutate_noop
-printf 'validator tests: 9 passed\n'
+printf 'validator tests: 10 passed\n'

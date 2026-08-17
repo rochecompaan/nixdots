@@ -1,6 +1,8 @@
 config ziti 'main'
         option enabled '0'
         option dns_upstream '127.0.0.1'
+        option dnsmasq_compaan_guard_owned '0'
+        option dnsmasq_ha_forward_owned '0'
         option jwt '/etc/openziti/enroll.jwt'
         option identity '/etc/openziti/identities/router.json'
         option verbose '3'

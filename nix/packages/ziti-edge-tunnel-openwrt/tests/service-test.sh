@@ -37,6 +37,7 @@ run_case() (
   export ZITI_RUNTIME_DIR="$root/run"
   export ZITI_RESOLV_CONF="$root/resolv.conf"
   export ZITI_CA_BUNDLE_HELPER="$root/bin/update-ca-bundle"
+  export ZITI_DNSMASQ_HELPER="$root/bin/update-dnsmasq"
   export TEST_ENABLED=1
   export TEST_DNS_UPSTREAM=
   export TEST_JWT="$root/etc/openziti/enroll.jwt"
@@ -47,10 +48,13 @@ run_case() (
   export TEST_RUN_COMMAND="$root/run-command"
   export TEST_CA_RESULT=success
   export TEST_CA_COMMAND="$root/ca-command"
+  export TEST_DNSMASQ_RESULT=success
+  export TEST_DNSMASQ_COMMAND="$root/dnsmasq-command"
   export TEST_START_ORDER="$root/start-order"
   : >"$root/procd-command"
   : >"$TEST_RUN_COMMAND"
   : >"$TEST_CA_COMMAND"
+  : >"$TEST_DNSMASQ_COMMAND"
   : >"$TEST_START_ORDER"
   printf 'nameserver 192.0.2.53\n' >"$ZITI_RESOLV_CONF"
 
@@ -88,6 +92,15 @@ printf 'ca\n' >>"$TEST_START_ORDER"
 [ "${TEST_CA_RESULT:-failure}" = success ]
 MOCK
   chmod 0755 "$ZITI_CA_BUNDLE_HELPER"
+
+  cat >"$ZITI_DNSMASQ_HELPER" <<'MOCK'
+#!/bin/sh
+set -eu
+printf '%s\n' "$*" >"$TEST_DNSMASQ_COMMAND"
+printf 'dnsmasq\n' >>"$TEST_START_ORDER"
+[ "${TEST_DNSMASQ_RESULT:-failure}" = success ]
+MOCK
+  chmod 0755 "$ZITI_DNSMASQ_HELPER"
 
   config_load() { [ "$1" = ziti-edge-tunnel ]; }
   config_get_bool() { printf -v "$1" '%s' "$TEST_ENABLED"; }
@@ -216,18 +229,39 @@ WRAPPER
 case_disabled() {
   TEST_ENABLED=0
   start_service
+  assert_contains "$TEST_DNSMASQ_COMMAND" 'ensure'
   [[ ! -s $root/procd-command ]] || fail 'disabled service started a process'
   [[ ! -s $TEST_CA_COMMAND ]] || fail 'disabled service refreshed the CA bundle'
 }
 
-case_ca_refresh_precedes_procd() {
+case_stop_preserves_dnsmasq() {
+  stop_service
+  [[ ! -s $TEST_DNSMASQ_COMMAND ]] || fail 'service stop changed dnsmasq rules'
+}
+
+case_preparation_precedes_procd() {
   printf '{}\n' >"$TEST_IDENTITY"
   start_service
+  assert_contains "$TEST_DNSMASQ_COMMAND" 'ensure'
   assert_contains "$TEST_CA_COMMAND" 'ensure'
-  [[ $(sed -n '1p' "$TEST_START_ORDER") = ca ]] ||
-    fail 'CA refresh did not run first'
-  [[ $(sed -n '2p' "$TEST_START_ORDER") = procd ]] ||
-    fail 'procd did not run after CA refresh'
+  [[ $(sed -n '1p' "$TEST_START_ORDER") = dnsmasq ]] ||
+    fail 'dnsmasq preparation did not run first'
+  [[ $(sed -n '2p' "$TEST_START_ORDER") = ca ]] ||
+    fail 'CA refresh did not run after dnsmasq preparation'
+  [[ $(sed -n '3p' "$TEST_START_ORDER") = procd ]] ||
+    fail 'procd did not run after preparation'
+}
+
+case_dnsmasq_prepare_failure_blocks_start() {
+  printf '{}\n' >"$TEST_IDENTITY"
+  export TEST_DNSMASQ_RESULT=failure
+  if start_service; then
+    fail 'dnsmasq preparation failure started the service'
+  fi
+  assert_contains "$TEST_DNSMASQ_COMMAND" 'ensure'
+  [[ ! -s $TEST_CA_COMMAND ]] || fail 'CA refresh ran after dnsmasq failure'
+  [[ ! -s $root/procd-command ]] || fail 'dnsmasq failure configured procd'
+  assert_no_file "$ZITI_RUNTIME_DIR/resolv.conf.before"
 }
 
 case_ca_refresh_failure_blocks_start() {
@@ -371,16 +405,22 @@ run_busybox_env_case() (
   export ZITI_RUNTIME_DIR="$root/run"
   export ZITI_RESOLV_CONF="$root/resolv.conf"
   export ZITI_CA_BUNDLE_HELPER="$root/bin/update-ca-bundle"
+  export ZITI_DNSMASQ_HELPER="$root/bin/update-dnsmasq"
   export TEST_BB_DIR="$root/bb"
   export TEST_PROCD_COMMAND="$root/procd-command"
   export TEST_CA_COMMAND="$root/ca-command"
   export TEST_CA_RESULT=success
+  export TEST_DNSMASQ_COMMAND="$root/dnsmasq-command"
+  export TEST_DNSMASQ_RESULT=success
+  export TEST_START_ORDER="$root/start-order"
   export TEST_ENABLED=1
   export TEST_JWT="$root/etc/openziti/enroll.jwt"
   export TEST_IDENTITY="$root/etc/openziti/identities/router.json"
   export TEST_VERBOSE=3
   : >"$TEST_PROCD_COMMAND"
   : >"$TEST_CA_COMMAND"
+  : >"$TEST_DNSMASQ_COMMAND"
+  : >"$TEST_START_ORDER"
   printf 'nameserver 192.0.2.53\n' >"$ZITI_RESOLV_CONF"
 
   cat >"$ZITI_PROG" <<'MOCK'
@@ -407,9 +447,19 @@ MOCK
 #!/bin/sh
 set -eu
 printf '%s\n' "$*" >"$TEST_CA_COMMAND"
+printf 'ca\n' >>"$TEST_START_ORDER"
 [ "${TEST_CA_RESULT:-failure}" = success ]
 MOCK
   chmod 0755 "$ZITI_CA_BUNDLE_HELPER"
+
+  cat >"$ZITI_DNSMASQ_HELPER" <<'MOCK'
+#!/bin/sh
+set -eu
+printf '%s\n' "$*" >"$TEST_DNSMASQ_COMMAND"
+printf 'dnsmasq\n' >>"$TEST_START_ORDER"
+[ "${TEST_DNSMASQ_RESULT:-failure}" = success ]
+MOCK
+  chmod 0755 "$ZITI_DNSMASQ_HELPER"
 
   # BusyBox applet symlinks, deliberately without stat.
   for app in mkdir chmod cp rm awk cat ls sleep kill; do
@@ -428,7 +478,7 @@ config_get() {
   esac
 }
 logger() { :; }
-procd_open_instance() { :; }
+procd_open_instance() { printf 'procd\n' >>"$TEST_START_ORDER"; }
 procd_set_param() {
   if [ "$1" = command ]; then
     shift
@@ -447,8 +497,50 @@ export PATH
 start_service
 WRAPPER
 
+  cat >"$root/stop-driver" <<'WRAPPER'
+PATH=$TEST_BB_DIR
+export PATH
+. "$TEST_MOCKS"
+. "$ZITI_INIT_SCRIPT"
+stop_service
+WRAPPER
+
   "$@"
 )
+
+case_busybox_disabled_repairs_dnsmasq() {
+  export TEST_ENABLED=0
+  export TEST_MOCKS="$root/mocks"
+  if ! "$busybox_bin" ash "$root/start-driver"; then
+    fail 'disabled start failed under BusyBox'
+  fi
+  assert_contains "$TEST_DNSMASQ_COMMAND" 'ensure'
+  [[ ! -s $TEST_CA_COMMAND ]] || fail 'disabled BusyBox start refreshed CA bundle'
+  [[ ! -s $TEST_PROCD_COMMAND ]] || fail 'disabled BusyBox start configured procd'
+  [[ $(cat "$TEST_START_ORDER") = dnsmasq ]] ||
+    fail 'disabled BusyBox start ran work after dnsmasq preparation'
+}
+
+case_busybox_dnsmasq_failure_blocks_start() {
+  export TEST_DNSMASQ_RESULT=failure
+  export TEST_MOCKS="$root/mocks"
+  if "$busybox_bin" ash "$root/start-driver"; then
+    fail 'dnsmasq failure started service under BusyBox'
+  fi
+  assert_contains "$TEST_DNSMASQ_COMMAND" 'ensure'
+  [[ ! -s $TEST_CA_COMMAND ]] || fail 'BusyBox CA refresh ran after dnsmasq failure'
+  [[ ! -s $TEST_PROCD_COMMAND ]] || fail 'BusyBox dnsmasq failure configured procd'
+  [[ $(cat "$TEST_START_ORDER") = dnsmasq ]] ||
+    fail 'BusyBox dnsmasq failure ran later preparation'
+}
+
+case_busybox_stop_preserves_dnsmasq() {
+  export TEST_MOCKS="$root/mocks"
+  if ! "$busybox_bin" ash "$root/stop-driver"; then
+    fail 'stop_service failed under BusyBox'
+  fi
+  [[ ! -s $TEST_DNSMASQ_COMMAND ]] || fail 'BusyBox stop changed dnsmasq rules'
+}
 
 case_busybox_enrollment_without_stat() {
   printf 'signed.jwt\n' >"$TEST_JWT"
@@ -458,7 +550,14 @@ case_busybox_enrollment_without_stat() {
     fail 'start_service failed under BusyBox without stat'
   fi
   assert_contains "$TEST_PROCD_COMMAND" '/usr/lib/ziti-edge-tunnel/run-managed'
+  assert_contains "$TEST_DNSMASQ_COMMAND" 'ensure'
   assert_contains "$TEST_CA_COMMAND" 'ensure'
+  [[ $(sed -n '1p' "$TEST_START_ORDER") = dnsmasq ]] ||
+    fail 'BusyBox dnsmasq preparation did not run first'
+  [[ $(sed -n '2p' "$TEST_START_ORDER") = ca ]] ||
+    fail 'BusyBox CA refresh did not run second'
+  [[ $(sed -n '3p' "$TEST_START_ORDER") = procd ]] ||
+    fail 'BusyBox procd registration did not run last'
   assert_file "$TEST_JWT"
   assert_no_file "$TEST_IDENTITY"
   # The supervised entrypoint performs enrollment under the same userland.
@@ -472,7 +571,9 @@ case_busybox_enrollment_without_stat() {
 }
 
 run_case disabled case_disabled
-run_case ca-refresh-before-procd case_ca_refresh_precedes_procd
+run_case stop-preserves-dnsmasq case_stop_preserves_dnsmasq
+run_case preparation-before-procd case_preparation_precedes_procd
+run_case dnsmasq-prepare-failure case_dnsmasq_prepare_failure_blocks_start
 run_case ca-refresh-failure case_ca_refresh_failure_blocks_start
 run_case existing-identity case_existing_identity
 run_case missing-material case_missing_material
@@ -497,8 +598,11 @@ done
 
 busybox_cases=0
 if [ -n "$busybox_bin" ]; then
+  run_busybox_env_case busybox-disabled case_busybox_disabled_repairs_dnsmasq
+  run_busybox_env_case busybox-dnsmasq-failure case_busybox_dnsmasq_failure_blocks_start
+  run_busybox_env_case busybox-stop case_busybox_stop_preserves_dnsmasq
   run_busybox_env_case busybox-enrollment-no-stat case_busybox_enrollment_without_stat
-  busybox_cases=1
+  busybox_cases=4
 else
   printf 'skipping busybox environment tests: busybox not found\n'
 fi
@@ -515,4 +619,4 @@ case_wrapper_avoids_procd_lock() {
 }
 case_wrapper_avoids_procd_lock
 
-printf 'service tests: %s passed\n' "$((15 + signal_cases + busybox_cases + 1))"
+printf 'service tests: %s passed\n' "$((17 + signal_cases + busybox_cases + 1))"

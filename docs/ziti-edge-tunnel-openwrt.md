@@ -63,13 +63,13 @@ scripts/ziti-openwrt-tunnel.sh update
 
 ## Compaan CA trust
 
-Package release r5 installs the Compaan CA at
+Package release r5 and later install the Compaan CA at
 `/etc/ssl/certs/compaan-ca.crt`. The package adds one marked block to the
 start of `/etc/ssl/certs/ca-certificates.crt`.
 
 The package refreshes the block after installation and before each service
 start. The service does not start if this refresh fails. The package removes
-the block before an upgrade, a downgrade, or package removal. A new r5
+the block before an upgrade, a downgrade, or package removal. The new package
 installation restores the block after an upgrade.
 
 An `/etc/hosts` entry takes priority over Ziti DNS for router applications.
@@ -97,6 +97,48 @@ curl -fsS https://ha.compaan/ -o /dev/null
 ```
 
 Do not use `--cacert`, `--resolve`, or `-k` for this trust test.
+
+## Compaan resolver routing
+
+Package release r6 manages these dnsmasq rules through UCI:
+
+```text
+server=/compaan/
+server=/ha.compaan/100.64.0.2
+```
+
+The specific rule sends `ha.compaan` to Ziti DNS. Ziti normally returns the
+synthetic address `100.64.0.4`.
+
+The broad rule answers unknown siblings, such as `unknown.compaan`, with local
+data or NXDOMAIN. These private names do not reach public DNS. Public names
+continue through the existing dnsmasq and WAN resolver path.
+
+dnsmasq domain rules include descendant names. Therefore, r6 reserves the
+`ha.compaan` subtree for Ziti. For example, `child.ha.compaan` also reaches
+Ziti DNS.
+
+The rules remain active when the Ziti service stops or becomes disabled. They
+also remain active during package upgrades. If Ziti DNS is unavailable,
+`ha.compaan` fails closed instead of using a public resolver.
+
+The package records ownership for each rule in `/etc/config/ziti-edge-tunnel`.
+It preserves an identical external rule. Final package removal removes only
+rules that r6 owns.
+
+Package installation and every service start repair a missing owned rule. A
+repair error stops service startup before procd registration. An unchanged
+rule set causes no UCI commit and no dnsmasq reload.
+
+Use final removal before a rollback to r5:
+
+```sh
+opkg remove ziti-edge-tunnel
+opkg install /tmp/ziti-edge-tunnel_1.15.1-r5_mipsel_24kc.ipk
+```
+
+Do not use a direct forced downgrade. Release r5 cannot remove r6 resolver
+ownership state.
 
 ## Inspect status and logs
 

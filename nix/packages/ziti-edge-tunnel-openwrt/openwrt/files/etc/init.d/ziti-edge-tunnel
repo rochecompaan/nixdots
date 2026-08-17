@@ -8,6 +8,7 @@ PROG=${ZITI_PROG:-/usr/bin/ziti-edge-tunnel}
 INIT_SCRIPT=${ZITI_INIT_SCRIPT:-/etc/init.d/ziti-edge-tunnel}
 WRAPPER=${ZITI_WRAPPER:-/usr/lib/ziti-edge-tunnel/run-managed}
 CA_BUNDLE_HELPER=${ZITI_CA_BUNDLE_HELPER:-/usr/lib/ziti-edge-tunnel/update-ca-bundle}
+DNSMASQ_HELPER=${ZITI_DNSMASQ_HELPER:-/usr/lib/ziti-edge-tunnel/update-dnsmasq}
 RUNTIME_DIR=${ZITI_RUNTIME_DIR:-/tmp/ziti-edge-tunnel}
 RESOLV_CONF=${ZITI_RESOLV_CONF:-/etc/resolv.conf}
 # Grace period for the tunnel to exit after SIGTERM before SIGKILL.
@@ -194,6 +195,13 @@ run_managed() {
         exit "$status"
 }
 
+prepare_dnsmasq() {
+        if ! "$DNSMASQ_HELPER" ensure; then
+                log 'dnsmasq resolver preparation failed'
+                return 1
+        fi
+}
+
 refresh_ca_bundle() {
         if ! "$CA_BUNDLE_HELPER" ensure; then
                 log 'Compaan CA bundle refresh failed'
@@ -203,6 +211,7 @@ refresh_ca_bundle() {
 
 start_service() {
         load_ziti_config || return 1
+        prepare_dnsmasq || return 1
         [ "$enabled" -eq 1 ] || return 0
         refresh_ca_bundle || return 1
         # Enrollment runs in the supervised process (run_managed). Only

@@ -1,0 +1,271 @@
+#!/bin/sh
+set -eu
+
+UCI=${ZITI_DNSMASQ_UCI:-uci}
+DNSMASQ_INIT=${ZITI_DNSMASQ_INIT:-/etc/init.d/dnsmasq}
+DNSMASQ_LOCK=${ZITI_DNSMASQ_LOCK:-/tmp/lock/ziti-edge-tunnel-dnsmasq.lock}
+DNSMASQ_LOCK_OWNER=${ZITI_DNSMASQ_LOCK_OWNER:-0}
+DNSMASQ_SECTION='dhcp.@dnsmasq[0]'
+ZITI_SECTION='ziti-edge-tunnel.main'
+GUARD='/compaan/'
+FORWARD='/ha.compaan/100.64.0.2'
+GUARD_FLAG='dnsmasq_compaan_guard_owned'
+FORWARD_FLAG='dnsmasq_ha_forward_owned'
+
+action=${1:-}
+case "$action" in
+        ensure | remove) ;;
+        *)
+                printf 'usage: %s ensure|remove\n' "$0" >&2
+                exit 2
+                ;;
+esac
+
+fail() {
+        printf 'ziti-edge-tunnel dnsmasq: %s\n' "$*" >&2
+        exit 1
+}
+
+revert_package() {
+        if ! "$UCI" revert "$1" >/dev/null 2>&1; then
+                printf 'ziti-edge-tunnel dnsmasq: cannot revert UCI package %s\n' "$1" >&2
+        fi
+}
+
+read_flag() {
+        flag_name=$1
+        if flag_value=$("$UCI" -q get "$ZITI_SECTION.$flag_name" 2>/dev/null); then
+                :
+        elif printf '%s\n' "$ziti_listing" |
+                grep -F "$ZITI_SECTION.$flag_name=" >/dev/null; then
+                fail "cannot read ownership flag $flag_name"
+        else
+                flag_value=0
+        fi
+        case "$flag_value" in
+                0 | 1) printf '%s\n' "$flag_value" ;;
+                *) fail "invalid ownership flag $flag_name: $flag_value" ;;
+        esac
+}
+
+has_server() {
+        wanted=$1
+        for server_value in $server_values; do
+                [ "$server_value" = "$wanted" ] && return 0
+        done
+        return 1
+}
+
+stage_owner() {
+        "$UCI" set "$ZITI_SECTION.$1=$2"
+}
+
+stage_add() {
+        "$UCI" add_list "$DNSMASQ_SECTION.server=$1"
+}
+
+stage_remove() {
+        "$UCI" del_list "$DNSMASQ_SECTION.server=$1"
+}
+
+rollback_added_rules() {
+        rollback_failed=0
+        if [ "$guard_add" -eq 1 ] && ! stage_remove "$GUARD"; then
+                rollback_failed=1
+        fi
+        if [ "$forward_add" -eq 1 ] && ! stage_remove "$FORWARD"; then
+                rollback_failed=1
+        fi
+        if [ "$rollback_failed" -eq 0 ]; then
+                if ! "$UCI" commit dhcp; then
+                        rollback_failed=1
+                        revert_package dhcp
+                fi
+        else
+                revert_package dhcp
+        fi
+        if [ "$rollback_failed" -eq 0 ] && ! "$DNSMASQ_INIT" reload; then
+                rollback_failed=1
+        fi
+        [ "$rollback_failed" -eq 0 ] ||
+                printf 'ziti-edge-tunnel dnsmasq: failed to restore rules after reload error\n' >&2
+}
+
+rollback_removed_rules() {
+        rollback_failed=0
+        if [ "$guard_remove" -eq 1 ] && ! stage_add "$GUARD"; then
+                rollback_failed=1
+        fi
+        if [ "$forward_remove" -eq 1 ] && ! stage_add "$FORWARD"; then
+                rollback_failed=1
+        fi
+        if [ "$rollback_failed" -eq 0 ]; then
+                if ! "$UCI" commit dhcp; then
+                        rollback_failed=1
+                        revert_package dhcp
+                fi
+        else
+                revert_package dhcp
+        fi
+        if [ "$rollback_failed" -eq 0 ] && ! "$DNSMASQ_INIT" reload; then
+                rollback_failed=1
+        fi
+        [ "$rollback_failed" -eq 0 ] ||
+                printf 'ziti-edge-tunnel dnsmasq: failed to restore rules after reload error\n' >&2
+}
+
+ensure_rules() {
+        guard_add=0
+        forward_add=0
+        owner_changed=0
+
+        if ! has_server "$GUARD"; then
+                guard_add=1
+                if [ "$guard_owned" -eq 0 ]; then
+                        stage_owner "$GUARD_FLAG" 1 || {
+                                revert_package ziti-edge-tunnel
+                                fail 'cannot claim the Compaan guard rule'
+                        }
+                        owner_changed=1
+                fi
+        fi
+        if ! has_server "$FORWARD"; then
+                forward_add=1
+                if [ "$forward_owned" -eq 0 ]; then
+                        stage_owner "$FORWARD_FLAG" 1 || {
+                                revert_package ziti-edge-tunnel
+                                fail 'cannot claim the ha.compaan forward rule'
+                        }
+                        owner_changed=1
+                fi
+        fi
+
+        if [ "$owner_changed" -eq 1 ] && ! "$UCI" commit ziti-edge-tunnel; then
+                revert_package ziti-edge-tunnel
+                fail 'cannot commit dnsmasq rule ownership'
+        fi
+
+        [ "$guard_add" -eq 1 ] || [ "$forward_add" -eq 1 ] || return 0
+        if [ "$guard_add" -eq 1 ] && ! stage_add "$GUARD"; then
+                revert_package dhcp
+                fail 'cannot add the Compaan guard rule'
+        fi
+        if [ "$forward_add" -eq 1 ] && ! stage_add "$FORWARD"; then
+                revert_package dhcp
+                fail 'cannot add the ha.compaan forward rule'
+        fi
+        if ! "$UCI" commit dhcp; then
+                revert_package dhcp
+                fail 'cannot commit dnsmasq server rules'
+        fi
+        if ! "$DNSMASQ_INIT" reload; then
+                rollback_added_rules
+                fail 'dnsmasq reload failed after rule ensure'
+        fi
+}
+
+remove_rules() {
+        guard_remove=0
+        forward_remove=0
+        owner_changed=0
+
+        if [ "$guard_owned" -eq 1 ]; then
+                owner_changed=1
+                has_server "$GUARD" && guard_remove=1
+        fi
+        if [ "$forward_owned" -eq 1 ]; then
+                owner_changed=1
+                has_server "$FORWARD" && forward_remove=1
+        fi
+
+        if [ "$guard_remove" -eq 1 ] && ! stage_remove "$GUARD"; then
+                revert_package dhcp
+                fail 'cannot remove the Compaan guard rule'
+        fi
+        if [ "$forward_remove" -eq 1 ] && ! stage_remove "$FORWARD"; then
+                revert_package dhcp
+                fail 'cannot remove the ha.compaan forward rule'
+        fi
+        if [ "$guard_remove" -eq 1 ] || [ "$forward_remove" -eq 1 ]; then
+                if ! "$UCI" commit dhcp; then
+                        revert_package dhcp
+                        fail 'cannot commit dnsmasq rule removal'
+                fi
+                if ! "$DNSMASQ_INIT" reload; then
+                        rollback_removed_rules
+                        fail 'dnsmasq reload failed after rule removal'
+                fi
+        fi
+
+        [ "$owner_changed" -eq 1 ] || return 0
+        if [ "$guard_owned" -eq 1 ] && ! stage_owner "$GUARD_FLAG" 0; then
+                revert_package ziti-edge-tunnel
+                fail 'cannot clear Compaan guard ownership'
+        fi
+        if [ "$forward_owned" -eq 1 ] && ! stage_owner "$FORWARD_FLAG" 0; then
+                revert_package ziti-edge-tunnel
+                fail 'cannot clear ha.compaan forward ownership'
+        fi
+        if ! "$UCI" commit ziti-edge-tunnel; then
+                revert_package ziti-edge-tunnel
+                fail 'cannot commit dnsmasq ownership removal'
+        fi
+}
+
+case "$DNSMASQ_LOCK_OWNER" in
+        '' | *[!0-9]*) fail "invalid dnsmasq lock owner: $DNSMASQ_LOCK_OWNER" ;;
+esac
+
+lock_dir=${DNSMASQ_LOCK%/*}
+[ "$lock_dir" != "$DNSMASQ_LOCK" ] || fail "lock has no parent directory: $DNSMASQ_LOCK"
+mkdir -p "$lock_dir" || fail "cannot create lock directory: $lock_dir"
+if [ -e "$DNSMASQ_LOCK" ] || [ -L "$DNSMASQ_LOCK" ]; then
+        [ -f "$DNSMASQ_LOCK" ] && [ ! -L "$DNSMASQ_LOCK" ] ||
+                fail "invalid dnsmasq lock: $DNSMASQ_LOCK"
+fi
+umask 077
+exec 9>>"$DNSMASQ_LOCK" || fail "cannot open dnsmasq lock: $DNSMASQ_LOCK"
+
+fd_listing=$(ls -idnL /proc/self/fd/9) || fail 'cannot inspect open dnsmasq lock'
+set -- $fd_listing
+fd_inode=$1
+fd_mode=$2
+fd_owner=$4
+[ "$fd_owner" = "$DNSMASQ_LOCK_OWNER" ] || fail 'dnsmasq lock has the wrong owner'
+[ "$fd_mode" = '-rw-------' ] || fail 'dnsmasq lock mode is not 0600'
+
+[ -f "$DNSMASQ_LOCK" ] && [ ! -L "$DNSMASQ_LOCK" ] ||
+        fail "invalid dnsmasq lock: $DNSMASQ_LOCK"
+path_listing=$(ls -idn "$DNSMASQ_LOCK") || fail 'cannot inspect dnsmasq lock path'
+set -- $path_listing
+path_inode=$1
+path_mode=$2
+path_owner=$4
+[ "$path_inode" = "$fd_inode" ] || fail 'dnsmasq lock path changed during open'
+[ "$path_owner" = "$DNSMASQ_LOCK_OWNER" ] || fail 'dnsmasq lock path has the wrong owner'
+[ "$path_mode" = '-rw-------' ] || fail 'dnsmasq lock path mode is not 0600'
+
+flock 9 || fail 'cannot acquire dnsmasq lock'
+
+[ "$("$UCI" -q get "$DNSMASQ_SECTION")" = dnsmasq ] ||
+        fail 'dnsmasq UCI section is missing or invalid'
+[ "$("$UCI" -q get "$ZITI_SECTION")" = ziti ] ||
+        fail 'ziti-edge-tunnel UCI section is missing or invalid'
+dnsmasq_listing=$("$UCI" -q show "$DNSMASQ_SECTION") ||
+        fail 'cannot read dnsmasq UCI section'
+ziti_listing=$("$UCI" -q show "$ZITI_SECTION") ||
+        fail 'cannot read ziti-edge-tunnel UCI section'
+if server_values=$("$UCI" -q get "$DNSMASQ_SECTION.server" 2>/dev/null); then
+        :
+elif printf '%s\n' "$dnsmasq_listing" | grep -F '.server=' >/dev/null; then
+        fail 'cannot read dnsmasq server list'
+else
+        server_values=
+fi
+guard_owned=$(read_flag "$GUARD_FLAG")
+forward_owned=$(read_flag "$FORWARD_FLAG")
+
+case "$action" in
+        ensure) ensure_rules ;;
+        remove) remove_rules ;;
+esac

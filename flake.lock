@@ -1445,10 +1445,10 @@
     },
     "nix-secrets": {
       "locked": {
-        "lastModified": 1778969635,
-        "narHash": "sha256-BCJz+SHsrkF3MJ5n5besgt8LaJz8tZj2LogQjwsm0Vk=",
+        "lastModified": 1786897654,
+        "narHash": "sha256-YWLMnLuAlkas6xc1ZlFjuXjpKn6vw11e+AjUekHuvK8=",
         "ref": "main",
-        "rev": "68c376d32fb2d8658a9d37e471be0ef91af3bad2",
+        "rev": "b1655a780822e4c5cc81620b0d09447cecfcd154",
         "shallow": true,
         "type": "git",
         "url": "ssh://git@github.com/rochecompaan/nix-secrets.git"
@@ -1955,6 +1955,26 @@
         "type": "github"
       }
     },
+    "repowolf": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1786091253,
+        "narHash": "sha256-Kd5311YhC7B7iAWsW+Uag5zJ7itOHlJ5x+jfNk94SC4=",
+        "owner": "rochecompaan",
+        "repo": "repowolf",
+        "rev": "52fbef19c870f7381d772c4c1a937a1a38ec44bb",
+        "type": "github"
+      },
+      "original": {
+        "owner": "rochecompaan",
+        "repo": "repowolf",
+        "type": "github"
+      }
+    },
     "roche-pi": {
       "inputs": {
         "flake-parts": [
@@ -2006,6 +2026,7 @@
         "openziti-nix": "openziti-nix",
         "patchmill": "patchmill",
         "pre-commit-hooks": "pre-commit-hooks_3",
+        "repowolf": "repowolf",
         "roche-pi": "roche-pi",
         "sops-nix": "sops-nix",
         "stylix": "stylix",

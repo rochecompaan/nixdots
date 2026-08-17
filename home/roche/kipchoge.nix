@@ -20,6 +20,11 @@
     terminal = "kitty";
   };
 
+  services.repowolf = {
+    enable = true;
+    hostName = "kipchoge";
+  };
+
   services.meetingNotifier = {
     enable = true;
     accounts = {

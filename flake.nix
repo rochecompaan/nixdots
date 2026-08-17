@@ -77,6 +77,11 @@
 
     patchmill.url = "github:rochecompaan/patchmill";
 
+    repowolf = {
+      url = "github:rochecompaan/repowolf";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     # Private repo
     # Authenticate via ssh and use shallow clone
     nix-secrets = {

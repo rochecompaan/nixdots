@@ -15,6 +15,12 @@
     de = "niri";
     terminal = "kitty";
   };
+
+  services.repowolf = {
+    enable = true;
+    hostName = "kiptum";
+  };
+
   lowBatteryAlert.enable = true;
 
   services.meetingNotifier = {

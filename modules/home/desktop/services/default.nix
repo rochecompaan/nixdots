@@ -8,6 +8,7 @@
     ./meeting-notifier
     ./noctalia
     ./notes
+    ./repowolf
     ./streamlinear
     ./swaync
     ./waybar

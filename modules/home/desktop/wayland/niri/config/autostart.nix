@@ -17,6 +17,8 @@ let
   };
 in
 {
+  home.packages = [ firefoxProfiles ];
+
   xdg.configFile."niri/config.kdl".text = ''
     // Autostart common desktop components
     spawn-at-startup "1password"

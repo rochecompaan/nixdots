@@ -398,6 +398,10 @@ in
         id = 8;
         isDefault = false;
       };
+      forgejo = accentedFirefoxProfile "#EA580C" // {
+        id = 9;
+        isDefault = false;
+      };
     };
   };
 

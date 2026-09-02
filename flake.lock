@@ -1991,11 +1991,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788248124,
-        "narHash": "sha256-k6ynfMNRP7n4G76TFtA0tu0PhiKnp5SMgtFa6MQm0f0=",
+        "lastModified": 1788291991,
+        "narHash": "sha256-hR42iXJ+r3YyiZ3PT7+k4cnj9A4uw7sJNK3imEbLWUs=",
         "ref": "refs/heads/main",
-        "rev": "75e0024b367bb8e20e3b4a81b293743d6950074a",
-        "revCount": 164,
+        "rev": "b6532d2bc6aa8c2a9111277a68b894395b314c92",
+        "revCount": 165,
         "type": "git",
         "url": "ssh://git@git.compaan/roche/pi-config.git"
       },

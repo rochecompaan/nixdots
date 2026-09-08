@@ -26,10 +26,12 @@
 ### Task 1: Recover a missing or stale Niri socket
 
 **Files:**
+
 - Modify: `modules/home/desktop/wayland/niri/config/firefox-profiles_test.sh`
 - Modify: `modules/home/desktop/wayland/niri/config/firefox-profiles.sh:1-4`
 
 **Interfaces:**
+
 - Consumes: `NIRI_SOCKET`, `XDG_RUNTIME_DIR`, Bash `UID`, and Unix socket files named `niri.*.sock`.
 - Produces: `resolve_niri_socket`, which exports one valid `NIRI_SOCKET` or returns a nonzero status before profile launch.
 
@@ -97,10 +99,10 @@ launcher|launch-profile|--workspace|6|--profile|clubhouse
 launcher|launch-profile|--workspace|6|--profile|clubhouse_prod
 launcher|launch-profile|--workspace|7|--profile|siyavula
 launcher|launch-profile|--workspace|7|--profile|mycity
-launcher|launch-profile|--workspace|7|--profile|homelab
 launcher|launch-profile|--workspace|7|--profile|sixfeetup
 launcher|launch-profile|--workspace|8|--profile|croprun
 launcher|launch-profile|--workspace|8|--profile|agibase
+launcher|launch-profile|--workspace|8|--profile|homelab
 launcher|focus-workspace|--workspace|2
 EOF
 
@@ -263,9 +265,11 @@ git commit -m "fix(niri): recover stale Firefox launcher socket"
 ### Task 2: Install the manual profiles command
 
 **Files:**
+
 - Modify: `modules/home/desktop/wayland/niri/config/autostart.nix:19-29`
 
 **Interfaces:**
+
 - Consumes: the existing `firefoxProfiles` derivation from `pkgs.writeShellApplication`.
 - Produces: `niri-firefox-profiles` in the Home Manager `home-path/bin` directory and the interactive user `PATH`.
 

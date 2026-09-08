@@ -57,10 +57,10 @@ launcher|launch-profile|--workspace|6|--profile|clubhouse
 launcher|launch-profile|--workspace|6|--profile|clubhouse_prod
 launcher|launch-profile|--workspace|7|--profile|siyavula
 launcher|launch-profile|--workspace|7|--profile|mycity
-launcher|launch-profile|--workspace|7|--profile|homelab
 launcher|launch-profile|--workspace|7|--profile|sixfeetup
 launcher|launch-profile|--workspace|8|--profile|croprun
 launcher|launch-profile|--workspace|8|--profile|agibase
+launcher|launch-profile|--workspace|8|--profile|homelab
 launcher|focus-workspace|--workspace|2
 EOF
 

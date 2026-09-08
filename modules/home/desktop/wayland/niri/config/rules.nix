@@ -29,7 +29,7 @@
     // Route Firefox profile windows launched by firefox-profiles.sh without focusing them.
     window-rule { match app-id=r#"^firefox-profile-default$"#; open-on-workspace "2"; open-focused false; }
     window-rule { match app-id=r#"^firefox-profile-(clubhouse|clubhouse_prod)$"#; open-on-workspace "6"; open-focused false; }
-    window-rule { match app-id=r#"^firefox-profile-(siyavula|mycity|homelab|sixfeetup)$"#; open-on-workspace "7"; open-focused false; }
-    window-rule { match app-id=r#"^firefox-profile-(croprun|agibase)$"#; open-on-workspace "8"; open-focused false; }
+    window-rule { match app-id=r#"^firefox-profile-(siyavula|mycity|sixfeetup)$"#; open-on-workspace "7"; open-focused false; }
+    window-rule { match app-id=r#"^firefox-profile-(croprun|agibase|homelab)$"#; open-on-workspace "8"; open-focused false; }
   '';
 }

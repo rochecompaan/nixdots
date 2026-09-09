@@ -355,6 +355,7 @@ assert lib.assertMsg (
           //   - false
           //
           pane_frames false
+          stacked_pane_list false
 
           // Toggle between having Zellij lay out panes according to a predefined set of layouts whenever possible
           // Options:

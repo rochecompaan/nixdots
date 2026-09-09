@@ -314,6 +314,9 @@ assert lib.assertMsg (
             shared_except "tab" "locked" {
               bind "Ctrl t" { SwitchToMode "Tab"; }
             }
+            shared_except "renamepane" "locked" {
+              bind "Ctrl Alt r" { SwitchToMode "RenamePane"; PaneNameInput 0; }
+            }
             shared_except "renametab" "locked" {
               bind "Alt r" { SwitchToMode "RenameTab"; }
             }

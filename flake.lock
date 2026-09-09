@@ -1411,11 +1411,11 @@
         "treefmt-nix": "treefmt-nix_2"
       },
       "locked": {
-        "lastModified": 1788773822,
-        "narHash": "sha256-fKhU8WFCwi2QPCiNYAusvVkG80MKImnnr6GmIi0rMz4=",
+        "lastModified": 1788932393,
+        "narHash": "sha256-xo0f0bAiTuMpm7ISCRoJGnqljcKXHBYdy9U4WgHmbGc=",
         "owner": "numtide",
         "repo": "llm-agents.nix",
-        "rev": "2583bb4be1928b5a9666e8ae23e37e15e1a91acd",
+        "rev": "4a6df59bfd94e0a0059455a15d0d1df8b7c7610c",
         "type": "github"
       },
       "original": {
@@ -1560,11 +1560,11 @@
     },
     "nixpkgs_11": {
       "locked": {
-        "lastModified": 1788549839,
-        "narHash": "sha256-kOrCcSIA6w9J1hX5DqHy2k9pDTJymExTsbV74U9UtCA=",
+        "lastModified": 1788894124,
+        "narHash": "sha256-guyexwrrF5GBKqjO0eg9LNIvrXn4j2frNak63sDr8zg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "17de0b976395537756f30a3e78f2f06e5cec89ed",
+        "rev": "da39501c8d0a093136854eddcd6927c8a8bb0d8f",
         "type": "github"
       },
       "original": {
@@ -1992,11 +1992,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1788775540,
-        "narHash": "sha256-ufc1iJbXgPuv7FNwE96SAZXqofC2IAwCzQ7OMmlKRU0=",
+        "lastModified": 1788978448,
+        "narHash": "sha256-GpWq3fW9NiuwEmifznj4hP86apvNQRxG0ppM6ePtu1I=",
         "ref": "refs/heads/main",
-        "rev": "4b8dd63674a8edf18df2fe7f32e0e0ecbbaaa17e",
-        "revCount": 170,
+        "rev": "4e20202bdaad2b5e1ae84cd91c82fd93aaab5952",
+        "revCount": 172,
         "type": "git",
         "url": "ssh://git@git.compaan/roche/pi-config.git"
       },

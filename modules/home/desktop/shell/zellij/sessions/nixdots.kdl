@@ -44,4 +44,43 @@ layout {
       }
     }
   }
+  tab name="den" cwd="/home/roche/projects/den" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/den" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
+      pane stacked=true {
+        pane cwd="/home/roche/projects/den" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
+        }
+        pane cwd="/home/roche/projects/den" command="@zellijDirenvExec@"
+      }
+    }
+  }
+  tab name="repowolf" cwd="/home/roche/projects/repowolf" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/repowolf" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
+      pane stacked=true {
+        pane cwd="/home/roche/projects/repowolf" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
+        }
+        pane cwd="/home/roche/projects/repowolf" command="@zellijDirenvExec@"
+      }
+    }
+  }
+  tab name="tiny-llm-context" cwd="/home/roche/projects/repowolf" {
+    pane split_direction="vertical" {
+      pane cwd="/home/roche/projects/tiny-llm-context" command="@zellijDirenvExec@" {
+        args "nvim"
+      }
+      pane stacked=true {
+        pane cwd="/home/roche/projects/tiny-llm-context" expanded=true command="@zellijDirenvExec@" {
+          args "pi" "-c"
+        }
+        pane cwd="/home/roche/projects/tiny-llm-context" command="@zellijDirenvExec@"
+      }
+    }
+  }
 }

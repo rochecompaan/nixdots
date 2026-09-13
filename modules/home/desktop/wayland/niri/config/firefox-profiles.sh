@@ -38,14 +38,44 @@ resolve_niri_socket
 # Give niri a moment to finish creating initial workspaces.
 sleep 1
 
-niri-firefox-launcher launch-profile --workspace 2 --profile default
-niri-firefox-launcher launch-profile --workspace 6 --profile clubhouse
-niri-firefox-launcher launch-profile --workspace 6 --profile clubhouse_prod
-niri-firefox-launcher launch-profile --workspace 7 --profile siyavula
-niri-firefox-launcher launch-profile --workspace 7 --profile mycity
-niri-firefox-launcher launch-profile --workspace 7 --profile sixfeetup
-niri-firefox-launcher launch-profile --workspace 8 --profile croprun
-niri-firefox-launcher launch-profile --workspace 8 --profile agibase
-niri-firefox-launcher launch-profile --workspace 8 --profile homelab
+declare -Ar profile_workspaces=(
+  [default]=2
+  [clubhouse]=6
+  [clubhouse_prod]=6
+  [siyavula]=7
+  [mycity]=7
+  [sixfeetup]=7
+  [croprun]=8
+  [agibase]=8
+  [homelab]=8
+)
+
+profiles=("$@")
+if (( ${#profiles[@]} == 0 )); then
+  profiles=(
+    default
+    clubhouse
+    clubhouse_prod
+    siyavula
+    mycity
+    sixfeetup
+    croprun
+    agibase
+    homelab
+  )
+fi
+
+for profile in "${profiles[@]}"; do
+  if [[ -z "${profile_workspaces[$profile]+known}" ]]; then
+    printf 'Unknown Firefox profile: %s\n' "$profile" >&2
+    exit 1
+  fi
+done
+
+for profile in "${profiles[@]}"; do
+  niri-firefox-launcher launch-profile \
+    --workspace "${profile_workspaces[$profile]}" \
+    --profile "$profile"
+done
 
 niri-firefox-launcher focus-workspace --workspace 2 || true

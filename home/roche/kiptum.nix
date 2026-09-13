@@ -16,6 +16,8 @@
     terminal = "kitty";
   };
 
+  niri.autostart.firefoxProfiles = [ "default" ];
+
   services.repowolf = {
     enable = true;
     hostName = "kiptum";

@@ -67,11 +67,50 @@ EOF
   diff -u "$tmp/want" "$CAPTURE"
 }
 
+assert_default_profile() {
+  local expected_socket="$1"
+  shift
+  : >"$CAPTURE"
+  "$@" default
+
+  cat >"$tmp/want" <<EOF
+sleep|1
+socket|$expected_socket
+launcher|launch-profile|--workspace|2|--profile|default
+launcher|focus-workspace|--workspace|2
+EOF
+
+  diff -u "$tmp/want" "$CAPTURE"
+}
+
+assert_invalid_profile() {
+  : >"$CAPTURE"
+  if "$@" default unknown >"$tmp/invalid.out" 2>"$tmp/invalid.err"; then
+    echo "expected an unknown profile to fail" >&2
+    exit 1
+  fi
+
+  printf 'Unknown Firefox profile: unknown\n' >"$tmp/invalid.want"
+  diff -u "$tmp/invalid.want" "$tmp/invalid.err"
+  printf 'sleep|1\n' >"$tmp/want"
+  diff -u "$tmp/want" "$CAPTURE"
+}
+
 valid_runtime="$tmp/valid"
 mkdir -p "$valid_runtime"
 valid_socket="$valid_runtime/niri.valid.sock"
 make_socket "$valid_socket"
 assert_success "$valid_socket" env \
+  PATH="$tmp/bin:$PATH" \
+  XDG_RUNTIME_DIR="$valid_runtime" \
+  NIRI_SOCKET="$valid_socket" \
+  bash "$script_dir/firefox-profiles.sh"
+assert_default_profile "$valid_socket" env \
+  PATH="$tmp/bin:$PATH" \
+  XDG_RUNTIME_DIR="$valid_runtime" \
+  NIRI_SOCKET="$valid_socket" \
+  bash "$script_dir/firefox-profiles.sh"
+assert_invalid_profile env \
   PATH="$tmp/bin:$PATH" \
   XDG_RUNTIME_DIR="$valid_runtime" \
   NIRI_SOCKET="$valid_socket" \

@@ -39,6 +39,7 @@
 
   services.resolved.enable = true;
 
+  services.copyparty-mount.enable = true;
   services.flatpak.enable = true;
 
   programs.ziti = {

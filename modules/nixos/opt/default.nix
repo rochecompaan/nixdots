@@ -1,5 +1,6 @@
 {
   imports = [
+    ./copyparty-mount
     ./desktop
     ./fonts
     ./k3s-reset

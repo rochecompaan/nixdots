@@ -1963,11 +1963,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1786091253,
-        "narHash": "sha256-Kd5311YhC7B7iAWsW+Uag5zJ7itOHlJ5x+jfNk94SC4=",
+        "lastModified": 1789218396,
+        "narHash": "sha256-Rpuk6Q9kM0kQALwD223mQywVbtkIqFuJ/SoJC976JBw=",
         "owner": "rochecompaan",
         "repo": "repowolf",
-        "rev": "52fbef19c870f7381d772c4c1a937a1a38ec44bb",
+        "rev": "7686a581a0abab7b81399a76c4c6e5cba45313dc",
         "type": "github"
       },
       "original": {
